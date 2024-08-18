@@ -1,5 +1,5 @@
 <h1 align="center">
-    <b> Lang Compiler </b> 
+    <b> Java Compiler </b> 
 </h1>
 
 <p align="center">
