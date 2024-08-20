@@ -1,0 +1,44 @@
+%package "lang.parser";
+%import "ast.*";
+
+%class "LangParser";
+
+terminals
+  IF, ELSE, WHILE, FOR, RETURN, BREAK, CONTINUE, NEW, VOID, STRUCT, TYPEDEF,
+  SWITCH, CASE, DEFAULT, NULL, PRINT, SCAN,
+  BTYPE, CHAR, ID, TYPE, INT, FLOAT, BOOL,
+  ASSIGNMENT, EQ, NOT_EQ, SEMI, TIMES, PLUS, MOD, COMMA, DOUBLE_COLON, COLON,
+  SINGLE_QUOTE, DOUBLE_QUOTE, LEFT_PAREN, RIGHT_PAREN, LEFT_BRACKET, RIGHT_BRACKET,
+  LEFT_BRACE, RIGHT_BRACE, DOT, MINUS, DIVIDE, NOT_EQUAL, LESS_THAN,
+  LESS_THAN_OR_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, DOUBLE_AMPERSAND,
+  AMPERSAND, EXCLAMATION_MARK, DOUBLE_PIPE, PIPE;
+
+%left PLUS MINUS
+%left TIMES DIVIDE MOD
+
+%typeof ID = "String";
+%typeof Stmt = "Node";
+%typeof StmtList = "Node";
+%typeof Prog = "Node";
+
+%goal Prog;
+
+Prog = StmtList.s                     {:  return s;     :}  
+     ;
+
+StmtList = Stmt.s SEMI StmtList.l     {: return new StmtList(s,l); :}
+         | Stmt.s SEMI                {: return s; :}  
+         ;
+
+Stmt = ID.s EQ Expr.e                             {: return new Attr(new ID(s), e); :}
+     | Expr.e IF LB Stmt.s RB COLON LB Stmt.a RB  {: return new If(e,s,a);          :}
+     | Expr.e IF LB Stmt.s RB                     {: return new If(e,s);            :}
+     | Expr.e                                     {: return new Print(e);           :}
+     ;
+      
+Expr = Expr.a MULT  Expr.b           {: return new Mul(a,b);                :}
+     | Expr.a PLUS  Expr.b           {: return new Add(a, b);               :}
+     | ID.v                          {: return new ID(v);                   :}
+     | NUM.n                         {: return new Num(n);                  :}
+     | AP Expr.e FP                  {: return e;                  :}
+     ;
