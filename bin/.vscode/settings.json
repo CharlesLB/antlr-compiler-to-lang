@@ -1,9 +1,0 @@
-{
-  "java.project.sourcePaths": [""],
-  "java.project.outputPath": "bin",
-  "java.project.referencedLibraries": [
-    "beaver-rt-0.9.11.jar",
-    "beaver-cc-0.9.11.jar",
-    "jflex-full-1.8.2.jar"
-  ]
-}

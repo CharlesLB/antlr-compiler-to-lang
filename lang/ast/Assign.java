@@ -7,12 +7,12 @@ package lang.ast;
 
 import java.util.HashMap;
 
-public class Attr extends Node {
+public class Assign extends Expr {
 
      private ID id;
      private Expr e;
 
-     public Attr(ID id, Expr e) {
+     public Assign(ID id, Expr e) {
           this.id = id;
           this.e = e;
      }

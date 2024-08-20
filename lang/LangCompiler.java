@@ -29,49 +29,57 @@ public class LangCompiler {
                     " -gvz: Create a dot file. (Feed it to graphviz dot tool to generate graphical representation of the AST)");
 
         }
+
+        HashMap<String, Integer> h = new HashMap<String, Integer>();
         try {
             LangLexer input = new LangLexer(new FileReader(args[0]));
-            // StmtList result = (StmtList) new langParser().parse(input);
-            ParseAdaptor langParser = null;
+            StmtList result = (StmtList) new LangParser().parse(input);
+            System.out.println("Parsado !");
+            System.out.println(result.toString());
 
-            if (args[0].equals("-bs")) {
-                System.out.println("Executando bateria de testes sintáticos:");
-                TestParser tp = new TestParser(langParser);
-                return;
-            }
-            if (args[0].equals("-byt")) {
-                System.out.println("Executando bateria de testes sintáticos:");
-                // TestParser tp = new TestParser(langParser); ;
-                return;
-            }
-            if (args[0].equals("-bsm")) {
-                System.out.println("Executando bateria de testes sintáticos:");
-                // TestParser tp = new TestParser(langParser);
-                return;
-            }
-            if (args.length != 2) {
-                System.out.println("Para usar essa opção, especifique um nome de arquivo");
-                return;
-            }
-            SuperNode result = langParser.parseFile(args[1]);
-            if (result == null) {
-                System.err.println("Aborting due to syntax error(s)");
-                System.exit(1);
-            } else if (args[0].equals("-i")) {
-                // iv = new InterpreterVisitor();
-                // result.accept(iv);
-                // ((InterpreterVisitor)iv).printEnv();
-            } else if (args[0].equals("-ii")) {
-                // iv = new InteractiveInterpreterVisitor();
-                // result.accept(iv);
-            } else if (args[0].equals("-tp")) {
-                // iv = new TypeChecker();
-                // result.accept(iv);
-            } else if (args[0].equals("-pp")) {
-                // iv = new PPrint();
-                // result.accept(iv);
-                // ((PPrint)iv).print();
-            }
+            System.out.println("--------- Executando ---------");
+            result.interpret(h);
+
+            // ParseAdaptor langParser = null;
+
+            // if (args[0].equals("-bs")) {
+            // System.out.println("Executando bateria de testes sintáticos:");
+            // TestParser tp = new TestParser(langParser);
+            // return;
+            // }
+            // if (args[0].equals("-byt")) {
+            // System.out.println("Executando bateria de testes sintáticos:");
+            // // TestParser tp = new TestParser(langParser); ;
+            // return;
+            // }
+            // if (args[0].equals("-bsm")) {
+            // System.out.println("Executando bateria de testes sintáticos:");
+            // // TestParser tp = new TestParser(langParser);
+            // return;
+            // }
+            // if (args.length != 2) {
+            // System.out.println("Para usar essa opção, especifique um nome de arquivo");
+            // return;
+            // }
+            // SuperNode result = langParser.parseFile(args[1]);
+            // if (result == null) {
+            // System.err.println("Aborting due to syntax error(s)");
+            // System.exit(1);
+            // } else if (args[0].equals("-i")) {
+            // // iv = new InterpreterVisitor();
+            // // result.accept(iv);
+            // // ((InterpreterVisitor)iv).printEnv();
+            // } else if (args[0].equals("-ii")) {
+            // // iv = new InteractiveInterpreterVisitor();
+            // // result.accept(iv);
+            // } else if (args[0].equals("-tp")) {
+            // // iv = new TypeChecker();
+            // // result.accept(iv);
+            // } else if (args[0].equals("-pp")) {
+            // // iv = new PPrint();
+            // // result.accept(iv);
+            // // ((PPrint)iv).print();
+            // }
         } catch (Exception e) {
             e.printStackTrace();
         }
