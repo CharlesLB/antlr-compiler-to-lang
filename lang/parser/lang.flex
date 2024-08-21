@@ -34,13 +34,13 @@ ALPHA = [A-Za-z]
 // ALPHA_UPPERCASE=[A-Z]
 ALPHA_LOWERCASE=[a-z]
 
-// INT= [:digit:] [:digit:]*  
+INT= [:digit:] [:digit:]*  
 // FLOAT= [-+]?([:digit:]+ \. [:digit:]*)
 // IDENT_UPPERCASE = {ALPHA_UPPERCASE}({ALPHA}|:digit:|_)*
 IDENT_LOWERCASE = {ALPHA_LOWERCASE}({ALPHA}|:digit:|_)*
 
 // NEW_LINE=\r|\n|\r\n
-// WHITE_SPACE_CHAR=[\n\r\ \t\b]
+WHITE_SPACE_CHAR=[\n\r\ \t\b]
 
 // CHAR_NEWLINE = \\n
 // CHAR_TAB = \\t
@@ -84,7 +84,7 @@ IDENT_LOWERCASE = {ALPHA_LOWERCASE}({ALPHA}|:digit:|_)*
 
     {IDENT_LOWERCASE} { return newToken(Terminals.ID, yytext()); }
     // {IDENT_UPPERCASE} { return newToken(Terminals.TYPE, yytext()); }
-    // {INT} { return newToken(Terminals.INT, yytext()); }
+    {INT} { return newToken(Terminals.INT, Integer.parseInt(yytext())); }
     // {FLOAT} { return newToken(Terminals.FLOAT, yytext()); }
 
     // "--" { yybegin(LINE_COMMENT); }
@@ -123,7 +123,7 @@ IDENT_LOWERCASE = {ALPHA_LOWERCASE}({ALPHA}|:digit:|_)*
     // "||" { return newToken(Terminals.DOUBLE_PIPE); }
     // "|" { return newToken(Terminals.PIPE); }
 
-    // {WHITE_SPACE_CHAR} { }
+    {WHITE_SPACE_CHAR} { }
 }
 
 // <CHAR_SINGLE_QUOTE> {
