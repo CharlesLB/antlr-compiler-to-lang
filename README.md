@@ -23,8 +23,14 @@ Este trabalho foi desenvolvido como parte da disciplina DCC045 - Teoria dos comp
 ### How to run
 
 ```bash
-javac -cp .:beaver-rt-0.9.11.jar LangCompiler.java
+java -jar jflex-full-1.8.2.jar lang/parser/lang.flex
 
-java -jar beaver-cc-0.9.11.jar -T parsers/lang.grammar
+java -jar beaver-cc-0.9.11.jar -T lang/parser/lang.grammar
 
+javac -cp .:beaver-cc-0.9.11.jar lang/LangCompiler.java
+
+java -cp .:beaver-cc-0.9.11.jar lang/LangCompiler -(digite a opção que desejar -> teste unitário é -u)
 ```
+
+Auxilio:
+java -jar jflex-full-1.8.2.jar lang/parser/lang.flex ; java -jar beaver-cc-0.9.11.jar -T lang/parser/lang.grammar ; javac -cp .:beaver-cc-0.9.11.jar lang/LangCompiler.java

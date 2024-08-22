@@ -94,7 +94,7 @@ WHITE_SPACE_CHAR=[\n\r\ \t\b]
     // "==" { return newToken(Terminals.EQ); }
     // "!=" { return newToken(Terminals.NOT_EQ); }
     ";" { return newToken(Terminals.SEMI); }
-    // "*" { return newToken(Terminals.TIMES); }
+    "*" { return newToken(Terminals.TIMES); }
     "+" { return newToken(Terminals.PLUS); }
     // "%" { return newToken(Terminals.MOD); }
     // "," { return newToken(Terminals.COMMA); }
@@ -110,7 +110,7 @@ WHITE_SPACE_CHAR=[\n\r\ \t\b]
     // "{" { return newToken(Terminals.LEFT_BRACE); }
     // "}" { return newToken(Terminals.RIGHT_BRACE); }
     // "." { return newToken(Terminals.DOT); }
-    // "-" { return newToken(Terminals.MINUS); }
+    "-" { return newToken(Terminals.MINUS); }
     // "/" { return newToken(Terminals.DIVIDE); }
     // "<>" { return newToken(Terminals.NOT_EQUAL); }
     // "<=" { return newToken(Terminals.LESS_THAN_OR_EQUAL); }

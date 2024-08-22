@@ -4,9 +4,9 @@
 %class "LangParser";
 
 %terminals
-  ID, INT, PLUS, ASSIGNMENT, SEMI;
+  ID, INT, PLUS, MINUS, TIMES, ASSIGNMENT, SEMI;
 
-%left PLUS;
+%left PLUS, MINUS, TIMES;
 
 %typeof INT = "Integer";
 %typeof ID = "String";
@@ -21,15 +21,16 @@ Prog = StmtList.s                     {: return s; :}
      ;
 
 StmtList = Stmt.s SEMI StmtList.l  {: return new StmtList(s, l); :}
-         | Stmt.s SEMI             {: return new StmtList(s, null); :}
+         | Stmt.s SEMI             {: return s; :}
          ;
 
 Stmt = ID.v ASSIGNMENT Expr.e          {: return new Assign(new ID(v), e); :}
-     | Expr.a PLUS Expr.b                {: return new Add(a, b); :}
      ;
 
 Expr = ID.v                            {: return new ID(v); :}
-     | Expr.a PLUS Expr.b              {: return new Add(a, b); :}
-     | INT.n                         {: return new INT(n);                  :}
+     | INT.i                         {: return new INT(i);                  :}
+     | Expr.a PLUS Expr.b              {: return new Plus(a, b); :}
+     | Expr.a MINUS Expr.b              {: return new Minus(a, b); :}
+     | Expr.a TIMES Expr.b              {: return new Times(a, b); :}
      ;
 

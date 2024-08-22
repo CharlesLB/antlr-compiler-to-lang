@@ -4,8 +4,7 @@ import java.io.*;
 import lang.parser.*;
 import lang.ast.*;
 import java.util.HashMap;
-import beaver.Symbol;
-import beaver.Parser;
+import beaver.*;
 
 public class LangCompiler {
     // Recupera o nome base (sem extensão) de um arquivo.
@@ -32,54 +31,57 @@ public class LangCompiler {
 
         HashMap<String, Integer> h = new HashMap<String, Integer>();
         try {
-            LangLexer input = new LangLexer(new FileReader(args[0]));
-            StmtList result = (StmtList) new LangParser().parse(input);
-            System.out.println("Parsado !");
-            System.out.println(result.toString());
+            // APAGAR ANTES DE MANDAR PARA O PROFESSOR -> TESTE DE UM ARQUIVO
+            if (args[0].equals("-u")) {
+                if (args.length != 2) {
+                    System.out.println("Por favor, forneça um nome de arquivo.");
+                    return;
+                }
+                System.out.println("Executando teste único com arquivo: " + args[1]);
 
-            System.out.println("--------- Executando ---------");
-            result.interpret(h);
+                TestUnique tu = new TestUnique(args[1], h);
+                return;
+            }
 
-            // ParseAdaptor langParser = null;
-
-            // if (args[0].equals("-bs")) {
-            // System.out.println("Executando bateria de testes sintáticos:");
-            // TestParser tp = new TestParser(langParser);
-            // return;
-            // }
-            // if (args[0].equals("-byt")) {
-            // System.out.println("Executando bateria de testes sintáticos:");
-            // // TestParser tp = new TestParser(langParser); ;
-            // return;
-            // }
-            // if (args[0].equals("-bsm")) {
-            // System.out.println("Executando bateria de testes sintáticos:");
-            // // TestParser tp = new TestParser(langParser);
-            // return;
-            // }
-            // if (args.length != 2) {
-            // System.out.println("Para usar essa opção, especifique um nome de arquivo");
-            // return;
-            // }
-            // SuperNode result = langParser.parseFile(args[1]);
-            // if (result == null) {
-            // System.err.println("Aborting due to syntax error(s)");
-            // System.exit(1);
-            // } else if (args[0].equals("-i")) {
-            // // iv = new InterpreterVisitor();
-            // // result.accept(iv);
-            // // ((InterpreterVisitor)iv).printEnv();
-            // } else if (args[0].equals("-ii")) {
-            // // iv = new InteractiveInterpreterVisitor();
-            // // result.accept(iv);
-            // } else if (args[0].equals("-tp")) {
-            // // iv = new TypeChecker();
-            // // result.accept(iv);
-            // } else if (args[0].equals("-pp")) {
-            // // iv = new PPrint();
-            // // result.accept(iv);
-            // // ((PPrint)iv).print();
-            // }
+            ParseAdaptor langParser = null;
+            if (args[0].equals("-bs")) {
+                System.out.println("Executando bateria de testes sintáticos:");
+                TestParser tp = new TestParser(langParser);
+                return;
+            }
+            if (args[0].equals("-byt")) {
+                System.out.println("Executando bateria de testes sintáticos:");
+                // TestParser tp = new TestParser(langParser); ;
+                return;
+            }
+            if (args[0].equals("-bsm")) {
+                System.out.println("Executando bateria de testes sintáticos:");
+                // TestParser tp = new TestParser(langParser);
+                return;
+            }
+            if (args.length != 2) {
+                System.out.println("Para usar essa opção, especifique um nome de arquivo");
+                return;
+            }
+            SuperNode result = langParser.parseFile(args[1]);
+            if (result == null) {
+                System.err.println("Aborting due to syntax error(s)");
+                System.exit(1);
+            } else if (args[0].equals("-i")) {
+                // iv = new InterpreterVisitor();
+                // result.accept(iv);
+                // ((InterpreterVisitor)iv).printEnv();
+            } else if (args[0].equals("-ii")) {
+                // iv = new InteractiveInterpreterVisitor();
+                // result.accept(iv);
+            } else if (args[0].equals("-tp")) {
+                // iv = new TypeChecker();
+                // result.accept(iv);
+            } else if (args[0].equals("-pp")) {
+                // iv = new PPrint();
+                // result.accept(iv);
+                // ((PPrint)iv).print();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
