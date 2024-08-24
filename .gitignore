@@ -8,11 +8,11 @@
 # Build
 *.interp
 *.tokens
-langBaseListener.java
-langParser.java
-langLexer.java
-langBaseListener.java
-langListener.java
+LangBaseListener.java
+LangParser.java
+LangLexer.java
+LangBaseListener.java
+LangListener.java
 
 # Bin
 bin

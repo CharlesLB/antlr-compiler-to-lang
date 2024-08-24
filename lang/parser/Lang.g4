@@ -1,7 +1,9 @@
-grammar lang;
+grammar Lang;
 
 @parser::header {
 package lang.parser;
+import lang.ast.*;
+
 }
 
 @lexer::header {

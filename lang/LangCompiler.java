@@ -26,7 +26,7 @@ public class LangCompiler {
 
         }
         try {
-            ParseAdaptor langParser = null;
+            ParseAdaptor langParser = new LangParserAdaptor();
 
             if (args[0].equals("-bs")) {
                 System.out.println("Executando bateria de testes sintáticos:");

@@ -1,8 +1,8 @@
 compile: genparser lang/LangCompiler.java 
-	javac -d bin -cp ./lib/antlr-4.8-complete.jar lang/LangCompiler.java lang/parser/*.java lang/ast/*.java
+	javac -d bin -cp ./lib/antlr-4.8-complete.jar lang/ast/*.java lang/parser/*.java lang/LangCompiler.java 
 
-genparser: lang/parser/lang.g4
-	java -jar ./lib/antlr-4.8-complete.jar lang/parser/lang.g4
+genparser: lang/parser/Lang.g4
+	java -jar ./lib/antlr-4.8-complete.jar lang/parser/Lang.g4
 
 run: compile genparser
 	java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
