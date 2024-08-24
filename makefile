@@ -1,13 +1,13 @@
-compile: genparser Teste.java
-	javac -cp .:./lib/antlr-4.8-complete.jar Teste.java
+compile: genparser lang/LangCompiler.java 
+	javac -d bin -cp ./lib/antlr-4.8-complete.jar lang/LangCompiler.java lang/parser/*.java lang/ast/*.java
 
-genparser: parser/lang.g4
-	java -jar ./lib/antlr-4.8-complete.jar parser/lang.g4
+genparser: lang/parser/lang.g4
+	java -jar ./lib/antlr-4.8-complete.jar lang/parser/lang.g4
 
 run: compile genparser
-	java -cp .:./lib/antlr-4.8-complete.jar Teste $(filter-out $@,$(MAKECMDGOALS))
+	java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
 
 clean:
-	rm -R parser/*Listener.java parser/langLexer* parser/langParser.java parser/lang.interp parser/lang.tokens
+	rm -R lang/parser/*Listener.java lang/parser/langLexer* lang/parser/langParser.java lang/parser/lang.interp lang/parser/lang.tokens
 	find . -type f -name "*.class" -delete
-	find . -type f -name "*~" -delete
+	find . -type f -name "*.java~" -delete

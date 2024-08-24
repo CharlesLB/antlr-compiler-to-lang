@@ -1,6 +1,5 @@
 package lang;
 
-import java.io.*;
 import lang.parser.*;
 import lang.ast.*;
 

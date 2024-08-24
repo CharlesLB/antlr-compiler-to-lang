@@ -13,3 +13,6 @@ langParser.java
 langLexer.java
 langBaseListener.java
 langListener.java
+
+# Bin
+bin
