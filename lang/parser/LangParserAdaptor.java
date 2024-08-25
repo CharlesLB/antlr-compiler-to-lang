@@ -18,24 +18,24 @@ public class LangParserAdaptor implements ParseAdaptor {
 
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-            tokens.fill();
+            // tokens.fill();
 
-            for (Token token : tokens.getTokens()) {
-                System.out.println("Token: " + token.getText());
-            }
+            // for (Token token : tokens.getTokens()) {
+            // System.out.println("Token: " + token.getType() + " " + token.getText());
+            // }
 
-            System.out.println("\n\n\n");
+            // System.out.println("\n\n\n");
 
-            // LangParser parser = new LangParser(tokens);
+            LangParser parser = new LangParser(tokens);
 
-            // ParseTree tree = parser.prog();
+            ParseTree tree = parser.prog();
 
             // for (int i = 0; i < tokens.size(); i++) {
             // Token token = tokens.get(i);
             // System.out.println("Token: " + token.getText() + " " + token.getType());
             // }
 
-            // System.out.println(tree.toStringTree(parser));
+            System.out.println(tree.toStringTree(parser));
 
             return null;
         } catch (Exception e) {

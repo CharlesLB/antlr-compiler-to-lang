@@ -50,8 +50,8 @@ exp:
 	| 'true'
 	| 'false'
 	| 'null'
-	| INT
-	| FLOAT
+	| INT_LITERAL
+	| FLOAT_LITERAL
 	| CHAR_LITERAL
 	| lvalue
 	| '(' exp ')'

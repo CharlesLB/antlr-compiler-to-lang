@@ -4,21 +4,6 @@ lexer grammar LangLexer;
 package lang.parser;
 }
 
-ALPHA: [A-Za-z];
-ALPHA_UPPERCASE: [A-Z];
-ALPHA_LOWERCASE: [a-z];
-INT: [0-9]+;
-FLOAT: [+-]? [0-9]+ '.' [0-9]*;
-IDENT_UPPERCASE: ALPHA_UPPERCASE (ALPHA | [0-9] | '_')*;
-IDENT_LOWERCASE: ALPHA_LOWERCASE (ALPHA | [0-9] | '_')*;
-
-CHAR_NEWLINE: '\\n';
-CHAR_TAB: '\\t';
-CHAR_BACKSPACE: '\\b';
-CHAR_CARRIAGE: '\\r';
-CHAR_BACKSLASH: '\\\\';
-CHAR_QUOTE: '\\\'';
-
 // Keywords
 IF: 'if';
 ELSE: 'else';
@@ -78,7 +63,8 @@ DOUBLE_PIPE: '||';
 PIPE: '|';
 
 // Identifiers and literals
-ID: IDENT_LOWERCASE;
+ID: IDENT_LOWERCASE | TYPE;
+// PROFESSOR: o ID pose ser Uppercase? Exemplo: data Racional, o data é um ID, não um type
 TYPE: IDENT_UPPERCASE;
 INT_LITERAL: INT;
 FLOAT_LITERAL: FLOAT;
@@ -99,3 +85,18 @@ fragment CHAR_SINGLE_QUOTE_CONTENT:
 	| ALPHA;
 
 CHAR_LITERAL: '\'' CHAR_SINGLE_QUOTE_CONTENT '\'';
+
+ALPHA: [A-Za-z];
+ALPHA_UPPERCASE: [A-Z];
+ALPHA_LOWERCASE: [a-z];
+INT: [0-9]+;
+FLOAT: [+-]? [0-9]+ '.' [0-9]*;
+IDENT_UPPERCASE: ALPHA_UPPERCASE (ALPHA | [0-9] | '_')*;
+IDENT_LOWERCASE: ALPHA_LOWERCASE (ALPHA | [0-9] | '_')*;
+
+CHAR_NEWLINE: '\\n';
+CHAR_TAB: '\\t';
+CHAR_BACKSPACE: '\\b';
+CHAR_CARRIAGE: '\\r';
+CHAR_BACKSLASH: '\\\\';
+CHAR_QUOTE: '\\\'';
