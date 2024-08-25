@@ -12,9 +12,6 @@ FLOAT: [+-]? [0-9]+ '.' [0-9]*;
 IDENT_UPPERCASE: ALPHA_UPPERCASE (ALPHA | [0-9] | '_')*;
 IDENT_LOWERCASE: ALPHA_LOWERCASE (ALPHA | [0-9] | '_')*;
 
-NEW_LINE: '\r' | '\n' | '\r\n';
-WHITE_SPACE_CHAR: [ \t\b\n\r]+;
-
 CHAR_NEWLINE: '\\n';
 CHAR_TAB: '\\t';
 CHAR_BACKSPACE: '\\b';
@@ -87,7 +84,7 @@ INT_LITERAL: INT;
 FLOAT_LITERAL: FLOAT;
 
 // Whitespace and comments
-WS: WHITE_SPACE_CHAR -> skip;
+WS: [ \t\b\n\r]+ -> skip;
 LINE_COMMENT: '--' ~[\r\n]* -> skip;
 COMMENT: '{-' ~[}]* '-}' -> skip;
 
