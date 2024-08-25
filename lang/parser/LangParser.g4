@@ -1,13 +1,11 @@
-grammar Lang;
+parser grammar LangParser;
+options {
+	tokenVocab = LangLexer;
+}
 
 @parser::header {
 package lang.parser;
 import lang.ast.*;
-
-}
-
-@lexer::header {
-package lang.parser;
 }
 
 prog: def+;
@@ -24,7 +22,7 @@ params: ID '::' type (',' ID '::' type)*;
 
 type: type '[' ']' | btype;
 
-btype: 'Int' | 'Char' | 'Bool' | 'Float' | ID;
+btype: BTYPE | ID;
 
 cmd:
 	'{' cmd* '}'
@@ -54,7 +52,7 @@ exp:
 	| 'null'
 	| INT
 	| FLOAT
-	| CHAR
+	| CHAR_LITERAL
 	| lvalue
 	| '(' exp ')'
 	| 'new' type ('[' exp ']')?
@@ -63,16 +61,3 @@ exp:
 lvalue: ID | lvalue '[' exp ']' | lvalue '.' ID;
 
 exps: exp (',' exp)*;
-
-// Lexer Rules
-ID: [a-zA-Z][a-zA-Z0-9_]*;
-INT: [0-9]+;
-FLOAT: [0-9]+ '.' [0-9]*;
-CHAR: '\'' . '\'';
-
-TRUE: 'true';
-FALSE: 'false';
-NULL: 'null';
-
-WS: [ \t\r\n]+ -> skip;
-COMMENT: '//' ~[\r\n]* -> skip;
