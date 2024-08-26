@@ -1,0 +1,20 @@
+# Java
+*.class
+*.java~
+
+# Antlr
+.antlr
+
+# Build
+*.interp
+*.tokens
+LangParserBaseListener.java
+LangParserListener.java
+LangParser.java
+LangLexer.java
+LangBaseListener.java
+LangListener.java
+.antlr
+
+# Bin
+bin
