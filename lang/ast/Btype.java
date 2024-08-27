@@ -2,7 +2,7 @@ package lang.ast;
 
 import java.util.HashMap;
 
-public class Btype extends Expr {
+public class Btype extends Type {
 
 	private String type;
 

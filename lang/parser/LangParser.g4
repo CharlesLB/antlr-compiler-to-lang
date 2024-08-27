@@ -21,8 +21,10 @@ stmt
 // def: data | fun;
 def
 	returns[Node ast]:
-	d = data {$ast = $d.ast;}; // | f = fun {$ast = f.ast;};
+	d = data {$ast = $d.ast;}
+	| f = fun {$ast = $f.ast;};
 
+// data: 'data' ID '{' decl* '}';
 data
 	returns[Data ast]:
 	'data' ID '{' ds += decl* '}' { 
@@ -33,24 +35,69 @@ data
         $ast = new Data($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), declList);
     };
 
+// decl: ID '::' type ';';
 decl
 	returns[Decl ast]:
 	ID '::' t = BTYPE ';' {
         $ast = new Decl($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), new Btype($t.line, $t.pos, $t.text));
     };
 
-// id = ID '::' t = type ';' { $ast = new DeclarationNode(id.getLine(), id.getCharPositionInLine(),
-// id.getText(), $t.ast); };
+// fun: ID '(' params? ')' (':' type (',' type)*)? '{' cmd* '}';
+fun
+	returns[Fun ast]:
+	name = ID '(' p = params? ')' (
+		':' rt += type (',' rt += type)*
+	)? '{' body += cmd* '}' {
+		List<Type> returnTypes = new ArrayList<>();
+		if ($rt != null) {
+			for (TypeContext t : $rt) {
+				returnTypes.add(t.ast);
+			}
+		}
 
-// fun: ID '(' params? ')' (':' type (',' type)*)? '{' cmd* '}'; fun returns[Node ast]: id = ID '('
-// params = params? ')' ( ':' types = type (',' types = type)* )? '{' cmds = cmd* '}' { $ast = new
-// FunctionNode(id.getLine(), id.getCharPositionInLine(), id.getText(), $params, $types, $cmds); };
+		List<Cmd> cmdList = new ArrayList<>();
+		if ($body != null) {
+			for (CmdContext c : $body) {
+				cmdList.add(c.ast);
+			}
+		}
 
-// params: ID '::' type (',' ID '::' type)*; params returns[List<ParameterNode> ast]: id1 = ID '::'
-// t1 = type { $ast = new ArrayList<>(); $ast.add(new ParameterNode(id1.getLine(),
-// id1.getCharPositionInLine(), id1.getText(), $t1.ast)); } ( ',' id2 = ID '::' t2 = type {
-// $ast.add(new ParameterNode(id2.getLine(), id2.getCharPositionInLine(), id2.getText(), $t2.ast));
-// } )*;
+		List<Param> paramsList = (_localctx.p != null) ? _localctx.p.paramsList : null;
+
+		$ast = new Fun($name.line, $name.pos,
+					   new ID($name.line, $name.pos, $name.text),
+					   paramsList,
+					   returnTypes,
+					   cmdList);
+	};
+
+// params: ID '::' type (',' ID '::' type)*;
+params
+	returns[List<Param> paramsList]:
+	i1 = ID '::' t1 = type {
+		$paramsList = new ArrayList<>();
+		$paramsList.add(new Param($i1.line, $i1.pos, new ID($i1.line, $i1.pos, $i1.text), $t1.ast));
+	} (
+		',' i2 = ID '::' t2 = type {
+		$paramsList.add(new Param($i2.line, $i2.pos, new ID($i2.line, $i2.pos, $i2.text), $t2.ast));
+	}
+	)*;
+
+type
+	returns[Type ast]:
+	t = BTYPE {
+        $ast = new Btype($t.line, $t.pos, $t.text);
+    }
+	| t = BTYPE ('[' ']')+ {
+        int dimensions = $t.getText().split("\\[\\]").length - 1;
+        $ast = new MatrixType($t.line, $t.pos, new Btype($t.line, $t.pos, $t.text), dimensions);
+    };
+
+cmd
+	returns[Cmd ast]:
+	c = .*? ';' {
+        $ast = new Cmd($c.line, $c.pos, $c.getText());
+    };
 
 // type: type '[' ']' | btype; type returns[TypeNode ast]: t1 = type '[' ']' { $ast = new
 // ArrayTypeNode(t1.ast.getLine(), t1.ast.getColumnumn(), t1.ast); } | b = btype { $ast = new

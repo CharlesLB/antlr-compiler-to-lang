@@ -1,4 +1,8 @@
 data Ponto {
    x :: Float;
-   y :: Float;
+   y :: Int;
+}
+
+main(v :: Int[], f :: Float) : Int, Char {
+    read x;
 }
