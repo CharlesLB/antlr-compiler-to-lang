@@ -157,6 +157,9 @@ compExpr
 	| left = addExpr op = '==' right = addExpr {
         $ast = new EQ($op.line, $op.pos, $left.ast, $right.ast);
     }
+	| left = addExpr op = '!=' right = addExpr {
+        $ast = new NotEq($op.line, $op.pos, $left.ast, $right.ast);
+    }
 	| addExpr {
         $ast = $addExpr.ast;
     };
