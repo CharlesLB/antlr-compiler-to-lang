@@ -23,5 +23,7 @@ Este trabalho foi desenvolvido como parte da disciplina DCC045 - Teoria dos comp
 ### How to run
 
 ```bash
-
+make run -bs
 ```
+
+You can change the input file in the ./lang/parser/TestParser.java file.
