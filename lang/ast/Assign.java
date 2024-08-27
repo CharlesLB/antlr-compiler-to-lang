@@ -1,18 +1,13 @@
 package lang.ast;
 
-/*
- * Esta classe representa um comando de atribuição.
- * ID = Expr
- */
-
 import java.util.HashMap;
 
-public class Attr extends Node {
+public class Assign extends Cmd {
 
 	private ID id;
 	private Expr e;
 
-	public Attr(int l, int c, ID id, Expr e) {
+	public Assign(int l, int c, ID id, Expr e) {
 		super(l, c);
 		this.id = id;
 		this.e = e;

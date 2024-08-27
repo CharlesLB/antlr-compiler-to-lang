@@ -111,19 +111,20 @@ type
 // ';' | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';';
 cmd
 	returns[Cmd ast]:
-	'{' cmds += cmd* '}' {
+	'if' '(' cond = expr ')' thenCmd = cmd {
+        $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast);
+    }
+	| ID '=' expr ';' {
+        $ast = new Assign($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), $expr.ast);
+    }
+	| '{' cmds += cmd* '}' {
         List<Cmd> cmdList = new ArrayList<>();
-        if ($cmds != null) {
-            for (CmdContext c : $cmds) {
-                cmdList.add(c.ast);
-            }
+        for (CmdContext c : $cmds) {
+            cmdList.add(c.ast);
         }
         int line = $cmds.isEmpty() ? $start.getLine() : $cmds.get(0).start.getLine();
         int column = $cmds.isEmpty() ? $start.getCharPositionInLine() : $cmds.get(0).start.getCharPositionInLine();
         $ast = new BlockCmd(line, column, cmdList);
-    }
-	| 'if' '(' cond = expr ')' thenCmd = cmd {
-        $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast);
     };
 
 // expr returns[Exp ast]: term {$ast = $term.ast;} ( '+' right = term { $ast = new
@@ -132,29 +133,61 @@ cmd
 // term returns[Exp ast]: ID {$ast = new ID($ID.line, $ID.pos, $ID.text);} | INT {$ast = new
 // IntLiteral($INT.line, $INT.pos, Integer.parseInt($INT.text));};
 
+// exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
+// '*' exp | exp '/' exp | exp '%' exp | '!' exp | '-' exp | 'true' | 'false' | 'null' | INT_LITERAL
+// | FLOAT_LITERAL | CHAR_LITERAL | lvalue | '(' exp ')' | 'new' type ('[' exp ']')? | ID '(' exps?
+// ')' '[' exp ']';
+
+// Regras para expressões
 expr
 	returns[Expr ast]:
-	term op = '+' e = expr {
-        $ast = new Plus($op.line, $op.pos, $term.ast, $e.ast);
-    }
-	| term {
-        $ast = $term.ast;
+	compExpr {
+        $ast = $compExpr.ast;
     };
 
-term
+compExpr
 	returns[Expr ast]:
-	factor op = '*' e = term {$ast = new Mul($op.line, $op.pos, $factor.ast, $e.ast);}
-	| factor {$ast = $factor.ast;};
+	left = addExpr op = '<' right = addExpr {
+				$ast = new LessThan($op.line, $op.pos, $left.ast, $right.ast);
+    }
+	| addExpr {
+        $ast = $addExpr.ast;
+    };
 
+// Regras para adição e subtração
+addExpr
+	returns[Expr ast]:
+	mulExpr op = '+' right = addExpr {
+        $ast = new Plus($op.line, $op.pos, $mulExpr.ast, $right.ast);
+    }
+	| mulExpr {
+        $ast = $mulExpr.ast;
+    };
+
+// Regras para multiplicação e divisão
+mulExpr
+	returns[Expr ast]:
+	factor op = '*' right = mulExpr {
+        $ast = new Mul($op.line, $op.pos, $factor.ast, $right.ast);
+    }
+	| factor {
+        $ast = $factor.ast;
+    };
+
+// Fatores simples (identificadores e números)
 factor
 	returns[Expr ast]:
 	ID {
         $ast = new ID($ID.line, $ID.pos, $ID.text);
     }
-	| INT {
-        $ast = new IntLiteral($INT.line, $INT.pos, Integer.parseInt($INT.text));
+	| INT_LITERAL {
+        $ast = new IntLiteral($INT_LITERAL.line, $INT_LITERAL.pos, Integer.parseInt($INT_LITERAL.text));
     };
 
-// lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID;
+// // lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID; lvalue returns[LValue ast]: ID { $ast = new
+// ID($ID.line, $ID.pos, $ID.text); } | lvalue '[' expr ']' { $ast = new
+// ArrayAccessLValue($lvalue.ast.getLine(), $lvalue.ast.getColumn(), $lvalue.ast, $expr.ast); } |
+// lvalue '.' ID { $ast = new FieldAccessLValue($lvalue.ast.getLine(), $lvalue.ast.getColumn(),
+// $lvalue.ast, new ID($ID.line, $ID.pos, $ID.text)); };
 
 // exps: expr (',' expr)*;

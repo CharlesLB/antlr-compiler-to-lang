@@ -1,11 +1,5 @@
 package lang.ast;
 
-/*
- * Esta classe representa uma Operção binária.
- * Expr [opreação] Expr
- */
-import java.util.HashMap;
-
 public abstract class BinOP extends Expr {
 
 	private Expr l;
@@ -17,14 +11,6 @@ public abstract class BinOP extends Expr {
 		this.r = r;
 	}
 
-	public void setLeft(Expr n) {
-		l = n;
-	}
-
-	public void setRight(Expr n) {
-		r = n;
-	}
-
 	public Expr getLeft() {
 		return l;
 	}
@@ -32,5 +18,4 @@ public abstract class BinOP extends Expr {
 	public Expr getRight() {
 		return r;
 	}
-
 }

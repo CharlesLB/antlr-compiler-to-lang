@@ -22,6 +22,18 @@ public class If extends Cmd {
 		this.els = null;
 	}
 
+	public Expr getExp() {
+		return exp;
+	}
+
+	public Node getThenCmd() {
+		return thn;
+	}
+
+	public Node getThenEls() {
+		return els;
+	}
+
 	public String toString() {
 		String s = exp.toString();
 		String sthn = thn.toString();
