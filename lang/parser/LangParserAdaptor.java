@@ -3,6 +3,7 @@ package lang.parser;
 import java.util.HashMap;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.*;
 import lang.ast.*;
 import lang.parser.LangLexer;
@@ -31,26 +32,35 @@ public class LangParserAdaptor implements ParseAdaptor {
             // System.out.println("\n\n\n");
 
             LangParser parser = new LangParser(tokens);
-            parser.setBuildParseTree(false);
+            parser.removeErrorListeners();
+            parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
-            // for (int i = 0; i < tokens.size(); i++) {
-            // Token token = tokens.get(i);
-            // System.out.println("Token: " + token.getText() + " " + token.getType());
-            // }
+            try {
+                parser.setBuildParseTree(false);
 
-            // System.out.println(tree.toStringTree(parser));
+                // for (int i = 0; i < tokens.size(); i++) {
+                // Token token = tokens.get(i);
+                // System.out.println("Token: " + token.getText() + " " + token.getType());
+                // }
 
-            Node ast = parser.prog().ast;
+                // System.out.println(tree.toStringTree(parser));
 
-            System.out.println(ast);
-            HashMap<String, Integer> m = new HashMap<String, Integer>();
-            ast.interpret(m);
+                Node ast = parser.prog().ast;
 
-            return ast;
+                System.out.println(ast);
+                HashMap<String, Integer> m = new HashMap<String, Integer>();
+                ast.interpret(m);
+
+                return ast;
+            } catch (ParseCancellationException e) {
+                System.err.println("Erro de parsing: " + e.getMessage());
+            }
+
         } catch (Exception e) {
             System.out.println("Error parsing file: " + e.getMessage());
             // e.printStackTrace();
             return null;
         }
+        return null;
     }
 }
