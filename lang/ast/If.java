@@ -2,28 +2,28 @@ package lang.ast;
 
 import java.util.HashMap;
 
-public class If extends Node {
+public class If extends Cmd {
 
-	private Expr teste;
+	private Expr exp;
 	private Node thn;
 	private Node els;
 
-	public If(int lin, int col, Expr teste, Node thn, Node els) {
+	public If(int lin, int col, Expr exp, Node thn, Node els) {
 		super(lin, col);
-		this.teste = teste;
+		this.exp = exp;
 		this.thn = thn;
 		this.els = els;
 	}
 
-	public If(int lin, int col, Expr teste, Node thn) {
+	public If(int lin, int col, Expr exp, Node thn) {
 		super(lin, col);
-		this.teste = teste;
+		this.exp = exp;
 		this.thn = thn;
 		this.els = null;
 	}
 
 	public String toString() {
-		String s = teste.toString();
+		String s = exp.toString();
 		String sthn = thn.toString();
 		String sels = els != null ? " : " + els.toString() : "";
 		if (thn instanceof If) {
@@ -37,7 +37,7 @@ public class If extends Node {
 	}
 
 	public int interpret(HashMap<String, Integer> m) {
-		int n = teste.interpret(m);
+		int n = exp.interpret(m);
 		if (n != 0) {
 			return thn.interpret(m);
 		} else if (els != null) {

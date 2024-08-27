@@ -14,11 +14,11 @@ public class Mul extends BinOP {
 	// @Override
 	public String toString() {
 		String s = getLeft().toString();
-		if (getLeft() instanceof Mul || getLeft() instanceof Add) {
+		if (getLeft() instanceof Mul || getLeft() instanceof Plus) {
 			s += "(" + s + ")";
 		}
 		String ss = getRight().toString();
-		if (getRight() instanceof Add) {
+		if (getRight() instanceof Plus) {
 			ss = "(" + ss + ")";
 		}
 		return s + " * " + ss;

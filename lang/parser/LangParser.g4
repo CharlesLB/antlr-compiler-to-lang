@@ -85,6 +85,8 @@ params
 		}
 	)*;
 
+/* btype: BTYPE | ID; => não estou mais fazendo isso, verificar depois */
+//  type: type '[' ']' | btype;
 type
 	returns[Type ast]:
 	t = BTYPE {
@@ -104,27 +106,55 @@ type
         }
     };
 
+// cmd: '{' cmd* '}' | 'if' '(' expr ')' cmd | 'if' '(' expr ')' cmd 'else' cmd | 'iterate' '(' expr
+// ')' cmd | 'read' lvalue ';' | 'print' expr ';' | 'return' expr (',' expr)* ';' | lvalue '=' expr
+// ';' | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';';
 cmd
 	returns[Cmd ast]:
-	c = .*? ';' {
-        $ast = new Cmd($c.line, $c.pos, $c.getText());
+	'{' cmds += cmd* '}' {
+        List<Cmd> cmdList = new ArrayList<>();
+        if ($cmds != null) {
+            for (CmdContext c : $cmds) {
+                cmdList.add(c.ast);
+            }
+        }
+        int line = $cmds.isEmpty() ? $start.getLine() : $cmds.get(0).start.getLine();
+        int column = $cmds.isEmpty() ? $start.getCharPositionInLine() : $cmds.get(0).start.getCharPositionInLine();
+        $ast = new BlockCmd(line, column, cmdList);
+    }
+	| 'if' '(' cond = expr ')' thenCmd = cmd {
+        $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast);
     };
 
-// type: type '[' ']' | btype; type returns[TypeNode ast]: t1 = type '[' ']' { $ast = new
-// ArrayTypeNode(t1.ast.getLine(), t1.ast.getColumnumn(), t1.ast); } | b = btype { $ast = new
-// BaseTypeNode(b.getLine(), b.getCharPositionInLine(), b.getText()); };
+// expr returns[Exp ast]: term {$ast = $term.ast;} ( '+' right = term { $ast = new
+// Add($ast.getLine(), $ast.getColumn(), $ast, $right.ast); } )*;
 
-// btype: BTYPE | ID;
+// term returns[Exp ast]: ID {$ast = new ID($ID.line, $ID.pos, $ID.text);} | INT {$ast = new
+// IntLiteral($INT.line, $INT.pos, Integer.parseInt($INT.text));};
 
-// cmd: '{' cmd* '}' | 'if' '(' exp ')' cmd | 'if' '(' exp ')' cmd 'else' cmd | 'iterate' '(' exp
-// ')' cmd | 'read' lvalue ';' | 'print' exp ';' | 'return' exp (',' exp)* ';' | lvalue '=' exp ';'
-// | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';';
+expr
+	returns[Expr ast]:
+	term op = '+' e = expr {
+        $ast = new Plus($op.line, $op.pos, $term.ast, $e.ast);
+    }
+	| term {
+        $ast = $term.ast;
+    };
 
-// exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
-// '*' exp | exp '/' exp | exp '%' exp | '!' exp | '-' exp | 'true' | 'false' | 'null' | INT_LITERAL
-// | FLOAT_LITERAL | CHAR_LITERAL | lvalue | '(' exp ')' | 'new' type ('[' exp ']')? | ID '(' exps?
-// ')' '[' exp ']';
+term
+	returns[Expr ast]:
+	factor op = '*' e = term {$ast = new Mul($op.line, $op.pos, $factor.ast, $e.ast);}
+	| factor {$ast = $factor.ast;};
 
-// lvalue: ID | lvalue '[' exp ']' | lvalue '.' ID;
+factor
+	returns[Expr ast]:
+	ID {
+        $ast = new ID($ID.line, $ID.pos, $ID.text);
+    }
+	| INT {
+        $ast = new IntLiteral($INT.line, $INT.pos, Integer.parseInt($INT.text));
+    };
 
-// exps: exp (',' exp)*;
+// lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID;
+
+// exps: expr (',' expr)*;

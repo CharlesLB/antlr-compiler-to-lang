@@ -33,7 +33,7 @@ public class LangParserAdaptor implements ParseAdaptor {
 
             LangParser parser = new LangParser(tokens);
             parser.removeErrorListeners();
-            parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+            parser.addErrorListener(ThrowingError.INSTANCE);
 
             try {
                 parser.setBuildParseTree(false);

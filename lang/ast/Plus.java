@@ -7,15 +7,15 @@ package lang.ast;
 
 import java.util.HashMap;
 
-public class Add extends BinOP {
+public class Plus extends BinOP {
 
-	public Add(int lin, int col, Expr l, Expr r) {
+	public Plus(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}
 
 	public String toString() {
 		String s = getLeft().toString();
-		if (getLeft() instanceof Add) {
+		if (getLeft() instanceof Plus) {
 			s = "(" + s + ")";
 		}
 		return s + " + " + getRight().toString();

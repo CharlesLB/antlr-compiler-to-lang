@@ -4,5 +4,6 @@ data Ponto {
 }
 
 main(v :: Int[], f :: Float) : Int, Char {
-    read x;
+    if(x < 10) 
+     x = 10;
 }

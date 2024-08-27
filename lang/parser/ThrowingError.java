@@ -3,9 +3,9 @@ package lang.parser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
-public class ThrowingErrorListener extends BaseErrorListener {
+public class ThrowingError extends BaseErrorListener {
 
-	public static final ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
+	public static final ThrowingError INSTANCE = new ThrowingError();
 
 	@Override
 	public void syntaxError(Recognizer<?, ?> recognizer,
