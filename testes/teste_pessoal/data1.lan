@@ -1,0 +1,5 @@
+data Ponto {
+   x :: Float;
+   y :: Int;
+}
+
