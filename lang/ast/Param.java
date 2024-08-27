@@ -9,7 +9,7 @@ public class Param extends Node {
 	public Param(int l, int c, ID id, Type type) {
 		super(l, c);
 		this.id = id;
-		this.t = t;
+		this.t = type;
 	}
 
 	public ID getID() {

@@ -12,6 +12,10 @@ public class MatrixType extends Type {
 		this.dimensions = dimensions;
 	}
 
+	public void setDimensions(int dimensions) {
+		this.dimensions = dimensions;
+	}
+
 	public Btype getBaseType() {
 		return baseType;
 	}
@@ -26,6 +30,7 @@ public class MatrixType extends Type {
 		for (int i = 0; i < dimensions; i++) {
 			sb.append("[]");
 		}
+
 		return sb.toString();
 	}
 

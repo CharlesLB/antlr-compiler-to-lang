@@ -37,9 +37,16 @@ public class Fun extends Node {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(name.toString()).append("(");
+
 		if (params != null) {
-			sb.append(params.toString());
+			for (int i = 0; i < params.size(); i++) {
+				sb.append(params.get(i).toString());
+				if (i < params.size() - 1) {
+					sb.append(", ");
+				}
+			}
 		}
+
 		sb.append(")");
 		if (returnTypes != null && !returnTypes.isEmpty()) {
 			sb.append(" : ");
