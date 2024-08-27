@@ -3,6 +3,6 @@ data Ponto {
    y :: Int;
 }
 
-main(v :: Int[], f : Float) : Int, Char {
+main(v :: Int[], f :: Float) : Int, Char {
     read x;
 }
