@@ -147,12 +147,15 @@ expr
 
 compExpr
 	returns[Expr ast]:
-	left = addExpr op = '<' right = addExpr {
-				$ast = new LessThan($op.line, $op.pos, $left.ast, $right.ast);
-    }
-	| left = addExpr op = '&&' right = addExpr {
+	left = addExpr op = '&&' right = addExpr {
         System.out.println("Parsing logical AND: " + $left.ast + " && " + $right.ast);
         $ast = new DoubleAmpersand($op.line, $op.pos, $left.ast, $right.ast);
+    }
+	| left = addExpr op = '<' right = addExpr {
+				$ast = new LessThan($op.line, $op.pos, $left.ast, $right.ast);
+    }
+	| left = addExpr op = '==' right = addExpr {
+        $ast = new EQ($op.line, $op.pos, $left.ast, $right.ast);
     }
 	| addExpr {
         $ast = $addExpr.ast;
