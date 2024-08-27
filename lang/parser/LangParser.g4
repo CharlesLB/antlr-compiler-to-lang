@@ -170,6 +170,9 @@ addExpr
 	mulExpr op = '+' right = addExpr {
         $ast = new Plus($op.line, $op.pos, $mulExpr.ast, $right.ast);
     }
+	| mulExpr op = '-' right = addExpr {
+        $ast = new Minus($op.line, $op.pos, $mulExpr.ast, $right.ast);
+    }
 	| mulExpr {
         $ast = $mulExpr.ast;
     };
