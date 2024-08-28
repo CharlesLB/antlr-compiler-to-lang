@@ -148,7 +148,6 @@ expr
 compExpr
 	returns[Expr ast]:
 	left = addExpr op = '&&' right = addExpr {
-        System.out.println("Parsing logical AND: " + $left.ast + " && " + $right.ast);
         $ast = new DoubleAmpersand($op.line, $op.pos, $left.ast, $right.ast);
     }
 	| left = addExpr op = '<' right = addExpr {
@@ -184,11 +183,9 @@ mulExpr
         $ast = new Mul($op.line, $op.pos, $factor.ast, $right.ast);
     }
 	| factor op = '/' right = mulExpr {
-        System.out.println("Parsing division: " + $factor.ast + " / " + $right.ast);
         $ast = new Div($op.line, $op.pos, $factor.ast, $right.ast);
     }
 	| factor op = '%' right = mulExpr {
-        System.out.println("Parsing modulo: " + $factor.ast + " % " + $right.ast);
         $ast = new Mod($op.line, $op.pos, $factor.ast, $right.ast);
     }
 	| factor {
