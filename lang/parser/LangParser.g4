@@ -106,16 +106,22 @@ type
         }
     };
 
-// cmd: '{' cmd* '}' | 'if' '(' expr ')' cmd | 'if' '(' expr ')' cmd 'else' cmd | 'iterate' '(' expr
-// ')' cmd | 'read' lvalue ';' | 'print' expr ';' | 'return' expr (',' expr)* ';' | lvalue '=' expr
-// ';' | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';';
+// cmd: '{' cmd* '}' | 'if' '(' expr ')' cmd | 'if' '(' expr ')' cmd 'else' cmd | 'iterate' '('
+// expr')' cmd | 'print' expr ';' | 'return' expr (',' expr)* ';'
+/*Tem que fazer: 'read' lvalue ';' | lvalue '=' expr ';' | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';'*/
 cmd
 	returns[Cmd ast]:
-	'if' '(' cond = expr ')' thenCmd = cmd {
+	'if' '(' cond = expr ')' thenCmd = cmd 'else' elseCmd = cmd {
+        $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast, $elseCmd.ast);
+    }
+	| 'if' '(' cond = expr ')' thenCmd = cmd {
         $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast);
     }
-	| 'if' '(' cond = expr ')' thenCmd = cmd 'else' elseCmd = cmd {
-        $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast, $elseCmd.ast);
+	| 'iterate' '(' count = expr ')' body = cmd {
+        $ast = new Iterate($count.ast.getLine(), $count.ast.getColumn(), $count.ast, $body.ast);
+    }
+	| 'print' ex = expr ';' {
+        $ast = new Print($ex.ast.getLine(), $ex.ast.getColumn(), $ex.ast);
     }
 	| ID '=' expr ';' {
         $ast = new Assign($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), $expr.ast);
@@ -218,7 +224,8 @@ factor
         $ast = new FloatLiteral($FLOAT_LITERAL.line, $FLOAT_LITERAL.pos, Float.parseFloat($FLOAT_LITERAL.text));
     }
 	| CHAR_LITERAL {
-        $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text.charAt(1));  // Assumindo que CHAR_LITERAL é algo como 'a'
+        System.out.println("Parsed CHAR_LITERAL: " + $CHAR_LITERAL.text);
+        $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text.charAt(1)); 
     }
 	| '(' expr ')' {
         $ast = $expr.ast;
