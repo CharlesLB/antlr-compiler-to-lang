@@ -195,8 +195,10 @@ mulExpr
 // Fatores simples (identificadores e números)
 factor
 	returns[Expr ast]:
-	'!' expr {
-        System.out.println("Parsing logical NOT: !" + $expr.ast);
+	'-' expr {
+        $ast = new Neg($start.getLine(), $start.getCharPositionInLine(), $expr.ast);
+    }
+	| '!' expr {
         $ast = new Not($start.getLine(), $start.getCharPositionInLine(), $expr.ast);
     }
 	| ID {
