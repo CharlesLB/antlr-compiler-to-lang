@@ -201,6 +201,15 @@ factor
 	| '!' expr {
         $ast = new Not($start.getLine(), $start.getCharPositionInLine(), $expr.ast);
     }
+	| 'true' {
+        $ast = new BoolLiteral($start.getLine(), $start.getCharPositionInLine(), true);
+    }
+	| 'false' {
+        $ast = new BoolLiteral($start.getLine(), $start.getCharPositionInLine(), false);
+    }
+	| 'null' {
+        $ast = new NullLiteral($start.getLine(), $start.getCharPositionInLine());
+    }
 	| ID {
         $ast = new ID($ID.line, $ID.pos, $ID.text);
     }
