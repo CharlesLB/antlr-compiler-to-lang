@@ -5,7 +5,19 @@ options {
 
 @parser::header {
 package lang.parser;
+
 import lang.ast.*;
+import lang.ast.definitions.Data;
+import lang.ast.definitions.Param;
+import lang.ast.definitions.StmtList;
+import lang.ast.expressions.ID;
+import lang.ast.statements.Fun;
+import lang.ast.statements.commands.Cmd;
+import lang.ast.statements.data.Decl;
+import lang.ast.types.Btype;
+import lang.ast.types.MatrixType;
+import lang.ast.types.Type;
+
 }
 
 // prog: def+;
