@@ -171,15 +171,24 @@ cmd
 
 // exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
 // '*' exp | exp '/' exp | exp '%' exp | '!' exp | '-' exp | 'true' | 'false' | 'null' | INT_LITERAL
-// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')'
-/*ainda tem que fazer os 3: lvalue | 'new' type ('[' exp ']')? | ID '(' exps? ')' '[' exp ']';
+// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')' | lvalue
+/*ainda tem que fazer os 3: | 'new' type ('[' exp ']')? | ID '(' exps? ')' '[' exp ']';
  */
 
 // Regras para expressões
 expr
 	returns[Expr ast]:
-	compExpr {
+	lval = lvalue {
+        $ast = $lval.ast;
+    }
+	| compExpr {
         $ast = $compExpr.ast;
+    }
+	| 'new' t = type '[' exp = expr ']' {
+    $ast = new NewArray($start.getLine(), $start.getCharPositionInLine(), $t.ast, $exp.ast);
+    }
+	| 'new' t = type {
+        $ast = new NewObject($start.getLine(), $start.getCharPositionInLine(), $t.ast);
     };
 
 compExpr

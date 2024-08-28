@@ -2,7 +2,7 @@ package lang.ast;
 
 import java.util.HashMap;
 
-public abstract class LValue extends Node {
+public abstract class LValue extends Expr {
 
 	public LValue(int l, int c) {
 		super(l, c);
