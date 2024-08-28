@@ -171,25 +171,56 @@ cmd
 
 // exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
 // '*' exp | exp '/' exp | exp '%' exp | '!' exp | '-' exp | 'true' | 'false' | 'null' | INT_LITERAL
-// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')' | lvalue
-/*ainda tem que fazer os 3: | 'new' type ('[' exp ']')? | ID '(' exps? ')' '[' exp ']';
- */
+// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')' | lvalue | 'new' type ('[' exp ']')? | ID '(' exps?
+// ')' '[' exp ']'
 
 // Regras para expressões
 expr
 	returns[Expr ast]:
-	lval = lvalue {
-        $ast = $lval.ast;
-    }
-	| compExpr {
+	compExpr {
         $ast = $compExpr.ast;
+    }
+	| lval = lvalue {
+        $ast = $lval.ast;
     }
 	| 'new' t = type '[' exp = expr ']' {
     $ast = new NewArray($start.getLine(), $start.getCharPositionInLine(), $t.ast, $exp.ast);
     }
 	| 'new' t = type {
         $ast = new NewObject($start.getLine(), $start.getCharPositionInLine(), $t.ast);
+    }
+	| id = ID '(' args = exps? ')' '[' index = expr ']' {
+        List<Expr> exprList = new ArrayList<>();
+        if (_localctx.args != null) {
+            exprList.addAll($args.astList); 
+        }
+        $ast = new ArrayAccess(new FunCall($id.line, $id.pos, new ID($id.line, $id.pos, $id.text), exprList), $index.ast);
     };
+
+// lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID;
+lvalue
+	returns[LValue ast]:
+	ID { 
+        $ast = new IDLValue($ID.line, $ID.pos, $ID.text); 
+    }
+	| lv = lvalue '[' exp = expr ']' { 
+        $ast = new ArrayAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $exp.ast); 
+    }
+	| lv = lvalue '.' field = ID { 
+        $ast = new FieldAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($field.line, $field.pos, $field.text)); 
+    };
+
+// exps: expr (',' expr)*;
+exps
+	returns[List<Expr> astList]:
+	e1 = expr {
+        $astList = new ArrayList<Expr>();
+        $astList.add($e1.ast);
+    } (
+		',' e2 = expr {
+        $astList.add($e2.ast);
+    }
+	)*;
 
 compExpr
 	returns[Expr ast]:
@@ -271,28 +302,3 @@ factor
 	| '(' expr ')' {
         $ast = $expr.ast;
     };
-
-// lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID;
-lvalue
-	returns[LValue ast]:
-	ID { 
-        $ast = new IDLValue($ID.line, $ID.pos, $ID.text); 
-    }
-	| lv = lvalue '[' exp = expr ']' { 
-        $ast = new ArrayAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $exp.ast); 
-    }
-	| lv = lvalue '.' field = ID { 
-        $ast = new FieldAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($field.line, $field.pos, $field.text)); 
-    };
-
-// exps: expr (',' expr)*;
-exps
-	returns[List<Expr> astList]:
-	e1 = expr {
-        $astList = new ArrayList<Expr>();
-        $astList.add($e1.ast);
-    } (
-		',' e2 = expr {
-        $astList.add($e2.ast);
-    }
-	)*;
