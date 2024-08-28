@@ -20,9 +20,10 @@ public class LangParserAdaptor implements ParseAdaptor {
             System.out.println("Parsing file: " + path);
 
             LangLexer lexer = new LangLexer(stream);
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(ThrowingError.INSTANCE);
 
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-
             tokens.fill();
 
             // for (Token token : tokens.getTokens()) {
@@ -47,13 +48,19 @@ public class LangParserAdaptor implements ParseAdaptor {
 
                 Node ast = parser.prog().ast;
 
+                if (ast == null) {
+                    System.err.println("Parsing failed for file: " + path);
+                    return null;
+                }
                 System.out.println(ast);
+
                 HashMap<String, Integer> m = new HashMap<String, Integer>();
                 ast.interpret(m);
 
                 return ast;
             } catch (ParseCancellationException e) {
                 System.err.println("Erro de parsing: " + e.getMessage());
+                return null;
             }
 
         } catch (Exception e) {
@@ -61,6 +68,5 @@ public class LangParserAdaptor implements ParseAdaptor {
             // e.printStackTrace();
             return null;
         }
-        return null;
     }
 }
