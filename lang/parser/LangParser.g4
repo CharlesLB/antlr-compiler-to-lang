@@ -114,6 +114,9 @@ cmd
 	'if' '(' cond = expr ')' thenCmd = cmd {
         $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast);
     }
+	| 'if' '(' cond = expr ')' thenCmd = cmd 'else' elseCmd = cmd {
+        $ast = new If($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $thenCmd.ast, $elseCmd.ast);
+    }
 	| ID '=' expr ';' {
         $ast = new Assign($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), $expr.ast);
     }
@@ -127,16 +130,11 @@ cmd
         $ast = new BlockCmd(line, column, cmdList);
     };
 
-// expr returns[Exp ast]: term {$ast = $term.ast;} ( '+' right = term { $ast = new
-// Add($ast.getLine(), $ast.getColumn(), $ast, $right.ast); } )*;
-
-// term returns[Exp ast]: ID {$ast = new ID($ID.line, $ID.pos, $ID.text);} | INT {$ast = new
-// IntLiteral($INT.line, $INT.pos, Integer.parseInt($INT.text));};
-
 // exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
 // '*' exp | exp '/' exp | exp '%' exp | '!' exp | '-' exp | 'true' | 'false' | 'null' | INT_LITERAL
-// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')' | lvalue | 'new' type ('[' exp ']')? | ID '(' exps?
-// ')' '[' exp ']';
+// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')'
+/*ainda tem que fazer os 3: lvalue | 'new' type ('[' exp ']')? | ID '(' exps? ')' '[' exp ']';
+ */
 
 // Regras para expressões
 expr
