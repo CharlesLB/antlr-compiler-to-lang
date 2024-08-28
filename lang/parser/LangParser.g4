@@ -123,6 +123,13 @@ cmd
 	| 'print' ex = expr ';' {
         $ast = new Print($ex.ast.getLine(), $ex.ast.getColumn(), $ex.ast);
     }
+	| 'return' exs += expr (',' exs += expr)* ';' {
+        List<Expr> exprList = new ArrayList<>();
+        for (ExprContext exCtx : $exs) {
+            exprList.add(exCtx.ast);
+        }
+        $ast = new Return($start.getLine(), $start.getCharPositionInLine(), exprList);
+    }
 	| ID '=' expr ';' {
         $ast = new Assign($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), $expr.ast);
     }
