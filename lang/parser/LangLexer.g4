@@ -76,13 +76,8 @@ COMMENT: '{-' ~[}]* '-}' -> skip;
 
 // Character literals
 fragment CHAR_SINGLE_QUOTE_CONTENT:
-	CHAR_NEWLINE
-	| CHAR_TAB
-	| CHAR_BACKSPACE
-	| CHAR_CARRIAGE
-	| CHAR_BACKSLASH
-	| CHAR_QUOTE
-	| ALPHA;
+	~['\\] // Qualquer caractere, exceto aspas simples e barra invertida
+	| '\\' .; // Um caractere de escape, como '\n', '\t', etc.
 
 CHAR_LITERAL: '\'' CHAR_SINGLE_QUOTE_CONTENT '\'';
 

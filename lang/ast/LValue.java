@@ -1,0 +1,15 @@
+package lang.ast;
+
+import java.util.HashMap;
+
+public abstract class LValue extends Expr {
+
+	public LValue(int l, int c) {
+		super(l, c);
+	}
+
+	@Override
+	public int interpret(HashMap<String, Integer> context) {
+		return 1; // Tem que mudar
+	}
+}
