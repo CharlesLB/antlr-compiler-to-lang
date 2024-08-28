@@ -6,7 +6,6 @@ options {
 @parser::header {
 package lang.parser;
 import lang.ast.*;
-import java.util.stream.Collectors;
 }
 
 // prog: def+;
@@ -153,7 +152,9 @@ cmd
 
         List<LValue> lvalueList = new ArrayList<>();
         if (_localctx.lvs != null) {
-            lvalueList.addAll($lvs.stream().map(ctx -> ctx.ast).collect(Collectors.toList()));
+            for (LvalueContext lvalueCtx : $lvs) {
+                lvalueList.add(lvalueCtx.ast); 
+            }
         }
 
         $ast = new FunLValue($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), exprList, lvalueList);
