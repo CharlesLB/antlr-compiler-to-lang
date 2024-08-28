@@ -195,11 +195,18 @@ mulExpr
 // Fatores simples (identificadores e números)
 factor
 	returns[Expr ast]:
-	ID {
+	'!' expr {
+        System.out.println("Parsing logical NOT: !" + $expr.ast);
+        $ast = new Not($start.getLine(), $start.getCharPositionInLine(), $expr.ast);
+    }
+	| ID {
         $ast = new ID($ID.line, $ID.pos, $ID.text);
     }
 	| INT_LITERAL {
         $ast = new IntLiteral($INT_LITERAL.line, $INT_LITERAL.pos, Integer.parseInt($INT_LITERAL.text));
+    }
+	| '(' expr ')' {
+        $ast = $expr.ast;
     };
 
 // // lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID; lvalue returns[LValue ast]: ID { $ast = new
