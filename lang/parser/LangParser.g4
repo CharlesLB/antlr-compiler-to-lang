@@ -180,9 +180,6 @@ expr
 	compExpr {
         $ast = $compExpr.ast;
     }
-	| lval = lvalue {
-        $ast = $lval.ast;
-    }
 	| 'new' t = type '[' exp = expr ']' {
     $ast = new NewArray($start.getLine(), $start.getCharPositionInLine(), $t.ast, $exp.ast);
     }
@@ -301,4 +298,7 @@ factor
             exprList.addAll($args.astList); 
         }
         $ast = new ArrayAccess(new FunCall($id.line, $id.pos, new ID($id.line, $id.pos, $id.text), exprList), $index.ast);
+    }
+	| lval = lvalue {
+        $ast = $lval.ast;
     };
