@@ -188,13 +188,6 @@ expr
     }
 	| 'new' t = type {
         $ast = new NewObject($start.getLine(), $start.getCharPositionInLine(), $t.ast);
-    }
-	| id = ID '(' args = exps? ')' '[' index = expr ']' {
-        List<Expr> exprList = new ArrayList<>();
-        if (_localctx.args != null) {
-            exprList.addAll($args.astList); 
-        }
-        $ast = new ArrayAccess(new FunCall($id.line, $id.pos, new ID($id.line, $id.pos, $id.text), exprList), $index.ast);
     };
 
 // lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID;
@@ -301,4 +294,11 @@ factor
     }
 	| '(' expr ')' {
         $ast = $expr.ast;
+    }
+	| id = ID '(' args = exps? ')' '[' index = expr ']' {
+        List<Expr> exprList = new ArrayList<>();
+        if (_localctx.args != null) {
+            exprList.addAll($args.astList); 
+        }
+        $ast = new ArrayAccess(new FunCall($id.line, $id.pos, new ID($id.line, $id.pos, $id.text), exprList), $index.ast);
     };
