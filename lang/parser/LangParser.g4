@@ -6,6 +6,7 @@ options {
 @parser::header {
 package lang.parser;
 import lang.ast.*;
+import java.util.stream.Collectors;
 }
 
 // prog: def+;
@@ -89,13 +90,16 @@ params
 //  type: type '[' ']' | btype;
 type
 	returns[Type ast]:
-	t = BTYPE {
-				// Cria tipo base 
-        $ast = new Btype($t.line, $t.pos, $t.text);
+	t = (BTYPE | ID) {
+        if ($t.text.equals("BTYPE")) {
+            $ast = new Btype($t.line, $t.pos, $t.text);
+        } else {
+            $ast = new IDType($t.line, $t.pos, $t.text);  
+        }
     } (
 		'[' ']' {
 				// Muda tipo base para matriz de dimensão 1 ao encontrar []
-        $ast = new MatrixType($t.line, $t.pos, (Btype) $ast, 1);      }
+        $ast = new MatrixType($t.line, $t.pos, $ast, 1);      }
 	)* {
         // A cada par de colchetes adicional, incrementa a dimensão
         if ($ast instanceof MatrixType) {
@@ -107,8 +111,8 @@ type
     };
 
 // cmd: '{' cmd* '}' | 'if' '(' expr ')' cmd | 'if' '(' expr ')' cmd 'else' cmd | 'iterate' '('
-// expr')' cmd | 'print' expr ';' | 'return' expr (',' expr)* ';'
-/*Tem que fazer: 'read' lvalue ';' | lvalue '=' expr ';' | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';'*/
+// expr')' cmd | 'print' expr ';' | 'return' expr (',' expr)* ';' | lvalue '=' expr ';' | 'read'
+// lvalue ';' | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';'
 cmd
 	returns[Cmd ast]:
 	'if' '(' cond = expr ')' thenCmd = cmd 'else' elseCmd = cmd {
@@ -132,6 +136,27 @@ cmd
     }
 	| ID '=' expr ';' {
         $ast = new Assign($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), $expr.ast);
+    }
+	| lv = lvalue '=' ex = expr ';' {
+        $ast = new AssignLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $ex.ast);
+    }
+	| 'read' lv = lvalue ';' {
+        $ast = new ReadLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast);
+    }
+	| ID '(' es = exps? ')' (
+		'<' lvs += lvalue (',' lvs += lvalue)* '>'
+	)? ';' {
+        List<Expr> exprList = new ArrayList<>();
+        if (_localctx.es != null) {
+            exprList.addAll($es.astList); 
+        }
+
+        List<LValue> lvalueList = new ArrayList<>();
+        if (_localctx.lvs != null) {
+            lvalueList.addAll($lvs.stream().map(ctx -> ctx.ast).collect(Collectors.toList()));
+        }
+
+        $ast = new FunLValue($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), exprList, lvalueList);
     }
 	| '{' cmds += cmd* '}' {
         List<Cmd> cmdList = new ArrayList<>();
@@ -231,17 +256,33 @@ factor
         $ast = new FloatLiteral($FLOAT_LITERAL.line, $FLOAT_LITERAL.pos, Float.parseFloat($FLOAT_LITERAL.text));
     }
 	| CHAR_LITERAL {
-        System.out.println("Parsed CHAR_LITERAL: " + $CHAR_LITERAL.text);
         $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text.charAt(1)); 
     }
 	| '(' expr ')' {
         $ast = $expr.ast;
     };
 
-// // lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID; lvalue returns[LValue ast]: ID { $ast = new
-// ID($ID.line, $ID.pos, $ID.text); } | lvalue '[' expr ']' { $ast = new
-// ArrayAccessLValue($lvalue.ast.getLine(), $lvalue.ast.getColumn(), $lvalue.ast, $expr.ast); } |
-// lvalue '.' ID { $ast = new FieldAccessLValue($lvalue.ast.getLine(), $lvalue.ast.getColumn(),
-// $lvalue.ast, new ID($ID.line, $ID.pos, $ID.text)); };
+// lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID;
+lvalue
+	returns[LValue ast]:
+	ID { 
+        $ast = new IDLValue($ID.line, $ID.pos, $ID.text); 
+    }
+	| lv = lvalue '[' exp = expr ']' { 
+        $ast = new ArrayAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $exp.ast); 
+    }
+	| lv = lvalue '.' field = ID { 
+        $ast = new FieldAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($field.line, $field.pos, $field.text)); 
+    };
 
 // exps: expr (',' expr)*;
+exps
+	returns[List<Expr> astList]:
+	e1 = expr {
+        $astList = new ArrayList<Expr>();
+        $astList.add($e1.ast);
+    } (
+		',' e2 = expr {
+        $astList.add($e2.ast);
+    }
+	)*;

@@ -3,10 +3,10 @@ package lang.ast;
 import java.util.HashMap;
 
 public class MatrixType extends Type {
-	private Btype baseType; // O tipo base (ex: Int, Float, etc.)
+	private Type baseType; // O tipo base (ex: Int, Float, etc.)
 	private int dimensions;
 
-	public MatrixType(int l, int c, Btype baseType, int dimensions) {
+	public MatrixType(int l, int c, Type baseType, int dimensions) {
 		super(l, c);
 		this.baseType = baseType;
 		this.dimensions = dimensions;
@@ -16,7 +16,7 @@ public class MatrixType extends Type {
 		this.dimensions = dimensions;
 	}
 
-	public Btype getBaseType() {
+	public Type getBaseType() {
 		return baseType;
 	}
 
