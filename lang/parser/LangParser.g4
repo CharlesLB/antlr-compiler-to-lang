@@ -135,7 +135,7 @@ cmd
 
 // exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
 // '*' exp | exp '/' exp | exp '%' exp | '!' exp | '-' exp | 'true' | 'false' | 'null' | INT_LITERAL
-// | FLOAT_LITERAL | CHAR_LITERAL | lvalue | '(' exp ')' | 'new' type ('[' exp ']')? | ID '(' exps?
+// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')' | lvalue | 'new' type ('[' exp ']')? | ID '(' exps?
 // ')' '[' exp ']';
 
 // Regras para expressões
@@ -215,6 +215,12 @@ factor
     }
 	| INT_LITERAL {
         $ast = new IntLiteral($INT_LITERAL.line, $INT_LITERAL.pos, Integer.parseInt($INT_LITERAL.text));
+    }
+	| FLOAT_LITERAL {
+        $ast = new FloatLiteral($FLOAT_LITERAL.line, $FLOAT_LITERAL.pos, Float.parseFloat($FLOAT_LITERAL.text));
+    }
+	| CHAR_LITERAL {
+        $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text.charAt(1));  // Assumindo que CHAR_LITERAL é algo como 'a'
     }
 	| '(' expr ')' {
         $ast = $expr.ast;
