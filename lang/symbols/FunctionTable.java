@@ -1,9 +1,9 @@
 package lang.symbols;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import lang.ast.definitions.Fun;
+import lang.ast.expressions.ID;
 
 public class FunctionTable {
 	private static FunctionTable instance;
@@ -21,15 +21,15 @@ public class FunctionTable {
 	}
 
 	public void addFunction(Fun function) {
-		functions.put(function.getName().getName(), function);
+		ID IDFunction = function.getName();
+		functions.put(IDFunction.getName(), function);
 	}
 
 	public Fun getFunction(String name) {
 		return functions.get(name);
 	}
 
-	// Método para imprimir todas as funções na tabela de funções
-	public void printFunctionTable() {
+	public void print() {
 		if (functions.isEmpty()) {
 			System.out.println("Nenhuma função registrada na tabela de funções.");
 		} else {
