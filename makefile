@@ -1,5 +1,5 @@
 compile: genlexer genparser
-	javac -d bin -cp ./lib/antlr-4.8-complete.jar lang/ast/*.java lang/parser/*.java lang/LangCompiler.java 
+	javac -d bin -cp ./lib/antlr-4.8-complete.jar lang/ast/*.java lang/ast/definitions/*.java lang/ast/expressions/*.java lang/ast/expressions/literals/*.java lang/ast/expressions/operators/*.java lang/ast/lvalue/*.java lang/ast/statements/*.java lang/ast/statements/commands/*.java lang/ast/statements/data/*.java lang/ast/types/*.java lang/parser/*.java lang/LangCompiler.java 
 
 genparser: lang/parser/LangParser.g4
 	java -jar ./lib/antlr-4.8-complete.jar lang/parser/LangParser.g4

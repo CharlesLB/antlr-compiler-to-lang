@@ -5,7 +5,17 @@ options {
 
 @parser::header {
 package lang.parser;
+
 import lang.ast.*;
+import lang.ast.definitions.*;
+import lang.ast.expressions.*;
+import lang.ast.expressions.literals.*;
+import lang.ast.expressions.operators.*;
+import lang.ast.lvalue.*;
+import lang.ast.statements.*;
+import lang.ast.statements.commands.*;
+import lang.ast.statements.data.*;
+import lang.ast.types.*;
 }
 
 // prog: def+;
