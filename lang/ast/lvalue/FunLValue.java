@@ -6,7 +6,10 @@ import java.util.stream.Collectors;
 
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
+import lang.ast.definitions.Fun;
+import lang.ast.definitions.Param;
 import lang.ast.expressions.ID;
+import lang.symbols.FunctionTable;
 
 public class FunLValue extends Cmd {
 	private ID functionName;
@@ -54,6 +57,48 @@ public class FunLValue extends Cmd {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Tem que mudar
+		System.out.println("----- Entrando Função LVALUE: " + this.getFunctionName() + " ----");
+		HashMap<String, Object> localContext = new HashMap<>(context);
+
+		FunctionTable funAux = FunctionTable.getInstance();
+		Fun function = funAux.getFunction(this.functionName.getName());
+		if (function == null) {
+			throw new RuntimeException("Função não definida: " + this.functionName.getName());
+		}
+
+		List<Param> params = function.getParams();
+
+		if (params.size() != arguments.size()) {
+			throw new RuntimeException(
+					"Número de argumentos não corresponde ao número de parâmetros para a função: " + this.functionName.getName());
+		}
+
+		System.out.println("AAAAAA");
+
+		// for (int i = 0; i < params.size(); i++) {
+		// String paramName = params.get(i).getID().getName();
+		// int argValue = arguments.get(i).interpret(context); // Interpreta valor do
+		// argumento da função
+		// localContext.put(paramName, argValue); // Associa o argumento ao parâmetro
+		// System.out.println(paramName + " = " + argValue);
+		// }
+
+		System.out.println("BBBBBB");
+
+		// Interpreta o corpo da função usando o contexto local
+		Object returnValue = function.interpret(localContext);
+
+		System.out.println("ReturnValue1: " + returnValue);
+
+		// // Captura os valores de retorno e os associa às variáveis de retorno
+		// for (int i = 0; i < this.returnVars.size(); i++) {
+		// String lvalueName = this.returnVars.get(i).toString(); // Supondo que LValue
+		// tenha um método getName()
+		// context.put(lvalueName, localContext.get(params.get(i).getID().getName()));
+		// }
+
+		System.out.println("ReturnValue2: " + returnValue);
+
+		return returnValue;
 	}
 }

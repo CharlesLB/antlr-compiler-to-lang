@@ -76,11 +76,17 @@ public class Fun extends Node {
 		// Associa os parâmetros aos valores iniciais (deveriam ser passados na chamada)
 		if (params != null) {
 			for (Param param : params) {
+				System.out.println("Params FUN: " + param.getID().getName());
+
 				String paramName = param.getID().getName();
+
 				if (!localContext.containsKey(paramName)) {
 					throw new RuntimeException("Parametro " + paramName + " não tem valor definido.");
 				}
 				System.out.println("Parametro: " + paramName + " = " + localContext.get(paramName));
+
+				Object argValue = param.interpret(context);
+				context.put(param.getID().getName(), argValue);
 			}
 		}
 
@@ -99,4 +105,5 @@ public class Fun extends Node {
 		return returnValue;
 
 	}
+
 }

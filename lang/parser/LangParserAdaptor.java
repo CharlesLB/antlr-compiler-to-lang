@@ -6,8 +6,10 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.*;
 import lang.ast.*;
+import lang.ast.definitions.Fun;
 import lang.parser.LangLexer;
 import lang.parser.LangParser;
+import lang.symbols.FunctionTable;
 
 public class LangParserAdaptor implements ParseAdaptor {
 
@@ -53,6 +55,20 @@ public class LangParserAdaptor implements ParseAdaptor {
                     return null;
                 }
                 System.out.println(ast);
+
+                // FunctionTable functionTable = new FunctionTable(); // Cria a tabela de
+                // funções
+                // declareFunctions(ast, functionTable);
+                // functionTable.print();
+
+                // Fun mainFunction = functionTable.getFunction("main");
+                // if (mainFunction == null) {
+                // throw new RuntimeException("Função main não definida.");
+                // }
+
+                // HashMap<String, Integer> globalContext = new HashMap<>();
+                // System.out.println("Chamando main...");
+                // mainFunction.interpret(globalContext, functionTable);
 
                 HashMap<String, Object> m = new HashMap<String, Object>();
                 Object result = ast.interpret(m);
