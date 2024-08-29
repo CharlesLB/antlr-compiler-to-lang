@@ -71,16 +71,12 @@ public class FunLValue extends Cmd {
 					"Número de argumentos não corresponde ao número de parâmetros para a função: " + this.functionName.getName());
 		}
 
-		System.out.println("AAAAAA");
-
 		for (int i = 0; i < params.size(); i++) {
 			String paramName = params.get(i).getID().getName();
 			Object argValue = arguments.get(i).interpret(context); // Interpreta valor do argumento da função
 			localContext.put(paramName, argValue); // Associa o argumento ao parâmetro
 			System.out.println(paramName + " = " + argValue);
 		}
-
-		System.out.println("BBBBBB");
 
 		// Interpreta o corpo da função usando o contexto local
 		Object returnValue = function.interpret(localContext);
@@ -98,26 +94,6 @@ public class FunLValue extends Cmd {
 				context.put(lvalueName, returnList.get(i));
 			}
 		}
-
-		// System.out.println("ReturnValue1: " + returnValue);
-
-		// Captura os valores de retorno e os associa às variáveis de retorno
-		// if (returnVars != null && !returnVars.isEmpty()) {
-		// System.out.println("=> " + returnVars);
-		// for (int i = 0; i < returnVars.size(); i++) {
-		// String lvalueName = returnVars.get(i).toString(); // Supondo que LValue tenha
-		// um método toString() ou getName()
-		// System.out.println("Dentro: " + lvalueName + " => " +
-		// localContext.get(lvalueName));
-		// context.put(lvalueName, localContext.get(lvalueName));
-		// }
-		// }
-
-		// for (String key : context.keySet()) {
-		// System.out.println(key + " = " + context.get(key));
-		// }
-
-		// System.out.println("ReturnValue2: " + returnValue);
 
 		return context;
 	}
