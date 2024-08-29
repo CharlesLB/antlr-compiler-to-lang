@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lang.ast.definitions.Expr;
+
 public class FunCall extends Expr {
 	private ID functionName;
 	private List<Expr> arguments;

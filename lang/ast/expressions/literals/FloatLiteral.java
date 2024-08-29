@@ -2,7 +2,7 @@ package lang.ast.expressions.literals;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
 public class FloatLiteral extends Expr {
 
@@ -21,6 +21,6 @@ public class FloatLiteral extends Expr {
 	@Override
 	public int interpret(HashMap<String, Integer> m) {
 		return (int) value; // Dependendo da implementação, você pode querer retornar o valor como float ou
-							// int
+		// int
 	}
 }

@@ -2,7 +2,7 @@ package lang.ast.lvalue;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
 public abstract class LValue extends Expr {
 

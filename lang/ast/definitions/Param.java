@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import lang.ast.Node;
 import lang.ast.expressions.ID;
-import lang.ast.types.Type;
 
 public class Param extends Node {
 	private ID id;

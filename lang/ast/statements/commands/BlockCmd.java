@@ -3,6 +3,8 @@ package lang.ast.statements.commands;
 import java.util.HashMap;
 import java.util.List;
 
+import lang.ast.definitions.Cmd;
+
 public class BlockCmd extends Cmd {
 	private List<Cmd> commands;
 

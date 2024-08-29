@@ -1,11 +1,10 @@
-package lang.ast.statements;
+package lang.ast.definitions;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lang.ast.Node;
-import lang.ast.definitions.Param;
 import lang.ast.expressions.ID;
 
 public class FunWithIndex extends Node {

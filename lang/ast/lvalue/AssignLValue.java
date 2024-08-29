@@ -7,8 +7,8 @@ package lang.ast.lvalue;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
-import lang.ast.statements.commands.Cmd;
+import lang.ast.definitions.Cmd;
+import lang.ast.definitions.Expr;
 
 public class AssignLValue extends Cmd {
 

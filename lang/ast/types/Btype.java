@@ -2,6 +2,8 @@ package lang.ast.types;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Type;
+
 public class Btype extends Type {
 
 	private String type;

@@ -8,7 +8,7 @@ package lang.ast.expressions.operators;
 import java.util.HashMap;
 
 import lang.ast.definitions.BinOP;
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
 public class Plus extends BinOP {
 

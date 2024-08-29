@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Cmd;
+import lang.ast.definitions.Expr;
 import lang.ast.expressions.ID;
-import lang.ast.statements.commands.Cmd;
 
 public class FunLValue extends Cmd {
 	private ID functionName;

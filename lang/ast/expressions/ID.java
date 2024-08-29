@@ -7,6 +7,8 @@ package lang.ast.expressions;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Expr;
+
 public class ID extends Expr {
 
 	private String l;

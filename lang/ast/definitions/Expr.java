@@ -1,4 +1,4 @@
-package lang.ast.expressions;
+package lang.ast.definitions;
 
 import lang.ast.Node;
 

@@ -1,4 +1,4 @@
-package lang.ast.statements.commands;
+package lang.ast.definitions;
 
 import lang.ast.Node;
 

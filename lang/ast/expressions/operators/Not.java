@@ -2,7 +2,7 @@ package lang.ast.expressions.operators;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
 public class Not extends Expr {
 
@@ -22,6 +22,6 @@ public class Not extends Expr {
 	public int interpret(HashMap<String, Integer> m) {
 		int value = expr.interpret(m);
 		return (value == 0) ? 1 : 0; // Se o valor for 0 (falso), retorna 1 (verdadeiro), caso contrário, retorna 0
-										// (falso)
+		// (falso)
 	}
 }

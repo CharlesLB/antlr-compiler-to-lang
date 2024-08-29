@@ -2,7 +2,8 @@ package lang.ast.statements.commands;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Cmd;
+import lang.ast.definitions.Expr;
 import lang.ast.expressions.ID;
 
 public class Assign extends Cmd {

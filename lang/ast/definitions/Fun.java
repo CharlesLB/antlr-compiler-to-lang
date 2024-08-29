@@ -1,13 +1,10 @@
-package lang.ast.statements;
+package lang.ast.definitions;
 
 import java.util.HashMap;
 import java.util.List;
 
 import lang.ast.Node;
-import lang.ast.definitions.Param;
 import lang.ast.expressions.ID;
-import lang.ast.statements.commands.Cmd;
-import lang.ast.types.Type;
 
 public class Fun extends Node {
 	private ID name;

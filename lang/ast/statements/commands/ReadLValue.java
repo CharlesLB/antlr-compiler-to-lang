@@ -2,6 +2,7 @@ package lang.ast.statements.commands;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Cmd;
 import lang.ast.lvalue.LValue;
 
 public class ReadLValue extends Cmd {

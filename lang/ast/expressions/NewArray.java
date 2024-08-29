@@ -2,7 +2,8 @@ package lang.ast.expressions;
 
 import java.util.HashMap;
 
-import lang.ast.types.Type;
+import lang.ast.definitions.Expr;
+import lang.ast.definitions.Type;
 
 public class NewArray extends Expr {
 	private Type type;

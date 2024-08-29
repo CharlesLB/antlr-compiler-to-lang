@@ -1,6 +1,6 @@
 package lang.ast.lvalue;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
 /*Ex: arr[2] = 5; */
 public class ArrayAccessLValue extends LValue {

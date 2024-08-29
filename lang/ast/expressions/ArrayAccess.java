@@ -2,6 +2,8 @@ package lang.ast.expressions;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Expr;
+
 public class ArrayAccess extends Expr {
 	private Expr array;
 	private Expr index;

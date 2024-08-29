@@ -2,6 +2,8 @@ package lang.ast.types;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Type;
+
 public class IDType extends Type {
 	private String id;
 
