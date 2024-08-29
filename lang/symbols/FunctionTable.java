@@ -6,10 +6,18 @@ import java.util.Map;
 import lang.ast.definitions.Fun;
 
 public class FunctionTable {
+	private static FunctionTable instance;
 	private HashMap<String, Fun> functions;
 
 	public FunctionTable() {
 		functions = new HashMap<>();
+	}
+
+	public static FunctionTable getInstance() {
+		if (instance == null) {
+			instance = new FunctionTable();
+		}
+		return instance;
 	}
 
 	public void addFunction(Fun function) {
