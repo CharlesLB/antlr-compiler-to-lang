@@ -57,52 +57,47 @@ public class FunLValue extends Cmd {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		// System.out.println("----- Entrando Função LVALUE: " + this.getFunctionName()
-		// + " ----");
-		// HashMap<String, Object> localContext = new HashMap<>(context);
+		System.out.println("----- Entrando Função LVALUE: " + this.getFunctionName() + " ----");
+		HashMap<String, Object> localContext = new HashMap<>(context);
 
-		// FunctionTable funAux = FunctionTable.getInstance();
-		// Fun function = funAux.getFunction(this.functionName.getName());
-		// if (function == null) {
-		// throw new RuntimeException("Função não definida: " +
-		// this.functionName.getName());
-		// }
+		FunctionTable funAux = FunctionTable.getInstance();
+		Fun function = funAux.getFunction(this.functionName.getName());
+		if (function == null) {
+			throw new RuntimeException("Função não definida: " + this.functionName.getName());
+		}
 
-		// List<Param> params = function.getParams();
+		List<Param> params = function.getParams();
 
-		// if (params.size() != arguments.size()) {
-		// throw new RuntimeException(
-		// "Número de argumentos não corresponde ao número de parâmetros para a função:
-		// " + this.functionName.getName());
-		// }
+		if (params.size() != arguments.size()) {
+			throw new RuntimeException(
+					"Número de argumentos não corresponde ao número de parâmetros para a função: " + this.functionName.getName());
+		}
 
-		// System.out.println("AAAAAA");
+		System.out.println("AAAAAA");
 
-		// for (int i = 0; i < params.size(); i++) {
-		// String paramName = params.get(i).getID().getName();
-		// int argValue = arguments.get(i).interpret(context); // Interpreta valor do
-		// argumento da função
-		// localContext.put(paramName, argValue); // Associa o argumento ao parâmetro
-		// System.out.println(paramName + " = " + argValue);
-		// }
+		for (int i = 0; i < params.size(); i++) {
+			String paramName = params.get(i).getID().getName();
+			Object argValue = arguments.get(i).interpret(context); // Interpreta valor do argumento da função
+			localContext.put(paramName, argValue); // Associa o argumento ao parâmetro
+			System.out.println(paramName + " = " + argValue);
+		}
 
-		// System.out.println("BBBBBB");
+		System.out.println("BBBBBB");
 
 		// Interpreta o corpo da função usando o contexto local
-		// Object returnValue = function.interpret(localContext);
+		Object returnValue = function.interpret(localContext);
 
-		// System.out.println("ReturnValue1: " + returnValue);
+		System.out.println("ReturnValue1: " + returnValue);
 
-		// // Captura os valores de retorno e os associa às variáveis de retorno
+		// Captura os valores de retorno e os associa às variáveis de retorno
 		// for (int i = 0; i < this.returnVars.size(); i++) {
 		// String lvalueName = this.returnVars.get(i).toString(); // Supondo que LValue
 		// tenha um método getName()
 		// context.put(lvalueName, localContext.get(params.get(i).getID().getName()));
 		// }
 
-		// System.out.println("ReturnValue2: " + returnValue);
+		System.out.println("ReturnValue2: " + returnValue);
 
-		// return returnValue;
-		return 1;
+		return returnValue;
 	}
 }
