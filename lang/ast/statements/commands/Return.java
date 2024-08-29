@@ -1,5 +1,6 @@
 package lang.ast.statements.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,12 +29,17 @@ public class Return extends Cmd {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		// Interpretar todas as expressões na lista
-		int lastValue = 0;
+	public Object interpret(HashMap<String, Object> m) {
+		List<Object> returnValues = new ArrayList<>();
+
 		for (Expr expr : exprList) {
-			lastValue = expr.interpret(m);
+			returnValues.add(expr.interpret(m));
 		}
-		return lastValue; // Retorna o valor da última expressão avaliada
+
+		if (returnValues.size() == 1) {
+			return returnValues.get(0);
+		}
+
+		return returnValues;
 	}
 }

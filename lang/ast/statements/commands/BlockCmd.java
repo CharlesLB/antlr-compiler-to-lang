@@ -29,7 +29,7 @@ public class BlockCmd extends Cmd {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
+	public Object interpret(HashMap<String, Object> context) {
 		return 1; // Tem que mudar
 	}
 }

@@ -27,7 +27,7 @@ public class ID extends Expr {
 		return l;
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
+	public Object interpret(HashMap<String, Object> m) {
 		return m.get(l);
 	}
 }

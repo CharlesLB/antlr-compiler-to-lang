@@ -19,8 +19,9 @@ public class FloatLiteral extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		return (int) value; // Dependendo da implementação, você pode querer retornar o valor como float ou
+	public Object interpret(HashMap<String, Object> m) {
+		System.out.println("Node FloatLiteral: " + value);
+		return value; // Dependendo da implementação, você pode querer retornar o valor como float ou
 		// int
 	}
 }

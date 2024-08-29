@@ -19,10 +19,26 @@ public class DoubleAmpersand extends BinOP {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int leftValue = getLeft().interpret(m);
-		int rightValue = getRight().interpret(m);
+	public Object interpret(HashMap<String, Object> m) {
+		Object leftValue = getLeft().interpret(m);
+		Object rightValue = getRight().interpret(m);
 
-		return (leftValue != 0 && rightValue != 0) ? 1 : 0;
+		boolean leftBool = toBoolean(leftValue);
+		boolean rightBool = toBoolean(rightValue);
+
+		Object aux = (leftBool && rightBool) ? 1 : 0;
+		System.out.println("Node And: " + aux);
+
+		return (leftBool && rightBool) ? 1 : 0;
+	};
+
+	private boolean toBoolean(Object value) {
+		if (value instanceof Boolean) {
+			return (Boolean) value;
+		} else if (value == null) {
+			throw new RuntimeException("Null values cannot be used in logical operations");
+		} else {
+			throw new RuntimeException("Unsupported type for logical operation: " + value.getClass().getName());
+		}
 	}
 }

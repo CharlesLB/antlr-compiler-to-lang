@@ -19,7 +19,9 @@ public class BoolLiteral extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
+	public Object interpret(HashMap<String, Object> m) {
+		Object aux = value ? 1 : 0;
+		System.out.println("Node BoolLiteral: " + aux.toString());
 		return value ? 1 : 0; // Retorna 1 para true, 0 para false
 	}
 }

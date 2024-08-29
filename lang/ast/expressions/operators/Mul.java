@@ -15,19 +15,27 @@ public class Mul extends BinOP {
 	}
 
 	// @Override
-	public String toString() {
-		String s = getLeft().toString();
-		if (getLeft() instanceof Mul || getLeft() instanceof Plus) {
-			s += "(" + s + ")";
+	public Object interpret(HashMap<String, Object> m) {
+		Object leftValue = getLeft().interpret(m);
+		Object rightValue = getRight().interpret(m);
+
+		if (leftValue == null || rightValue == null) {
+			throw new RuntimeException("Null values cannot be used in modulo operation");
 		}
-		String ss = getRight().toString();
-		if (getRight() instanceof Plus) {
-			ss = "(" + ss + ")";
-		}
-		return s + " * " + ss;
+
+		float left = convertToFloat(leftValue);
+		float right = convertToFloat(rightValue);
+
+		return left * right;
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		return getLeft().interpret(m) * getRight().interpret(m);
+	private float convertToFloat(Object value) {
+		if (value instanceof Integer) {
+			return ((Integer) value).floatValue();
+		} else if (value instanceof Float) {
+			return (Float) value;
+		} else {
+			throw new RuntimeException("Unsupported type for subtraction: " + value.getClass().getName());
+		}
 	}
 }

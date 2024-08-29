@@ -19,9 +19,38 @@ public class EQ extends BinOP {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int leftValue = getLeft().interpret(m);
-		int rightValue = getRight().interpret(m);
-		return (leftValue == rightValue) ? 1 : 0;
+	public Object interpret(HashMap<String, Object> m) {
+		Object leftValue = getLeft().interpret(m);
+		Object rightValue = getRight().interpret(m);
+
+		System.out.println("--- Node EQ");
+
+		if (leftValue == null || rightValue == null) {
+			return (leftValue == rightValue) ? 1 : 0;
+		}
+
+		if (leftValue instanceof Integer && rightValue instanceof Integer) {
+			return ((Integer) leftValue).intValue() == ((Integer) rightValue).intValue() ? 1 : 0;
+		}
+
+		if (leftValue instanceof Float && rightValue instanceof Float) {
+			return ((Float) leftValue).doubleValue() == ((Float) rightValue).doubleValue() ? 1 : 0;
+		}
+
+		if (leftValue instanceof Boolean && rightValue instanceof Boolean) {
+			return ((Boolean) leftValue).booleanValue() == ((Boolean) rightValue).booleanValue() ? 1 : 0;
+		}
+
+		if (leftValue instanceof Character && rightValue instanceof Character) {
+			return ((Character) leftValue).charValue() == ((Character) rightValue).charValue() ? 1 : 0;
+		}
+
+		// Comparação para outros tipos usando equals
+		if (leftValue.equals(rightValue)) {
+			return 1;
+		}
+
+		// Caso os valores não sejam iguais
+		return 0;
 	}
 }

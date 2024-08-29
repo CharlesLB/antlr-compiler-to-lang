@@ -37,7 +37,7 @@ public class MatrixType extends Type {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
+	public Object interpret(HashMap<String, Object> context) {
 		return 1;
 	}
 }

@@ -19,9 +19,26 @@ public class NotEq extends BinOP {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int leftValue = getLeft().interpret(m);
-		int rightValue = getRight().interpret(m);
-		return (leftValue != rightValue) ? 1 : 0;
+	public Object interpret(HashMap<String, Object> m) {
+		Object leftValue = getLeft().interpret(m);
+		Object rightValue = getRight().interpret(m);
+
+		if (leftValue == null || rightValue == null) {
+			throw new RuntimeException("Null values cannot be compared");
+		}
+
+		if (leftValue instanceof Integer && rightValue instanceof Integer) {
+			return !leftValue.equals(rightValue) ? 1 : 0;
+		} else if (leftValue instanceof Double && rightValue instanceof Double) {
+			return !leftValue.equals(rightValue) ? 1 : 0;
+		} else if (leftValue instanceof Boolean && rightValue instanceof Boolean) {
+			return !leftValue.equals(rightValue) ? 1 : 0;
+		} else if (leftValue instanceof Character && rightValue instanceof Character) {
+			return !leftValue.equals(rightValue) ? 1 : 0;
+		} else if (leftValue.equals(rightValue)) {
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 }

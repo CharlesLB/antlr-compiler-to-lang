@@ -21,7 +21,7 @@ public class IDType extends Type {
 		return id;
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
+	public Object interpret(HashMap<String, Object> m) {
 		return m.get(id);
 	}
 }

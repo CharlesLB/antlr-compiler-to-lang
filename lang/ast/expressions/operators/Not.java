@@ -19,9 +19,14 @@ public class Not extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int value = expr.interpret(m);
-		return (value == 0) ? 1 : 0; // Se o valor for 0 (falso), retorna 1 (verdadeiro), caso contrário, retorna 0
-		// (falso)
+	public Object interpret(HashMap<String, Object> m) {
+		Object value = expr.interpret(m);
+
+		if (value instanceof Boolean) {
+			return ((Boolean) value) ? 0 : 1; // Se o valor for verdadeiro, retorna 0 (falso); caso contrário, retorna 1
+																				// (verdadeiro)
+		} else {
+			throw new RuntimeException("Unsupported type for logical negation: " + value.getClass().getName());
+		}
 	}
 }

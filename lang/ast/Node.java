@@ -19,6 +19,6 @@ public abstract class Node extends SuperNode {
 		return col;
 	}
 
-	public abstract int interpret(HashMap<String, Integer> m);
+	public abstract Object interpret(HashMap<String, Object> m);
 
 }

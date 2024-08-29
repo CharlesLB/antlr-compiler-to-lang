@@ -20,9 +20,31 @@ public class LessThan extends BinOP {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int leftValue = getLeft().interpret(m);
-		int rightValue = getRight().interpret(m);
-		return leftValue < rightValue ? 1 : 0;
+	public Object interpret(HashMap<String, Object> m) {
+		Object leftValue = getLeft().interpret(m);
+		Object rightValue = getRight().interpret(m);
+
+		if (leftValue == null || rightValue == null) {
+			throw new RuntimeException("Null values cannot be compared");
+		}
+
+		double left = convertToFloat(leftValue);
+		double right = convertToFloat(rightValue);
+
+		return left < right ? 1 : 0;
+	}
+
+	private double convertToFloat(Object value) {
+		if (value instanceof Integer) {
+			return ((Integer) value).doubleValue();
+		} else if (value instanceof Float) {
+			return (Float) value;
+		} else if (value instanceof Character) {
+			return (double) ((Character) value).charValue();
+		} else if (value instanceof Boolean) {
+			return (Boolean) value ? 1.0 : 0.0;
+		} else {
+			throw new RuntimeException("Unsupported type for comparison: " + value.getClass().getName());
+		}
 	}
 }

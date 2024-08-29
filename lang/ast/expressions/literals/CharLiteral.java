@@ -19,7 +19,8 @@ public class CharLiteral extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
+	public Object interpret(HashMap<String, Object> m) {
+		System.out.println("Node CharLiteral: " + value);
 		return value; // Retorna o valor do caractere, que pode ser tratado como seu valor ASCII
 	}
 }

@@ -24,8 +24,29 @@ public class Minus extends BinOP {
 		return s + " - " + getRight().toString();
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		return getLeft().interpret(m) - getRight().interpret(m);
+	@Override
+	public Object interpret(HashMap<String, Object> m) {
+		Object leftValue = getLeft().interpret(m);
+		Object rightValue = getRight().interpret(m);
+
+		if (leftValue == null || rightValue == null) {
+			throw new RuntimeException("Null values cannot be used in subtraction");
+		}
+
+		float left = convertToFloat(leftValue);
+		float right = convertToFloat(rightValue);
+
+		return left - right;
+	}
+
+	private float convertToFloat(Object value) {
+		if (value instanceof Integer) {
+			return ((Integer) value).floatValue();
+		} else if (value instanceof Float) {
+			return (Float) value;
+		} else {
+			throw new RuntimeException("Unsupported type for subtraction: " + value.getClass().getName());
+		}
 	}
 
 }

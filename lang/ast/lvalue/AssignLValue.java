@@ -33,8 +33,8 @@ public class AssignLValue extends Cmd {
 		return id.toString() + " = " + e.toString();
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		int x = e.interpret(m);
+	public Object interpret(HashMap<String, Object> m) {
+		Object x = e.interpret(m);
 		return x;
 	}
 }

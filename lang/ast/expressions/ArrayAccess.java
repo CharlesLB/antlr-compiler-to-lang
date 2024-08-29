@@ -28,7 +28,7 @@ public class ArrayAccess extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
+	public Object interpret(HashMap<String, Object> context) {
 		return 1; // Mudar
 	}
 }

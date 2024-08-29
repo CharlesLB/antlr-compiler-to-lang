@@ -20,8 +20,8 @@ public class Print extends Cmd {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int value = expr.interpret(m);
+	public Object interpret(HashMap<String, Object> m) {
+		Object value = expr.interpret(m);
 		System.out.println(value); // Imprime o valor da expressão
 		return value;
 	}

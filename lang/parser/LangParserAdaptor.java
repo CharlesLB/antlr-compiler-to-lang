@@ -54,8 +54,10 @@ public class LangParserAdaptor implements ParseAdaptor {
                 }
                 System.out.println(ast);
 
-                HashMap<String, Integer> m = new HashMap<String, Integer>();
-                ast.interpret(m);
+                HashMap<String, Object> m = new HashMap<String, Object>();
+                Object result = ast.interpret(m);
+
+                System.out.println("Resultado no parser: " + result.toString());
 
                 return ast;
             } catch (ParseCancellationException e) {
