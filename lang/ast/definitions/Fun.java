@@ -96,11 +96,7 @@ public class Fun extends Node {
 			returnValue = cmd.interpret(localContext); // Usa o contexto local
 		}
 
-		// Retorna ao contexto original
-		context.clear();
-		context.putAll(localContext);
-
-		System.out.println("----- Saindo Função: " + this.getName() + " ----> " + returnValue);
+		System.out.println("----- Saindo Função: " + this.getName() + " ---- ");
 
 		return returnValue;
 

@@ -14,13 +14,13 @@ import lang.symbols.FunctionTable;
 public class FunLValue extends Cmd {
 	private ID functionName;
 	private List<Expr> arguments;
-	private List<LValue> lvalues;
+	private List<LValue> returnVars;
 
-	public FunLValue(int line, int column, ID functionName, List<Expr> arguments, List<LValue> lvalues) {
+	public FunLValue(int line, int column, ID functionName, List<Expr> arguments, List<LValue> returnVars) {
 		super(line, column);
 		this.functionName = functionName;
 		this.arguments = arguments;
-		this.lvalues = lvalues;
+		this.returnVars = returnVars;
 	}
 
 	public ID getFunctionName() {
@@ -32,7 +32,7 @@ public class FunLValue extends Cmd {
 	}
 
 	public List<LValue> getLValues() {
-		return lvalues;
+		return returnVars;
 	}
 
 	@Override
@@ -46,8 +46,8 @@ public class FunLValue extends Cmd {
 
 		sb.append(")");
 
-		if (lvalues != null && !lvalues.isEmpty()) {
-			sb.append(" <").append(lvalues.stream().map(LValue::toString).collect(Collectors.joining(", ")))
+		if (returnVars != null && !returnVars.isEmpty()) {
+			sb.append(" <").append(returnVars.stream().map(LValue::toString).collect(Collectors.joining(", ")))
 					.append(">");
 		}
 
@@ -60,11 +60,9 @@ public class FunLValue extends Cmd {
 		System.out.println("----- Entrando Função LVALUE: " + this.getFunctionName() + " ----");
 		HashMap<String, Object> localContext = new HashMap<>(context);
 
-		FunctionTable funAux = FunctionTable.getInstance();
-		Fun function = funAux.getFunction(this.functionName.getName());
-		if (function == null) {
+		Fun function = FunctionTable.getInstance().getFunction(this.functionName.getName());
+		if (function == null)
 			throw new RuntimeException("Função não definida: " + this.functionName.getName());
-		}
 
 		List<Param> params = function.getParams();
 
@@ -87,17 +85,40 @@ public class FunLValue extends Cmd {
 		// Interpreta o corpo da função usando o contexto local
 		Object returnValue = function.interpret(localContext);
 
-		System.out.println("ReturnValue1: " + returnValue);
+		List<?> returnList = (List<?>) returnValue;
+
+		if (returnVars != null && !returnVars.isEmpty()) {
+			if (returnList.size() != returnVars.size()) {
+				throw new RuntimeException(
+						"O número de valores retornados não corresponde ao número de variáveis de retorno");
+			}
+			for (int i = 0; i < returnVars.size(); i++) {
+				String lvalueName = returnVars.get(i).toString(); // Supondo que LValue tenha um método toString() ou
+																													// getName()
+				context.put(lvalueName, returnList.get(i));
+			}
+		}
+
+		// System.out.println("ReturnValue1: " + returnValue);
 
 		// Captura os valores de retorno e os associa às variáveis de retorno
-		// for (int i = 0; i < this.returnVars.size(); i++) {
-		// String lvalueName = this.returnVars.get(i).toString(); // Supondo que LValue
-		// tenha um método getName()
-		// context.put(lvalueName, localContext.get(params.get(i).getID().getName()));
+		// if (returnVars != null && !returnVars.isEmpty()) {
+		// System.out.println("=> " + returnVars);
+		// for (int i = 0; i < returnVars.size(); i++) {
+		// String lvalueName = returnVars.get(i).toString(); // Supondo que LValue tenha
+		// um método toString() ou getName()
+		// System.out.println("Dentro: " + lvalueName + " => " +
+		// localContext.get(lvalueName));
+		// context.put(lvalueName, localContext.get(lvalueName));
+		// }
 		// }
 
-		System.out.println("ReturnValue2: " + returnValue);
+		// for (String key : context.keySet()) {
+		// System.out.println(key + " = " + context.get(key));
+		// }
 
-		return returnValue;
+		// System.out.println("ReturnValue2: " + returnValue);
+
+		return context;
 	}
 }
