@@ -23,8 +23,7 @@ public class Not extends Expr {
 		Object value = expr.interpret(m);
 
 		if (value instanceof Boolean) {
-			return ((Boolean) value) ? 0 : 1; // Se o valor for verdadeiro, retorna 0 (falso); caso contrário, retorna 1
-																				// (verdadeiro)
+			return ((Boolean) value) ? false : true;
 		} else {
 			throw new RuntimeException("Unsupported type for logical negation: " + value.getClass().getName());
 		}

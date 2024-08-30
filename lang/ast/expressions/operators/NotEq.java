@@ -28,17 +28,17 @@ public class NotEq extends BinOP {
 		}
 
 		if (leftValue instanceof Integer && rightValue instanceof Integer) {
-			return !leftValue.equals(rightValue) ? 1 : 0;
+			return !leftValue.equals(rightValue) ? true : false;
 		} else if (leftValue instanceof Double && rightValue instanceof Double) {
-			return !leftValue.equals(rightValue) ? 1 : 0;
+			return !leftValue.equals(rightValue) ? true : false;
 		} else if (leftValue instanceof Boolean && rightValue instanceof Boolean) {
-			return !leftValue.equals(rightValue) ? 1 : 0;
+			return !leftValue.equals(rightValue) ? true : false;
 		} else if (leftValue instanceof Character && rightValue instanceof Character) {
-			return !leftValue.equals(rightValue) ? 1 : 0;
+			return !leftValue.equals(rightValue) ? true : false;
 		} else if (leftValue.equals(rightValue)) {
-			return 0;
+			return false;
 		} else {
-			return 1;
+			return true;
 		}
 	}
 }

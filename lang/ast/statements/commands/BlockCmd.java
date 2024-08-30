@@ -30,6 +30,10 @@ public class BlockCmd extends Cmd {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Tem que mudar
+		Object lastResult = null;
+		for (Cmd command : commands) {
+			lastResult = command.interpret(context);
+		}
+		return lastResult;
 	}
 }

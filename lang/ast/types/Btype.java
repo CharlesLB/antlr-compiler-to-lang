@@ -22,7 +22,7 @@ public class Btype extends Type {
 		return type;
 	}
 
-	public Object interpret(HashMap<String, Object> m) {
-		return m.get(type);
+	public Object interpret(HashMap<String, Object> context) {
+		return context.get(type);
 	}
 }

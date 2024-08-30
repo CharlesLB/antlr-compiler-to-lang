@@ -32,7 +32,7 @@ public class Assign extends Cmd {
 	public Object interpret(HashMap<String, Object> m) {
 		Object x = e.interpret(m);
 		m.put(id.getName(), x);
-		System.out.println("Assign: " + x);
+		System.out.println("-- Assign: " + x);
 		return x;
 	}
 }

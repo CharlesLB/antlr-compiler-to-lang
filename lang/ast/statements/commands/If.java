@@ -52,26 +52,22 @@ public class If extends Cmd {
 		return s;
 	}
 
-	public Object interpret(HashMap<String, Object> m) {
-		Object n = exp.interpret(m);
+	public Object interpret(HashMap<String, Object> context) {
+		Object conditionResult = exp.interpret(context);
 
-		if (n instanceof Integer) {
-			if ((Integer) n != 0) {
-				return thn.interpret(m);
+		System.out.println("--- Entrando no IF --- " + conditionResult);
+
+		if (conditionResult instanceof Boolean) {
+			if ((Boolean) conditionResult) {
+				System.out.println("--- Entrando no THEN --- " + thn);
+				Object thenResult = thn.interpret(context);
+				System.out.println("--- Resultado THEN --- " + thenResult);
+				return thenResult;
 			} else if (els != null) {
-				return els.interpret(m);
-			}
-		} else if (n instanceof Double) {
-			if ((Double) n != 0.0) {
-				return thn.interpret(m);
-			} else if (els != null) {
-				return els.interpret(m);
-			}
-		} else if (n instanceof Boolean) {
-			if ((Boolean) n) {
-				return thn.interpret(m);
-			} else if (els != null) {
-				return els.interpret(m);
+				System.out.println("--- Entrando no ELSE --- " + els);
+				Object elseResult = els.interpret(context);
+				System.out.println("--- Resultado ELSE --- " + elseResult);
+				return elseResult;
 			}
 		} else {
 			throw new RuntimeException("Unsupported type for condition in if statement");
