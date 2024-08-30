@@ -24,6 +24,24 @@ public class ReadLValue extends Cmd {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Tem que mudar
+		// DUVIDAS: É no interpret que fica isso?
+		java.util.Scanner scanner = new java.util.Scanner(System.in);
+
+		System.out.print("Enter a value: ");
+		Object inputValue = null;
+		if (scanner.hasNextInt()) {
+			inputValue = scanner.nextInt();
+		} else if (scanner.hasNextDouble()) {
+			inputValue = scanner.nextDouble();
+		} else {
+			// Para caracter
+			inputValue = scanner.next();
+		}
+
+		context.put(this.getLValue().toString(), inputValue);
+
+		System.out.println("-- Read: " + inputValue + " into " + this.getLValue().toString());
+
+		return null;
 	}
 }
