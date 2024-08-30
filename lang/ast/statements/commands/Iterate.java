@@ -22,22 +22,23 @@ public class Iterate extends Cmd {
 	}
 
 	@Override
-	public Object interpret(HashMap<String, Object> m) {
-		Object iterationCount = count.interpret(m);
-		int iterations;
+	public Object interpret(HashMap<String, Object> context) {
+		Object countNumberIterations = count.interpret(context);
 
-		if (iterationCount instanceof Integer) {
-			iterations = (Integer) iterationCount;
-		} else {
-			throw new RuntimeException("Iteration count must be an integer");
+		System.out.println("--- Inicio Iteração: " + countNumberIterations);
+		if (!(countNumberIterations instanceof Integer)) {
+			throw new RuntimeException("Count expression must evaluate to an integer.");
 		}
 
+		int iterations = (Integer) countNumberIterations;
 		Object lastResult = null;
 
 		for (int i = 0; i < iterations; i++) {
-			lastResult = body.interpret(m);
+			System.out.println("Iteração " + (i + 1) + " de " + iterations);
+			lastResult = body.interpret(context);
 		}
 
+		System.out.println("--- Fim Iteração: " + lastResult);
 		return lastResult;
 	}
 }
