@@ -225,7 +225,7 @@ exps
 compExpr
 	returns[Expr ast]:
 	left = addExpr op = '&&' right = addExpr {
-        $ast = new DoubleAmpersand($op.line, $op.pos, $left.ast, $right.ast);
+        $ast = new And($op.line, $op.pos, $left.ast, $right.ast);
     }
 	| left = addExpr op = '<' right = addExpr {
 				$ast = new LessThan($op.line, $op.pos, $left.ast, $right.ast);

@@ -5,9 +5,9 @@ import java.util.HashMap;
 import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
 
-public class DoubleAmpersand extends BinOP {
+public class And extends BinOP {
 
-	public DoubleAmpersand(int lin, int col, Expr l, Expr r) {
+	public And(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}
 
