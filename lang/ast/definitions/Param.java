@@ -30,6 +30,15 @@ public class Param extends Node {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Tem que mudar
+		String paramName = id.getName();
+
+		System.out.println("--- Node Param --- " + paramName);
+
+		if (context.containsKey(paramName)) {
+			System.out.println("Saindo Node Param");
+			return context.get(paramName);
+		} else {
+			throw new RuntimeException("Parâmetro " + paramName + " não está definido no contexto.");
+		}
 	}
 }

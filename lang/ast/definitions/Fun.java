@@ -71,22 +71,13 @@ public class Fun extends Node {
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		System.out.println("----- Entrando Função: " + this.getName() + " ----");
-		HashMap<String, Object> localContext = new HashMap<>(context);
+		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
 
-		// Associa os parâmetros aos valores iniciais (deveriam ser passados na chamada)
 		if (params != null) {
 			for (Param param : params) {
-				System.out.println("Params FUN: " + param.getID().getName());
-
-				String paramName = param.getID().getName();
-
-				if (!localContext.containsKey(paramName)) {
-					throw new RuntimeException("Parametro " + paramName + " não tem valor definido.");
-				}
-				System.out.println("Parametro: " + paramName + " = " + localContext.get(paramName));
-
-				Object argValue = param.interpret(context);
-				context.put(param.getID().getName(), argValue);
+				// Verifica se o param existe no contexto da função
+				Object argValue = param.interpret(localContext);
+				// context.put(param.getID().getName(), argValue);
 			}
 		}
 

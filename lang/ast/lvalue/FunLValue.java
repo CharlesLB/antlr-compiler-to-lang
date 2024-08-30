@@ -58,7 +58,7 @@ public class FunLValue extends Cmd {
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		System.out.println("----- Entrando Função LVALUE: " + this.getFunctionName() + " ----");
-		HashMap<String, Object> localContext = new HashMap<>(context);
+		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
 
 		Fun function = FunctionTable.getInstance().getFunction(this.functionName.getName());
 		if (function == null)
@@ -88,13 +88,13 @@ public class FunLValue extends Cmd {
 				throw new RuntimeException(
 						"O número de valores retornados não corresponde ao número de variáveis de retorno");
 			}
+
 			for (int i = 0; i < returnVars.size(); i++) {
-				String lvalueName = returnVars.get(i).toString(); // Supondo que LValue tenha um método toString() ou
-																													// getName()
+				String lvalueName = returnVars.get(i).toString();
 				context.put(lvalueName, returnList.get(i));
 			}
 		}
 
-		return context;
+		return returnVars;
 	}
 }
