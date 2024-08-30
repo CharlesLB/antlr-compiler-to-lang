@@ -26,28 +26,28 @@ public class EQ extends BinOP {
 		System.out.println("--- Node EQ");
 
 		if (leftValue == null || rightValue == null) {
-			return (leftValue == rightValue) ? 1 : 0;
+			return (leftValue == rightValue) ? true : false;
 		}
 
 		if (leftValue instanceof Integer && rightValue instanceof Integer) {
-			return ((Integer) leftValue).intValue() == ((Integer) rightValue).intValue() ? 1 : 0;
+			return ((Integer) leftValue).intValue() == ((Integer) rightValue).intValue() ? true : false;
 		}
 
 		if (leftValue instanceof Float && rightValue instanceof Float) {
-			return ((Float) leftValue).doubleValue() == ((Float) rightValue).doubleValue() ? 1 : 0;
+			return ((Float) leftValue).doubleValue() == ((Float) rightValue).doubleValue() ? true : false;
 		}
 
 		if (leftValue instanceof Boolean && rightValue instanceof Boolean) {
-			return ((Boolean) leftValue).booleanValue() == ((Boolean) rightValue).booleanValue() ? 1 : 0;
+			return ((Boolean) leftValue).booleanValue() == ((Boolean) rightValue).booleanValue() ? true : false;
 		}
 
 		if (leftValue instanceof Character && rightValue instanceof Character) {
-			return ((Character) leftValue).charValue() == ((Character) rightValue).charValue() ? 1 : 0;
+			return ((Character) leftValue).charValue() == ((Character) rightValue).charValue() ? true : false;
 		}
 
 		// Comparação para outros tipos usando equals
 		if (leftValue.equals(rightValue)) {
-			return 1;
+			return true;
 		}
 
 		// Caso os valores não sejam iguais
