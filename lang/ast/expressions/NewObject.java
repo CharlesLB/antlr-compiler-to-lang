@@ -24,6 +24,10 @@ public class NewObject extends Expr {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Tem que mudar
+		HashMap<String, Object> newObject = new HashMap<>();
+
+		System.out.println("Node NewObject NÃO IMPLEMENTADO ");
+
+		return newObject;
 	}
 }

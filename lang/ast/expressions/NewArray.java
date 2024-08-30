@@ -30,6 +30,23 @@ public class NewArray extends Expr {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Tem que mudar
+		Object sizeValue = size.interpret(context);
+		if (!(sizeValue instanceof Integer)) {
+			throw new RuntimeException("Array size must be an integer.");
+		}
+
+		int size = (Integer) sizeValue;
+		Object[] newArray = new Object[size];
+		for (int i = 0; i < size; i++) {
+			newArray[i] = getDefaultValueForType(type.toString());
+		}
+
+		System.out.println("Node NewArray: " + newArray + "  Tamanho: " + size);
+
+		return newArray;
+	}
+
+	private Object getDefaultValueForType(String typeName) {
+		return null;
 	}
 }

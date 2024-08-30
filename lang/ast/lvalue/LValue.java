@@ -10,8 +10,5 @@ public abstract class LValue extends Expr {
 		super(l, c);
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Tem que mudar
-	}
+	public abstract Object interpret(HashMap<String, Object> context);
 }

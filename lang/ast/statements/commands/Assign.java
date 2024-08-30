@@ -29,10 +29,10 @@ public class Assign extends Cmd {
 		return id.toString() + " = " + e.toString();
 	}
 
-	public Object interpret(HashMap<String, Object> m) {
-		Object x = e.interpret(m);
-		m.put(id.getName(), x);
-		System.out.println("-- Assign: " + x);
+	public Object interpret(HashMap<String, Object> context) {
+		Object x = e.interpret(context);
+		context.put(id.getName(), x);
+		System.out.println("Node Assign: " + id.getName() + " => " + x);
 		return x;
 	}
 }

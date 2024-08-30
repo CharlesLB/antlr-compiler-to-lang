@@ -33,8 +33,38 @@ public class AssignLValue extends Cmd {
 		return id.toString() + " = " + e.toString();
 	}
 
-	public Object interpret(HashMap<String, Object> m) {
-		Object x = e.interpret(m);
-		return x;
+	public Object interpret(HashMap<String, Object> context) {
+		Object exprObject = e.interpret(context);
+
+		System.out.println("Node AssignLValue: " + id + " -- " + exprObject);
+
+		if (id instanceof IDLValue) {
+			System.out.println("IDLValue");
+			IDLValue variable = (IDLValue) id;
+			context.put(variable.getName(), exprObject);
+		}
+
+		if (id instanceof ArrayAccessLValue) {
+			ArrayAccessLValue arrayAccess = (ArrayAccessLValue) id;
+
+			Object arrayObject = arrayAccess.getArray().interpret(context);
+
+			System.out.println(arrayObject);
+			if (arrayObject instanceof Object[]) {
+				Object[] array = (Object[]) arrayObject;
+				Object indexValue = arrayAccess.getIndex().interpret(context);
+
+				if (indexValue instanceof Integer) {
+					int index = (Integer) indexValue;
+
+					if (index >= 0 && index < array.length) {
+						array[index] = exprObject;
+						System.out.println("Sucess " + array[index]);
+					}
+				}
+			}
+		}
+		return exprObject;
+
 	}
 }
