@@ -23,19 +23,16 @@ public class Mul extends BinOP {
 			throw new RuntimeException("Null values cannot be used in modulo operation");
 		}
 
-		float left = convertToFloat(leftValue);
-		float right = convertToFloat(rightValue);
-
-		return left * right;
-	}
-
-	private float convertToFloat(Object value) {
-		if (value instanceof Integer) {
-			return ((Integer) value).floatValue();
-		} else if (value instanceof Float) {
-			return (Float) value;
-		} else {
-			throw new RuntimeException("Unsupported type for subtraction: " + value.getClass().getName());
+		if (leftValue instanceof Float || rightValue instanceof Float) {
+			return ((Number) leftValue).floatValue() * ((Number) rightValue).floatValue();
 		}
+
+		if (leftValue instanceof Integer && rightValue instanceof Integer) {
+			return (Integer) leftValue * (Integer) rightValue;
+		}
+
+		throw new RuntimeException("Unsupported types for mul: " + leftValue.getClass().getName() + " and "
+				+ rightValue.getClass().getName());
+
 	}
 }

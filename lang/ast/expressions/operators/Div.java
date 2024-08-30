@@ -25,28 +25,27 @@ public class Div extends BinOP {
 			throw new RuntimeException("Null values cannot be used in division");
 		}
 
-		// Converte os valores para float se forem inteiros ou floats
-		float left = convertToFloat(leftValue);
-		float right = convertToFloat(rightValue);
-
 		// Verifica divisão por zero
-		if (right == 0.0) {
-			throw new RuntimeException("Division by zero");
+
+		System.out.println("Node Div: ");
+
+		if (leftValue instanceof Float || rightValue instanceof Float) {
+			if ((Float) rightValue == 0.0) {
+				throw new RuntimeException("Division by zero");
+			}
+
+			return ((Number) leftValue).floatValue() / ((Number) rightValue).floatValue();
+		}
+		if (leftValue instanceof Integer && rightValue instanceof Integer) {
+			if ((Integer) rightValue == 0.0) {
+				throw new RuntimeException("Division by zero");
+			}
+
+			return (Integer) leftValue / (Integer) rightValue;
 		}
 
-		Object aux = left / right;
-		System.out.println("Node Div: " + aux);
+		throw new RuntimeException("Unsupported types for division: " + leftValue.getClass().getName() + " and "
+				+ rightValue.getClass().getName());
 
-		return left / right;
-	}
-
-	private float convertToFloat(Object value) {
-		if (value instanceof Integer) {
-			return ((Integer) value).floatValue();
-		} else if (value instanceof Float) {
-			return (Float) value;
-		} else {
-			throw new RuntimeException("Unsupported type for division: " + value.getClass().getName());
-		}
 	}
 }

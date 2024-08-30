@@ -26,14 +26,12 @@ public class Neg extends Expr {
 			throw new RuntimeException("Null value cannot be negated");
 		}
 
-		float negatedValue = convertToFloat(value);
-
-		return -negatedValue;
+		return -convertToIntOrFloat(value);
 	}
 
-	private float convertToFloat(Object value) {
+	private float convertToIntOrFloat(Object value) {
 		if (value instanceof Integer) {
-			return ((Integer) value).floatValue();
+			return (Integer) value;
 		} else if (value instanceof Float) {
 			return (Float) value;
 		} else {
