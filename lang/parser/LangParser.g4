@@ -169,14 +169,14 @@ cmd
 
         $ast = new FunLValue($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), exprList, lvalueList);
     }
+	// | '{' cmds += cmd* '}' { List<Cmd> cmdList = new ArrayList<>(); for (CmdContext c : $cmds) {
+	// cmdList.add(c.ast); } int line = $cmds.isEmpty() ? $start.getLine() :
+	// $cmds.get(0).start.getLine(); int column = $cmds.isEmpty() ? $start.getCharPositionInLine() :
+	// $cmds.get(0).start.getCharPositionInLine(); $ast = new BlockCmd(line, column, cmdList); };
 	| '{' cmds += cmd* '}' {
-        List<Cmd> cmdList = new ArrayList<>();
         for (CmdContext c : $cmds) {
-            cmdList.add(c.ast);
+            $ast = c.ast;
         }
-        int line = $cmds.isEmpty() ? $start.getLine() : $cmds.get(0).start.getLine();
-        int column = $cmds.isEmpty() ? $start.getCharPositionInLine() : $cmds.get(0).start.getCharPositionInLine();
-        $ast = new BlockCmd(line, column, cmdList);
     };
 
 // exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
