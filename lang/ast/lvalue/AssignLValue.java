@@ -44,11 +44,12 @@ public class AssignLValue extends Cmd {
 		}
 
 		if (id instanceof ArrayAccessLValue) {
+			System.out.println("Array");
 			ArrayAccessLValue arrayAccess = (ArrayAccessLValue) id;
 
 			Object arrayObject = arrayAccess.getArray().interpret(context);
+			System.out.println("ArrayObject: " + arrayObject);
 
-			System.out.println(arrayObject);
 			if (arrayObject instanceof Object[]) {
 				Object[] array = (Object[]) arrayObject;
 				Object indexValue = arrayAccess.getIndex().interpret(context);
@@ -57,7 +58,12 @@ public class AssignLValue extends Cmd {
 					int index = (Integer) indexValue;
 
 					if (index >= 0 && index < array.length) {
+						System.out.println("Bs " + array + "[" + index + "]" + exprObject.getClass());
+						array[index] = new HashMap<String, Object>();
 						array[index] = exprObject;
+
+					} else {
+						throw new RuntimeException("ArrayList index out of bounds.");
 					}
 				}
 			}
@@ -65,14 +71,25 @@ public class AssignLValue extends Cmd {
 
 		if (id instanceof AttrAccessLValue) {
 			AttrAccessLValue attrAccess = (AttrAccessLValue) id;
+			System.out.println("B");
 
-			Object subContextObject = context.get(attrAccess.getObject().toString());
-			HashMap<String, Object> subContext = (HashMap<String, Object>) subContextObject;
+			Object objectObject = attrAccess.getObject().interpret(context);
+			if (objectObject instanceof HashMap) {
+				@SuppressWarnings("unchecked")
+				HashMap<String, Object> subContext = (HashMap<String, Object>) objectObject;
+				subContext.put(attrAccess.getAttr().getName(), exprObject);
+				return exprObject;
+			} else {
+				throw new RuntimeException("The object is not a valid structure for attribute access.");
+			}
+			// Object subContextObject = context.get(attrAccess.getObject().toString());
+			// HashMap<String, Object> subContext = (HashMap<String, Object>)
+			// subContextObject;
+			// System.out.println("B");
+			// // Atribui o novo valor ao campo correspondente
+			// subContext.put(attrAccess.getAttr().getName(), exprObject);
 
-			// Atribui o novo valor ao campo correspondente
-			subContext.put(attrAccess.getAttr().getName(), exprObject);
-
-			return exprObject;
+			// return exprObject;
 		}
 
 		return exprObject;

@@ -50,26 +50,7 @@ public class ArrayAccess extends Expr {
 
 		}
 
-		// Não sei se é necessário ainda
-		// if (arrayValue instanceof Object[]) {
-		// Object[] array = (Object[]) arrayValue;
-
-		// Object indexValue = indexExpr.interpret(context);
-		// if (!(indexValue instanceof Integer)) {
-		// throw new RuntimeException("ArrayObject index must be an integer.");
-		// }
-
-		// int index = (Integer) indexValue;
-
-		// if (index < 0 || index >= array.length) {
-		// throw new RuntimeException("ArrayObject index out of bounds.");
-		// }
-
-		// return array[index];
-
-		// }
-
-		throw new RuntimeException("Expected an array or List but got " + arrayValue.getClass().getName());
-
+		// Caso base onde retorno da função tem tamanho 1
+		return arrayValue;
 	}
 }
