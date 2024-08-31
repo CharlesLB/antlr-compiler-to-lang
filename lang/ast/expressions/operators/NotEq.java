@@ -5,8 +5,19 @@ import java.util.HashMap;
 import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a operação de comparação de desigualdade entre duas
+ * expressões.
+ * 
+ * @Expr Expr != Expr
+ * 
+ * @Example 2 != 1
+ * @Example 1.0 != 2.0
+ * @Example true != false
+ * @Example 'a' != 'b'
+ * @Example 'a' != null -> Null values cannot be compared GABRIELLA, por que?
+ */
 public class NotEq extends BinOP {
-
 	public NotEq(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}

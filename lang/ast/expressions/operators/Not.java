@@ -4,6 +4,15 @@ import java.util.HashMap;
 
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a operação de negação lógica de uma expressão.
+ * 
+ * @Expr !Expr
+ * 
+ * @Example !true
+ * @Error !1 -> Unsupported type for logical negation: java.lang.Integer
+ * @Error !null -> Null value cannot be negated
+ */
 public class Not extends Expr {
 
 	private Expr expr;

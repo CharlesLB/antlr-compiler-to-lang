@@ -5,8 +5,21 @@ import java.util.HashMap;
 import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a comparação de menor que entre duas expressões.
+ * 
+ * @Expr Expr < Expr
+ * 
+ * @Example 2 < 1
+ * @Example 1.0 < 2.0
+ * @Example 'a' < 'b'
+ * @Example false < true
+ * 
+ * @Error Null < 1 -> Null values cannot be compared
+ * @Error 1 < null -> Null values cannot be compared
+ * @Error 1 < 2.0 -> Unsupported type for comparison: java.lang.Integer
+ */
 public class LessThan extends BinOP {
-
 	public LessThan(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}

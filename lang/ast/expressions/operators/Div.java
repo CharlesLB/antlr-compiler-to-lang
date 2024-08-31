@@ -5,8 +5,18 @@ import java.util.HashMap;
 import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a divisão de duas expressões.
+ * 
+ * @Expr Expr / Expr
+ * 
+ * @Example 2 / 1
+ * @Example 1.0 / 2.0
+ * @Error Int / Float -> Unsupported types for division
+ * @Error Null / 1 -> Null values cannot be used in division
+ * @Error 1 / 0 -> Division by zero
+ */
 public class Div extends BinOP {
-
 	public Div(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}

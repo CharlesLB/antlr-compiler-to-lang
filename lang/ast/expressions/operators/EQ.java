@@ -5,8 +5,18 @@ import java.util.HashMap;
 import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a comparação de igualdade entre duas expressões.
+ * 
+ * @Expr Expr == Expr
+ * 
+ * @Example 2 == 1
+ * @Example 1.0 == 2.0
+ * @Example true == false
+ * @Example 'a' == 'b'
+ * @Example 'a' == null
+ */
 public class EQ extends BinOP {
-
 	public EQ(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}
