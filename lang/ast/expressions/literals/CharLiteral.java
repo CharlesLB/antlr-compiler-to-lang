@@ -23,11 +23,8 @@ public class CharLiteral extends Expr {
 		String strippedValue = value.substring(1, value.length() - 1);
 
 		if (strippedValue.equals("\\n")) {
-			System.out.println("Node CharLiteral /n: " + strippedValue);
 			return "\n";
 		}
-
-		System.out.println("Node CharLiteral: " + strippedValue);
 		return strippedValue;
 	}
 }
