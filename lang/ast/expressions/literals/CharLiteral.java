@@ -13,9 +13,9 @@ import lang.ast.definitions.Expr;
  * @Example '\n'
  */
 public class CharLiteral extends Expr {
-	private char value;
+	private String value;
 
-	public CharLiteral(int lin, int col, char value) {
+	public CharLiteral(int lin, int col, String value) {
 		super(lin, col);
 		this.value = value;
 	}
@@ -27,7 +27,11 @@ public class CharLiteral extends Expr {
 
 	@Override
 	public Object interpret(HashMap<String, Object> m) {
-		System.out.println("Node CharLiteral: " + value);
-		return value; // Retorna o valor do caractere, que pode ser tratado como seu valor ASCII
+		String strippedValue = value.substring(1, value.length() - 1);
+
+		if (strippedValue.equals("\\n")) {
+			return "\n";
+		}
+		return strippedValue;
 	}
 }

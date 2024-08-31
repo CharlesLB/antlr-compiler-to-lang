@@ -74,10 +74,10 @@ WS: [ \t\b\n\r]+ -> skip;
 LINE_COMMENT: '--' ~[\r\n]* -> skip;
 COMMENT: '{-' ~[}]* '-}' -> skip;
 
-// Character literals
 fragment CHAR_SINGLE_QUOTE_CONTENT:
-	~['\\] // Qualquer caractere, exceto aspas simples e barra invertida
-	| '\\' .; // Um caractere de escape, como '\n', '\t', etc.
+	~['\\\r\n] // Qualquer caractere, exceto aspas simples, barra invertida e quebras de linha
+	| '\\' [btnrf\\'"] // Captura escapes como \b, \t, \n, \r, \f, \\, \', \"
+	| '\\' [\r\n]; // Captura especificamente a sequência de escape para nova linha
 
 CHAR_LITERAL: '\'' CHAR_SINGLE_QUOTE_CONTENT '\'';
 
@@ -88,10 +88,3 @@ INT: [0-9]+;
 FLOAT: [+-]? [0-9]+ '.' [0-9]*;
 IDENT_UPPERCASE: ALPHA_UPPERCASE (ALPHA | [0-9] | '_')*;
 IDENT_LOWERCASE: ALPHA_LOWERCASE (ALPHA | [0-9] | '_')*;
-
-CHAR_NEWLINE: '\\n';
-CHAR_TAB: '\\t';
-CHAR_BACKSPACE: '\\b';
-CHAR_CARRIAGE: '\\r';
-CHAR_BACKSLASH: '\\\\';
-CHAR_QUOTE: '\\\'';

@@ -13,9 +13,9 @@ import lang.ast.definitions.Expr;
  * @Example false
  */
 public class BoolLiteral extends Expr {
-	private boolean value;
+	private Boolean value;
 
-	public BoolLiteral(int lin, int col, boolean value) {
+	public BoolLiteral(int lin, int col, Boolean value) {
 		super(lin, col);
 		this.value = value;
 	}
@@ -27,8 +27,8 @@ public class BoolLiteral extends Expr {
 
 	@Override
 	public Object interpret(HashMap<String, Object> m) {
-		Object aux = value ? 1 : 0;
+		Object aux = value ? true : false;
 		System.out.println("Node BoolLiteral: " + aux.toString());
-		return value ? 1 : 0; // Retorna 1 para true, 0 para false
+		return value ? true : false; // Retorna 1 para true, 0 para false
 	}
 }

@@ -205,8 +205,8 @@ lvalue
 	| lv = lvalue '[' exp = expr ']' { 
         $ast = new ArrayAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $exp.ast); 
     }
-	| lv = lvalue '.' field = ID { 
-        $ast = new FieldAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($field.line, $field.pos, $field.text)); 
+	| lv = lvalue '.' attr = ID { 
+        $ast = new AttrAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($attr.line, $attr.pos, $attr.text)); 
     };
 
 // exps: expr (',' expr)*;
@@ -296,7 +296,7 @@ factor
         $ast = new FloatLiteral($FLOAT_LITERAL.line, $FLOAT_LITERAL.pos, Float.parseFloat($FLOAT_LITERAL.text));
     }
 	| CHAR_LITERAL {
-        $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text.charAt(1)); 
+        $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text); 
     }
 	| '(' expr ')' {
         $ast = $expr.ast;

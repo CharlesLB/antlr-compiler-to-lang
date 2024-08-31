@@ -5,7 +5,7 @@ package lang.ast.lvalue;
  * LValue = Expr
  */
 
-import java.util.HashMap;
+import java.util.*;
 
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
@@ -39,17 +39,17 @@ public class AssignLValue extends Cmd {
 		System.out.println("Node AssignLValue: " + id + " -- " + exprObject);
 
 		if (id instanceof IDLValue) {
-			System.out.println("IDLValue");
 			IDLValue variable = (IDLValue) id;
 			context.put(variable.getName(), exprObject);
 		}
 
 		if (id instanceof ArrayAccessLValue) {
+			System.out.println("Array");
 			ArrayAccessLValue arrayAccess = (ArrayAccessLValue) id;
 
 			Object arrayObject = arrayAccess.getArray().interpret(context);
+			System.out.println("ArrayObject: " + arrayObject);
 
-			System.out.println(arrayObject);
 			if (arrayObject instanceof Object[]) {
 				Object[] array = (Object[]) arrayObject;
 				Object indexValue = arrayAccess.getIndex().interpret(context);
@@ -58,37 +58,38 @@ public class AssignLValue extends Cmd {
 					int index = (Integer) indexValue;
 
 					if (index >= 0 && index < array.length) {
+						System.out.println("Bs " + array + "[" + index + "]" + exprObject.getClass());
+						array[index] = new HashMap<String, Object>();
 						array[index] = exprObject;
-						System.out.println("Sucess " + array[index]);
+
+					} else {
+						throw new RuntimeException("ArrayList index out of bounds.");
 					}
 				}
 			}
 		}
 
-		if (id instanceof FieldAccessLValue) {
-			FieldAccessLValue fieldAccess = (FieldAccessLValue) id;
+		if (id instanceof AttrAccessLValue) {
+			AttrAccessLValue attrAccess = (AttrAccessLValue) id;
+			System.out.println("B");
 
-			// Interpreta a estrutura base (ex: `x` em `x.x`)
-			Object baseObject = fieldAccess.getField().interpret(context);
+			Object objectObject = attrAccess.getObject().interpret(context);
+			if (objectObject instanceof HashMap) {
+				@SuppressWarnings("unchecked")
+				HashMap<String, Object> subContext = (HashMap<String, Object>) objectObject;
+				subContext.put(attrAccess.getAttr().getName(), exprObject);
+				return exprObject;
+			} else {
+				throw new RuntimeException("The object is not a valid structure for attribute access.");
+			}
+			// Object subContextObject = context.get(attrAccess.getObject().toString());
+			// HashMap<String, Object> subContext = (HashMap<String, Object>)
+			// subContextObject;
+			// System.out.println("B");
+			// // Atribui o novo valor ao campo correspondente
+			// subContext.put(attrAccess.getAttr().getName(), exprObject);
 
-			System.out.println("> " + fieldAccess + " . " + baseObject);
-
-			// if (!(baseObject instanceof HashMap)) {
-			// throw new RuntimeException("O objeto base não é uma estrutura válida para
-			// atribuição.");
-			// }
-
-			@SuppressWarnings("unchecked")
-			HashMap<String, Object> objectMap = (HashMap<String, Object>) baseObject;
-
-			String fieldName = fieldAccess.getField().getName();
-
-			System.out.println("Assign Field: " + fieldName + " = " + exprObject);
-
-			// Atribui o novo valor ao campo correspondente
-			objectMap.put(fieldName, exprObject);
-
-			return exprObject;
+			// return exprObject;
 		}
 
 		return exprObject;

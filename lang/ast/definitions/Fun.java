@@ -81,8 +81,6 @@ public class Fun extends Node {
 			}
 		}
 
-		System.out.println("AAAAAA");
-
 		// Executa o corpo da função
 		Object returnValue = 0;
 		for (Cmd cmd : body) {
