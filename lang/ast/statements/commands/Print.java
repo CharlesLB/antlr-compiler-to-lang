@@ -22,7 +22,7 @@ public class Print extends Cmd {
 	@Override
 	public Object interpret(HashMap<String, Object> m) {
 		Object value = expr.interpret(m);
-		System.out.println(value); // Imprime o valor da expressão
+		System.out.print(value); // Imprime o valor da expressão
 		return value;
 	}
 }
