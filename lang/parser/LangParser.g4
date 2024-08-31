@@ -205,8 +205,8 @@ lvalue
 	| lv = lvalue '[' exp = expr ']' { 
         $ast = new ArrayAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $exp.ast); 
     }
-	| lv = lvalue '.' field = ID { 
-        $ast = new FieldAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($field.line, $field.pos, $field.text)); 
+	| lv = lvalue '.' attr = ID { 
+        $ast = new AttrAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($attr.line, $attr.pos, $attr.text)); 
     };
 
 // exps: expr (',' expr)*;
