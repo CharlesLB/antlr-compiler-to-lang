@@ -4,8 +4,16 @@ import java.util.HashMap;
 
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa um literal inteiro.
+ * 
+ * @Expr int
+ * 
+ * @Example 1
+ * @Example 42
+ * @Example -1
+ */
 public class IntLiteral extends Expr {
-
 	private int value;
 
 	public IntLiteral(int value, int c, int v) {

@@ -4,8 +4,15 @@ import java.util.HashMap;
 
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa um literal caractere.
+ * 
+ * @Expr 'char'
+ * 
+ * @Example 'a'
+ * @Example '\n'
+ */
 public class CharLiteral extends Expr {
-
 	private char value;
 
 	public CharLiteral(int lin, int col, char value) {
