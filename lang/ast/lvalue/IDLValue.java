@@ -1,6 +1,6 @@
 package lang.ast.lvalue;
 
-import java.util.HashMap;
+import java.util.*;
 
 /*EX: x = 10; */
 public class IDLValue extends LValue {
