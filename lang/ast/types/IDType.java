@@ -22,6 +22,7 @@ public class IDType extends Type {
 	}
 
 	public Object interpret(HashMap<String, Object> context) {
+		System.out.println("Node IDType");
 		return context.get(id);
 	}
 }

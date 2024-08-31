@@ -5,6 +5,7 @@ import java.util.List;
 import lang.ast.Node;
 import lang.ast.expressions.ID;
 import lang.ast.statements.data.Decl;
+import lang.symbols.DataTable;
 
 import java.util.HashMap;
 
@@ -48,7 +49,18 @@ public class Data extends Node {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		return 1; // Mudar
+		HashMap<String, Object> localContext = new HashMap<String, Object>();
+
+		for (Decl decl : declarations) {
+			localContext.put(decl.getID().getName(), decl.getType());
+		}
+
+		context.put(id.getName(), localContext);
+
+		DataTable.getInstance().addData(this);
+		System.out.println("Data structure " + id.getName() + " has been defined.");
+
+		return null;
 	}
 
 }

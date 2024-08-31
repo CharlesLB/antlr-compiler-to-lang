@@ -77,9 +77,11 @@ public class Fun extends Node {
 			for (Param param : params) {
 				// Verifica se o param existe no contexto da função
 				Object argValue = param.interpret(localContext);
-				// context.put(param.getID().getName(), argValue);
+				// localContext.put(param.getID().getName(), argValue);
 			}
 		}
+
+		System.out.println("AAAAAA");
 
 		// Executa o corpo da função
 		Object returnValue = 0;

@@ -27,7 +27,6 @@ prog
 
 stmt
 	returns[Node ast]: d = def {$ast = $d.ast;};
-
 // def: data | fun;
 def
 	returns[Node ast]:

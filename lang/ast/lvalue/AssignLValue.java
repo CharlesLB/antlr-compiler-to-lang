@@ -64,6 +64,33 @@ public class AssignLValue extends Cmd {
 				}
 			}
 		}
+
+		if (id instanceof FieldAccessLValue) {
+			FieldAccessLValue fieldAccess = (FieldAccessLValue) id;
+
+			// Interpreta a estrutura base (ex: `x` em `x.x`)
+			Object baseObject = fieldAccess.getField().interpret(context);
+
+			System.out.println("> " + fieldAccess + " . " + baseObject);
+
+			// if (!(baseObject instanceof HashMap)) {
+			// throw new RuntimeException("O objeto base não é uma estrutura válida para
+			// atribuição.");
+			// }
+
+			@SuppressWarnings("unchecked")
+			HashMap<String, Object> objectMap = (HashMap<String, Object>) baseObject;
+
+			String fieldName = fieldAccess.getField().getName();
+
+			System.out.println("Assign Field: " + fieldName + " = " + exprObject);
+
+			// Atribui o novo valor ao campo correspondente
+			objectMap.put(fieldName, exprObject);
+
+			return exprObject;
+		}
+
 		return exprObject;
 
 	}

@@ -6,10 +6,12 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.*;
 import lang.ast.*;
+import lang.ast.definitions.Data;
 import lang.ast.definitions.Fun;
 import lang.ast.definitions.StmtList;
 import lang.parser.LangLexer;
 import lang.parser.LangParser;
+import lang.symbols.DataTable;
 import lang.symbols.FunctionTable;
 
 public class LangParserAdaptor implements ParseAdaptor {
@@ -61,6 +63,10 @@ public class LangParserAdaptor implements ParseAdaptor {
                 declareFunctions(ast, functionTable);
                 functionTable.print();
 
+                DataTable dataTable = DataTable.getInstance();
+                declareDatas(ast, dataTable);
+                dataTable.print();
+
                 // HashMap<String, Object> m = new HashMap<String, Object>();
                 // Object result = ast.interpret(m);
 
@@ -84,6 +90,33 @@ public class LangParserAdaptor implements ParseAdaptor {
             System.out.println("Error parsing file: " + e.getMessage());
             // e.printStackTrace();
             return null;
+        }
+    }
+
+    public void declareDatas(Node ast, DataTable dataTable) {
+        if (ast instanceof StmtList) {
+            StmtList stmtList = (StmtList) ast;
+
+            // Verifica se cmd1 é uma função
+            if (stmtList.getCmd1() instanceof Data) {
+                Data data = (Data) stmtList.getCmd1();
+                dataTable.addData(data);
+            }
+
+            // Verifica se cmd2 é uma função, se cmd2 não for nulo
+            if (stmtList.getCmd2() != null && stmtList.getCmd2() instanceof Data) {
+                Data data = (Data) stmtList.getCmd2();
+                dataTable.addData(data);
+            }
+
+            // Recursivamente verifica se cmd1 ou cmd2 são outros StmtList
+            if (stmtList.getCmd1() instanceof StmtList) {
+                declareDatas(stmtList.getCmd1(), dataTable);
+            }
+
+            if (stmtList.getCmd2() instanceof StmtList) {
+                declareDatas(stmtList.getCmd2(), dataTable);
+            }
         }
     }
 
