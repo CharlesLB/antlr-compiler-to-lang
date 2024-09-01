@@ -8,6 +8,10 @@ import java.util.HashMap;
 
 import lang.ast.Node;
 
+/**
+ * Representa uma lista de comandos. É quem vai chamar a execução de cada
+ * comando.
+ */
 public class StmtList extends Node {
 
 	private Node cmd1;

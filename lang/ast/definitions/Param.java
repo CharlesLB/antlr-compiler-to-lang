@@ -8,6 +8,13 @@ import lang.ast.statements.data.Decl;
 import lang.symbols.DataTable;
 import lang.symbols.FunctionTable;
 
+/**
+ * Representa a definição do parâmetro de uma função.
+ * 
+ * @Parser ID ‘::’ type {‘,’ ID ‘::’ type}
+ * 
+ * @Example a :: Int, b :: Int
+ */
 public class Param extends Node {
 	private ID id;
 	private Type t;
