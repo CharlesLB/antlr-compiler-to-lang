@@ -34,14 +34,6 @@ public class NewObject extends Expr {
 		return "new " + type.toString();
 	}
 
-	// @Override
-	// public Object interpret(HashMap<String, Object> context) {
-	// HashMap<String, Object> newObject = new HashMap<>();
-
-	// System.out.println("Node NewObject NÃO IMPLEMENTADO ");
-
-	// return newObject;
-	// }
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		String typeName = this.getType().toString();
@@ -80,39 +72,15 @@ public class NewObject extends Expr {
 
 			HashMap<String, Object> newObject = new HashMap<String, Object>();
 
-			// // Inicialize os campos da nova estrutura com valores nulos
+			// Inicializa os campos da nova estrutura com valores nulos
 			for (Decl decl : dataDefinition.getDeclarations()) {
 				String attrName = decl.getID().getName();
 
 				Object initialValue = null;
 				newObject.put(attrName, initialValue);
-
-				System.out.println("Campo '" + attrName + "' inicializado com valor: " +
-						initialValue);
 			}
 
 			return newObject;
 		}
 	}
-
-	// Método auxiliar para obter o valor padrão para um tipo específico
-	// private Object getDefaultValueForType(Type type) {
-	// String typeName = type.getName();
-
-	// switch (typeName) {
-	// case "Int":
-	// return 0;
-	// case "Float":
-	// return 0.0f;
-	// case "Char":
-	// return '\0';
-	// case "Bool":
-	// return false;
-	// // Adicione outros tipos conforme necessário
-	// default:
-	// return null; // Para tipos complexos, inicialize como null ou recursivamente
-	// como um novo
-	// // objeto
-	// }
-	// }
 }

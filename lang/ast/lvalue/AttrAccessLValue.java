@@ -33,8 +33,6 @@ public class AttrAccessLValue extends LValue {
 	public Object interpret(HashMap<String, Object> context) {
 		Object objectObject = object.interpret(context);
 
-		System.out.println("Entrando AttrAcessLValue");
-
 		if (!(objectObject instanceof HashMap)) {
 			throw new RuntimeException("The object object is not a valid structure for attr access.");
 		}
@@ -49,8 +47,6 @@ public class AttrAccessLValue extends LValue {
 		}
 
 		Object attrValue = objectMap.get(attrName);
-
-		System.out.println("Saindo AttrAcessLValue");
 
 		if (attrValue instanceof Node) {
 			return ((Node) attrValue).interpret(context);

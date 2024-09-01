@@ -77,28 +77,27 @@ public class Fun extends Node {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		System.out.println("----- Entrando Função: " + this.getName() + " ----");
-
 		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
 
 		if (params != null) {
 			for (Param param : params) {
 				// Verifica se o param existe no contexto da função
-				Object argValue = param.interpret(localContext);
-				// localContext.put(param.getID().getName(), argValue);
+				param.interpret(localContext);
 			}
 		}
 
 		// Executa o corpo da função
 		Object returnValue = 0;
 		for (Cmd cmd : body) {
-			returnValue = cmd.interpret(localContext); // Usa o contexto local
+			returnValue = cmd.interpret(localContext);
+
+			// Condição para funções recursivas
+			if (returnValue != null) {
+				break;
+			}
 		}
 
-		System.out.println("----- Saindo Função: " + this.getName() + " ---- ");
-
 		return returnValue;
-
 	}
 
 }

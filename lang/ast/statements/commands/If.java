@@ -62,18 +62,12 @@ public class If extends Cmd {
 	public Object interpret(HashMap<String, Object> context) {
 		Object conditionResult = exp.interpret(context);
 
-		System.out.println("--- Entrando no IF --- " + conditionResult);
-
 		if (conditionResult instanceof Boolean) {
 			if ((Boolean) conditionResult) {
-				System.out.println("--- Entrando no THEN --- " + thn);
 				Object thenResult = thn.interpret(context);
-				System.out.println("--- Resultado THEN --- " + thenResult);
 				return thenResult;
 			} else if (els != null) {
-				System.out.println("--- Entrando no ELSE --- " + els);
 				Object elseResult = els.interpret(context);
-				System.out.println("--- Resultado ELSE --- " + elseResult);
 				return elseResult;
 			}
 		} else {

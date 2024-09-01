@@ -35,35 +35,11 @@ public class Param extends Node {
 		return t;
 	}
 
-	// @Override
-	// public String toString() {
-	// return id.toString() + " :: " + t.toString();
-	// }
-
-	// @Override
-	// public Object interpret(HashMap<String, Object> context) {
-	// String paramName = id.getName();
-
-	// System.out.println("--- Node Param --- " + paramName);
-
-	// if (context.containsKey(paramName)) {
-	// System.out.println("Saindo Node Param");
-	// return context.get(paramName);
-	// } else {
-	// System.out.println("Else Node Param - " + id.getName() + " " + t);
-	// context.put(id.getName(), t);
-	// }
-
-	// return context;
-	// }
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		String paramName = id.getName();
 
-		System.out.println("--- Node Param --- " + paramName);
-
 		if (context.containsKey(paramName)) {
-			System.out.println("Saindo Node Param");
 			return context.get(paramName);
 		}
 
@@ -90,7 +66,6 @@ public class Param extends Node {
 			}
 
 			context.put(paramName, defaultValue);
-			System.out.println("Parametro básico " + id.getName() + " registrado com tipo " + t);
 			return context.get(paramName);
 		}
 		// Verifica se o tipo é um MatrixType de Data
@@ -106,14 +81,11 @@ public class Param extends Node {
 			int dimensions = ((MatrixType) t).getDimensions();
 			Object[] dataMatrix = initializeDataMatrix(dimensions, data);
 			context.put(paramName, dataMatrix);
-			System.out.println("Estrutura de dados " + id.getName() + " inicializada como matriz.");
 
 			return context.get(paramName);
 		}
 		// Verifica se o tipo é um Data comum
 		else {
-			System.out.println("Else Node Param - " + id.getName() + "  " + t);
-
 			Data data = DataTable.getInstance().getData(t.toString());
 
 			if (data == null) {
@@ -126,7 +98,6 @@ public class Param extends Node {
 				dataInstance.put(decl.getID().getName(), decl.getType());
 			}
 			context.put(paramName, dataInstance);
-			System.out.println("Estrutura de dados " + id.getName() + " inicializada.");
 
 			return context.get(paramName);
 		}

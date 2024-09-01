@@ -33,8 +33,6 @@ public class EQ extends BinOP {
 		Object leftValue = getLeft().interpret(m);
 		Object rightValue = getRight().interpret(m);
 
-		System.out.println("--- Node EQ");
-
 		if (leftValue == null || rightValue == null) {
 			return (leftValue == rightValue) ? true : false;
 		}

@@ -47,7 +47,6 @@ public class MatrixType extends Type {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		System.out.println("--Node MatrixType");
 		return context.get(baseType);
 	}
 }

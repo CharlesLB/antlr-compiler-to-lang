@@ -52,8 +52,6 @@ public class NewArray extends Expr {
 			newArray[i] = getDefaultValueForType(type.toString());
 		}
 
-		System.out.println("Node NewArray: " + newArray + "  Tamanho: " + size);
-
 		return newArray;
 	}
 

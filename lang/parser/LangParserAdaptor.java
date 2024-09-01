@@ -22,20 +22,13 @@ public class LangParserAdaptor implements ParseAdaptor {
 
             CharStream stream = CharStreams.fromFileName(path);
 
-            System.out.println("Parsing file: " + path);
+            // System.out.println("Parsing file: " + path);
 
             LangLexer lexer = new LangLexer(stream);
             lexer.removeErrorListeners();
             lexer.addErrorListener(ThrowingError.INSTANCE);
 
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            tokens.fill();
-
-            // for (Token token : tokens.getTokens()) {
-            // System.out.println("Token: " + token.getType() + " " + token.getText());
-            // }
-
-            // System.out.println("\n\n\n");
 
             LangParser parser = new LangParser(tokens);
             parser.removeErrorListeners();
@@ -43,13 +36,6 @@ public class LangParserAdaptor implements ParseAdaptor {
 
             try {
                 parser.setBuildParseTree(false);
-
-                // for (int i = 0; i < tokens.size(); i++) {
-                // Token token = tokens.get(i);
-                // System.out.println("Token: " + token.getText() + " " + token.getType());
-                // }
-
-                // System.out.println(tree.toStringTree(parser));
 
                 Node ast = parser.prog().ast;
 
@@ -65,10 +51,8 @@ public class LangParserAdaptor implements ParseAdaptor {
                 System.err.println("Erro de parsing: " + e.getMessage());
                 return null;
             }
-
         } catch (Exception e) {
             System.out.println("Error parsing file: " + e.getMessage());
-            // e.printStackTrace();
             return null;
         }
     }
@@ -131,12 +115,12 @@ public class LangParserAdaptor implements ParseAdaptor {
         FunctionTable.resetInstance();
         FunctionTable functionTable = FunctionTable.getInstance();
         declareFunctions(ast, functionTable);
-        functionTable.print();
+        // functionTable.print();
 
         DataTable.resetInstance();
         DataTable dataTable = DataTable.getInstance();
         declareDatas(ast, dataTable);
-        dataTable.print();
+        // dataTable.print();
 
         Fun mainFunction = functionTable.getMainFunction();
         if (mainFunction == null) {
@@ -144,7 +128,7 @@ public class LangParserAdaptor implements ParseAdaptor {
         }
 
         HashMap<String, Object> globalContext = new HashMap<>();
-        System.out.println("Chamando programa...");
+        // System.out.println("Chamando programa...");
         mainFunction.interpret(globalContext);
     }
 }
