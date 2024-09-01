@@ -44,7 +44,6 @@ DIVIDE: '/';
 LESS_THAN: '<';
 GREATER_THAN: '>';
 DOUBLE_AMPERSAND: '&&';
-AMPERSAND: '&';
 EXCLAMATION_MARK: '!';
 
 // Identifiers and literals
