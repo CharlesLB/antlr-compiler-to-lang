@@ -20,6 +20,10 @@ public class DataTable {
 		return instance;
 	}
 
+	public static void resetInstance() {
+		instance = null;
+	}
+
 	public void addData(Data data) {
 		ID IDData = data.getID();
 		dataMap.put(IDData.getName(), data);
@@ -27,6 +31,10 @@ public class DataTable {
 
 	public Data getData(String name) {
 		return dataMap.get(name);
+	}
+
+	public Map<String, Data> getDataMap() {
+		return dataMap;
 	}
 
 	public void print() {

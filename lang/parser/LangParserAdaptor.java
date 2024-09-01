@@ -57,28 +57,8 @@ public class LangParserAdaptor implements ParseAdaptor {
                     System.err.println("Parsing failed for file: " + path);
                     return null;
                 }
-                System.out.println(ast);
 
-                FunctionTable functionTable = FunctionTable.getInstance();
-                declareFunctions(ast, functionTable);
-                functionTable.print();
-
-                DataTable dataTable = DataTable.getInstance();
-                declareDatas(ast, dataTable);
-                dataTable.print();
-
-                // HashMap<String, Object> m = new HashMap<String, Object>();
-                // Object result = ast.interpret(m);
-
-                Fun mainFunction = functionTable.getFunction("main");
-                if (mainFunction == null) {
-                    throw new RuntimeException("Função main não definida.");
-                }
-
-                // Executa a função main
-                HashMap<String, Object> globalContext = new HashMap<String, Object>();
-                System.out.println("Chamando main...");
-                mainFunction.interpret(globalContext);
+                interpreterRunner(ast);
 
                 return ast;
             } catch (ParseCancellationException e) {
@@ -145,5 +125,26 @@ public class LangParserAdaptor implements ParseAdaptor {
                 declareFunctions(stmtList.getCmd2(), functionTable);
             }
         }
+    }
+
+    public void interpreterRunner(Node ast) {
+        FunctionTable.resetInstance();
+        FunctionTable functionTable = FunctionTable.getInstance();
+        declareFunctions(ast, functionTable);
+        functionTable.print();
+
+        DataTable.resetInstance();
+        DataTable dataTable = DataTable.getInstance();
+        declareDatas(ast, dataTable);
+        dataTable.print();
+
+        Fun mainFunction = functionTable.getMainFunction();
+        if (mainFunction == null) {
+            throw new RuntimeException("Função main não definida.");
+        }
+
+        HashMap<String, Object> globalContext = new HashMap<>();
+        System.out.println("Chamando programa...");
+        mainFunction.interpret(globalContext);
     }
 }

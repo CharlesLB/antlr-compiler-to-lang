@@ -36,6 +36,10 @@ public class NewArray extends Expr {
 		}
 
 		int size = (Integer) sizeValue;
+		if (size == 0) {
+			size = 100;
+		}
+
 		Object[] newArray = new Object[size];
 		for (int i = 0; i < size; i++) {
 			newArray[i] = getDefaultValueForType(type.toString());

@@ -78,6 +78,7 @@ public class Fun extends Node {
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		System.out.println("----- Entrando Função: " + this.getName() + " ----");
+
 		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
 
 		if (params != null) {
