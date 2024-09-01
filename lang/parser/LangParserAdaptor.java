@@ -15,6 +15,8 @@ import lang.ast.symbols.FunctionTable;
 
 public class LangParserAdaptor implements ParseAdaptor {
 
+    public Boolean skipOnSintaticTest = false;
+
     @Override
     public SuperNode parseFile(String path) {
         try {
@@ -38,6 +40,10 @@ public class LangParserAdaptor implements ParseAdaptor {
                 if (ast == null) {
                     System.err.println("Parsing failed for file: " + path);
                     return null;
+                }
+
+                if (skipOnSintaticTest) {
+                    return ast;
                 }
 
                 interpreterRunner(ast);
@@ -127,12 +133,10 @@ public class LangParserAdaptor implements ParseAdaptor {
         FunctionTable.resetInstance();
         FunctionTable functionTable = FunctionTable.getInstance();
         declareFunctions(ast, functionTable);
-        // functionTable.print();
 
         DataTable.resetInstance();
         DataTable dataTable = DataTable.getInstance();
         declareDatas(ast, dataTable);
-        // dataTable.print();
 
         Fun mainFunction = functionTable.getMainFunction();
         if (mainFunction == null) {
@@ -140,6 +144,7 @@ public class LangParserAdaptor implements ParseAdaptor {
         }
 
         HashMap<String, Object> globalContext = new HashMap<>();
+
         mainFunction.interpret(globalContext);
     }
 }

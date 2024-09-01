@@ -26,7 +26,15 @@ Este trabalho foi desenvolvido como parte da disciplina DCC045 - Teoria dos comp
 Rode o comando:
 
 ```bash
-make run -bs
+make compile
+
+java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
+java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bty
+java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bsm
+
+#  ou
+
+make run # java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
 ```
 
 ### Como rodar apenas o Parser
