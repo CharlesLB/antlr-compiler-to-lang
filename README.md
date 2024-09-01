@@ -23,10 +23,19 @@ Este trabalho foi desenvolvido como parte da disciplina DCC045 - Teoria dos comp
 
 ### How to run
 
+Rode o comando:
+
 ```bash
 make run -bs
 ```
 
-You can change the input file in the ./lang/parser/TestParser.java file.
+### Como rodar apenas o Parser
+
+Caso seja de interesse testar apenas o Parser, basta:
+
+1. Comente a chamada da classe `InterpreterRunner`
+2. Altere os diretórios no TestParse.java.
+
+Vale um adendo que o Parser deve funcionar com todos os diretórios de sucesso, inclusive o semântico.
 
 
