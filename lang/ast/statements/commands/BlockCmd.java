@@ -3,6 +3,8 @@ package lang.ast.statements.commands;
 import java.util.HashMap;
 import java.util.List;
 
+import lang.ast.definitions.Cmd;
+
 public class BlockCmd extends Cmd {
 	private List<Cmd> commands;
 
@@ -27,7 +29,11 @@ public class BlockCmd extends Cmd {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1; // Tem que mudar
+	public Object interpret(HashMap<String, Object> context) {
+		Object lastResult = null;
+		for (Cmd command : commands) {
+			lastResult = command.interpret(context);
+		}
+		return lastResult;
 	}
 }

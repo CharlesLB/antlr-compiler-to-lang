@@ -5,10 +5,10 @@ package lang.ast.lvalue;
  * LValue = Expr
  */
 
-import java.util.HashMap;
+import java.util.*;
 
-import lang.ast.expressions.Expr;
-import lang.ast.statements.commands.Cmd;
+import lang.ast.definitions.Cmd;
+import lang.ast.definitions.Expr;
 
 public class AssignLValue extends Cmd {
 
@@ -33,8 +33,66 @@ public class AssignLValue extends Cmd {
 		return id.toString() + " = " + e.toString();
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		int x = e.interpret(m);
-		return x;
+	public Object interpret(HashMap<String, Object> context) {
+		Object exprObject = e.interpret(context);
+
+		System.out.println("Node AssignLValue: " + id + " -- " + exprObject);
+
+		if (id instanceof IDLValue) {
+			IDLValue variable = (IDLValue) id;
+			context.put(variable.getName(), exprObject);
+		}
+
+		if (id instanceof ArrayAccessLValue) {
+			System.out.println("Array");
+			ArrayAccessLValue arrayAccess = (ArrayAccessLValue) id;
+
+			Object arrayObject = arrayAccess.getArray().interpret(context);
+			System.out.println("ArrayObject: " + arrayObject);
+
+			if (arrayObject instanceof Object[]) {
+				Object[] array = (Object[]) arrayObject;
+				Object indexValue = arrayAccess.getIndex().interpret(context);
+
+				if (indexValue instanceof Integer) {
+					int index = (Integer) indexValue;
+
+					if (index >= 0 && index < array.length) {
+						System.out.println("Bs " + array + "[" + index + "]" + exprObject.getClass());
+						array[index] = new HashMap<String, Object>();
+						array[index] = exprObject;
+
+					} else {
+						throw new RuntimeException("ArrayList index out of bounds.");
+					}
+				}
+			}
+		}
+
+		if (id instanceof AttrAccessLValue) {
+			AttrAccessLValue attrAccess = (AttrAccessLValue) id;
+			System.out.println("B");
+
+			Object objectObject = attrAccess.getObject().interpret(context);
+			if (objectObject instanceof HashMap) {
+				@SuppressWarnings("unchecked")
+				HashMap<String, Object> subContext = (HashMap<String, Object>) objectObject;
+				subContext.put(attrAccess.getAttr().getName(), exprObject);
+				return exprObject;
+			} else {
+				throw new RuntimeException("The object is not a valid structure for attribute access.");
+			}
+			// Object subContextObject = context.get(attrAccess.getObject().toString());
+			// HashMap<String, Object> subContext = (HashMap<String, Object>)
+			// subContextObject;
+			// System.out.println("B");
+			// // Atribui o novo valor ao campo correspondente
+			// subContext.put(attrAccess.getAttr().getName(), exprObject);
+
+			// return exprObject;
+		}
+
+		return exprObject;
+
 	}
 }

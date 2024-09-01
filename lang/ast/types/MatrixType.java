@@ -2,6 +2,8 @@ package lang.ast.types;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Type;
+
 public class MatrixType extends Type {
 	private Type baseType; // O tipo base (ex: Int, Float, etc.)
 	private int dimensions;
@@ -35,7 +37,8 @@ public class MatrixType extends Type {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1;
+	public Object interpret(HashMap<String, Object> context) {
+		System.out.println("--Node MatrixType");
+		return context.get(baseType);
 	}
 }

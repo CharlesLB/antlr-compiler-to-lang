@@ -2,7 +2,7 @@ package lang.ast.lvalue;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
 public abstract class LValue extends Expr {
 
@@ -10,8 +10,5 @@ public abstract class LValue extends Expr {
 		super(l, c);
 	}
 
-	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1; // Tem que mudar
-	}
+	public abstract Object interpret(HashMap<String, Object> context);
 }

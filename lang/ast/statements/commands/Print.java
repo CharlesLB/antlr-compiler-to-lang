@@ -2,7 +2,8 @@ package lang.ast.statements.commands;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Cmd;
+import lang.ast.definitions.Expr;
 
 public class Print extends Cmd {
 
@@ -19,9 +20,9 @@ public class Print extends Cmd {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int value = expr.interpret(m);
-		System.out.println(value); // Imprime o valor da expressão
+	public Object interpret(HashMap<String, Object> m) {
+		Object value = expr.interpret(m);
+		System.out.print(value); // Imprime o valor da expressão
 		return value;
 	}
 }

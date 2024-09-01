@@ -2,6 +2,8 @@ package lang.ast.types;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Type;
+
 public class Btype extends Type {
 
 	private String type;
@@ -20,7 +22,7 @@ public class Btype extends Type {
 		return type;
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		return m.get(type);
+	public Object interpret(HashMap<String, Object> context) {
+		return context.get(type);
 	}
 }

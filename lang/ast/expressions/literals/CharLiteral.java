@@ -2,13 +2,20 @@ package lang.ast.expressions.literals;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa um literal caractere.
+ * 
+ * @Expr 'char'
+ * 
+ * @Example 'a'
+ * @Example '\n'
+ */
 public class CharLiteral extends Expr {
+	private String value;
 
-	private char value;
-
-	public CharLiteral(int lin, int col, char value) {
+	public CharLiteral(int lin, int col, String value) {
 		super(lin, col);
 		this.value = value;
 	}
@@ -19,7 +26,12 @@ public class CharLiteral extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		return value; // Retorna o valor do caractere, que pode ser tratado como seu valor ASCII
+	public Object interpret(HashMap<String, Object> m) {
+		String strippedValue = value.substring(1, value.length() - 1);
+
+		if (strippedValue.equals("\\n")) {
+			return "\n";
+		}
+		return strippedValue;
 	}
 }

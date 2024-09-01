@@ -2,7 +2,8 @@ package lang.ast.expressions;
 
 import java.util.HashMap;
 
-import lang.ast.types.Type;
+import lang.ast.definitions.Expr;
+import lang.ast.definitions.Type;
 
 public class NewArray extends Expr {
 	private Type type;
@@ -28,7 +29,28 @@ public class NewArray extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1; // Tem que mudar
+	public Object interpret(HashMap<String, Object> context) {
+		Object sizeValue = size.interpret(context);
+		if (!(sizeValue instanceof Integer)) {
+			throw new RuntimeException("Array size must be an integer.");
+		}
+
+		int size = (Integer) sizeValue;
+		if (size == 0) {
+			size = 100;
+		}
+
+		Object[] newArray = new Object[size];
+		for (int i = 0; i < size; i++) {
+			newArray[i] = getDefaultValueForType(type.toString());
+		}
+
+		System.out.println("Node NewArray: " + newArray + "  Tamanho: " + size);
+
+		return newArray;
+	}
+
+	private Object getDefaultValueForType(String typeName) {
+		return null;
 	}
 }

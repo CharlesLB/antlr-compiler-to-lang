@@ -2,7 +2,8 @@ package lang.ast.statements.commands;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Cmd;
+import lang.ast.definitions.Expr;
 
 public class Iterate extends Cmd {
 
@@ -21,12 +22,23 @@ public class Iterate extends Cmd {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int iterations = count.interpret(m);
-		int lastResult = 0;
-		for (int i = 0; i < iterations; i++) {
-			lastResult = body.interpret(m); // Executa e salva o resultado da última iteração
+	public Object interpret(HashMap<String, Object> context) {
+		Object countNumberIterations = count.interpret(context);
+
+		System.out.println("--- Inicio Iteração: " + countNumberIterations);
+		if (!(countNumberIterations instanceof Integer)) {
+			throw new RuntimeException("Count expression must evaluate to an integer.");
 		}
-		return lastResult; // Retorna o resultado da última iteração
+
+		int iterations = (Integer) countNumberIterations;
+		Object lastResult = null;
+
+		for (int i = 0; i < iterations; i++) {
+			System.out.println("Iteração " + (i + 1) + " de " + iterations);
+			lastResult = body.interpret(context);
+		}
+
+		System.out.println("--- Fim Iteração: " + lastResult);
+		return lastResult;
 	}
 }

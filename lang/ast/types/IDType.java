@@ -2,6 +2,8 @@ package lang.ast.types;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Type;
+
 public class IDType extends Type {
 	private String id;
 
@@ -19,7 +21,8 @@ public class IDType extends Type {
 		return id;
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		return m.get(id);
+	public Object interpret(HashMap<String, Object> context) {
+		System.out.println("Node IDType");
+		return context.get(id);
 	}
 }

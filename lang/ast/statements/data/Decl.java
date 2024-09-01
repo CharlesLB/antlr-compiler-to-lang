@@ -1,5 +1,7 @@
 package lang.ast.statements.data;
 
+import java.util.HashMap;
+
 import lang.ast.definitions.Data;
 import lang.ast.expressions.ID;
 import lang.ast.types.Btype;
@@ -35,13 +37,14 @@ public class Decl extends Data {
 		return id.toString() + " :: " + t.toString() + ";";
 	}
 
-	// // No interpretador, este Decl só precisa registrar o campo em uma estrutura
-	// de Data
-	// @Override
-	// public void interpret(HashMap<String, Integer> context) {
-	// // Esse nó Decl, no contexto da declaração de uma estrutura de dados, apenas
-	// // define o campo
-	// System.out.println("Field " + id.getName() + " with type " + t.toString() + "
-	// declared.");
-	// }
+	@Override
+	public Object interpret(HashMap<String, Object> context) {
+
+		context.put(id.getName(), t);
+
+		System.out.println("Node decl: " + t);
+
+		return context;
+	}
+
 }

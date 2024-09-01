@@ -1,13 +1,10 @@
-package lang.ast.statements;
+package lang.ast.definitions;
 
 import java.util.HashMap;
 import java.util.List;
 
 import lang.ast.Node;
-import lang.ast.definitions.Param;
 import lang.ast.expressions.ID;
-import lang.ast.statements.commands.Cmd;
-import lang.ast.types.Type;
 
 public class Fun extends Node {
 	private ID name;
@@ -72,7 +69,29 @@ public class Fun extends Node {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1; // Tem que mudar
+	public Object interpret(HashMap<String, Object> context) {
+		System.out.println("----- Entrando Função: " + this.getName() + " ----");
+
+		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
+
+		if (params != null) {
+			for (Param param : params) {
+				// Verifica se o param existe no contexto da função
+				Object argValue = param.interpret(localContext);
+				// localContext.put(param.getID().getName(), argValue);
+			}
+		}
+
+		// Executa o corpo da função
+		Object returnValue = 0;
+		for (Cmd cmd : body) {
+			returnValue = cmd.interpret(localContext); // Usa o contexto local
+		}
+
+		System.out.println("----- Saindo Função: " + this.getName() + " ---- ");
+
+		return returnValue;
+
 	}
+
 }

@@ -12,7 +12,7 @@ import lang.ast.expressions.*;
 import lang.ast.expressions.literals.*;
 import lang.ast.expressions.operators.*;
 import lang.ast.lvalue.*;
-import lang.ast.statements.*;
+
 import lang.ast.statements.commands.*;
 import lang.ast.statements.data.*;
 import lang.ast.types.*;
@@ -27,7 +27,6 @@ prog
 
 stmt
 	returns[Node ast]: d = def {$ast = $d.ast;};
-
 // def: data | fun;
 def
 	returns[Node ast]:
@@ -81,16 +80,16 @@ fun
 // params: ID '::' type (',' ID '::' type)*;
 params
 	returns[List<Param> paramsList]:
-	i1 = ID '::' t1 = type {
+	id1 = ID '::' type1 = type {
 		$paramsList = new ArrayList<Param>();
-		
-		if ($t1.ast != null) {
-			$paramsList.add(new Param($i1.line, $i1.pos, new ID($i1.line, $i1.pos, $i1.text), $t1.ast));
+        
+		if ($type1.ast != null) {
+			$paramsList.add(new Param($id1.line, $id1.pos, new ID($id1.line, $id1.pos, $id1.text), $type1.ast));
 		}
 	} (
-		',' i2 = ID '::' t2 = type {
-			if ($t2.ast != null) {
-				$paramsList.add(new Param($i2.line, $i2.pos, new ID($i2.line, $i2.pos, $i2.text), $t2.ast));
+		',' id2 = ID '::' type2 = type {
+			if ($type2.ast != null) {
+				$paramsList.add(new Param($id2.line, $id2.pos, new ID($id2.line, $id2.pos, $id2.text), $type2.ast));
 			}
 		}
 	)*;
@@ -100,15 +99,16 @@ params
 type
 	returns[Type ast]:
 	t = (BTYPE | ID) {
-        if ($t.text.equals("BTYPE")) {
+        if ($t.getType() == BTYPE) {
             $ast = new Btype($t.line, $t.pos, $t.text);
         } else {
             $ast = new IDType($t.line, $t.pos, $t.text);  
         }
     } (
 		'[' ']' {
-				// Muda tipo base para matriz de dimensão 1 ao encontrar []
-        $ast = new MatrixType($t.line, $t.pos, $ast, 1);      }
+		// Muda tipo base para matriz de dimensão 1 ao encontrar []
+        $ast = new MatrixType($t.line, $t.pos, $ast, 1);      
+    }
 	)* {
         // A cada par de colchetes adicional, incrementa a dimensão
         if ($ast instanceof MatrixType) {
@@ -206,8 +206,8 @@ lvalue
 	| lv = lvalue '[' exp = expr ']' { 
         $ast = new ArrayAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $exp.ast); 
     }
-	| lv = lvalue '.' field = ID { 
-        $ast = new FieldAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($field.line, $field.pos, $field.text)); 
+	| lv = lvalue '.' attr = ID { 
+        $ast = new AttrAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($attr.line, $attr.pos, $attr.text)); 
     };
 
 // exps: expr (',' expr)*;
@@ -225,7 +225,7 @@ exps
 compExpr
 	returns[Expr ast]:
 	left = addExpr op = '&&' right = addExpr {
-        $ast = new DoubleAmpersand($op.line, $op.pos, $left.ast, $right.ast);
+        $ast = new And($op.line, $op.pos, $left.ast, $right.ast);
     }
 	| left = addExpr op = '<' right = addExpr {
 				$ast = new LessThan($op.line, $op.pos, $left.ast, $right.ast);
@@ -297,7 +297,7 @@ factor
         $ast = new FloatLiteral($FLOAT_LITERAL.line, $FLOAT_LITERAL.pos, Float.parseFloat($FLOAT_LITERAL.text));
     }
 	| CHAR_LITERAL {
-        $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text.charAt(1)); 
+        $ast = new CharLiteral($CHAR_LITERAL.line, $CHAR_LITERAL.pos, $CHAR_LITERAL.text); 
     }
 	| '(' expr ')' {
         $ast = $expr.ast;

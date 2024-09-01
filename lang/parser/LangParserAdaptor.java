@@ -6,8 +6,13 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.*;
 import lang.ast.*;
+import lang.ast.definitions.Data;
+import lang.ast.definitions.Fun;
+import lang.ast.definitions.StmtList;
 import lang.parser.LangLexer;
 import lang.parser.LangParser;
+import lang.symbols.DataTable;
+import lang.symbols.FunctionTable;
 
 public class LangParserAdaptor implements ParseAdaptor {
 
@@ -52,10 +57,8 @@ public class LangParserAdaptor implements ParseAdaptor {
                     System.err.println("Parsing failed for file: " + path);
                     return null;
                 }
-                System.out.println(ast);
 
-                HashMap<String, Integer> m = new HashMap<String, Integer>();
-                ast.interpret(m);
+                interpreterRunner(ast);
 
                 return ast;
             } catch (ParseCancellationException e) {
@@ -68,5 +71,80 @@ public class LangParserAdaptor implements ParseAdaptor {
             // e.printStackTrace();
             return null;
         }
+    }
+
+    public void declareDatas(Node ast, DataTable dataTable) {
+        if (ast instanceof StmtList) {
+            StmtList stmtList = (StmtList) ast;
+
+            // Verifica se cmd1 é uma função
+            if (stmtList.getCmd1() instanceof Data) {
+                Data data = (Data) stmtList.getCmd1();
+                dataTable.addData(data);
+            }
+
+            // Verifica se cmd2 é uma função, se cmd2 não for nulo
+            if (stmtList.getCmd2() != null && stmtList.getCmd2() instanceof Data) {
+                Data data = (Data) stmtList.getCmd2();
+                dataTable.addData(data);
+            }
+
+            // Recursivamente verifica se cmd1 ou cmd2 são outros StmtList
+            if (stmtList.getCmd1() instanceof StmtList) {
+                declareDatas(stmtList.getCmd1(), dataTable);
+            }
+
+            if (stmtList.getCmd2() instanceof StmtList) {
+                declareDatas(stmtList.getCmd2(), dataTable);
+            }
+        }
+    }
+
+    public void declareFunctions(Node ast, FunctionTable functionTable) {
+        if (ast instanceof StmtList) {
+            StmtList stmtList = (StmtList) ast;
+
+            // Verifica se cmd1 é uma função
+            if (stmtList.getCmd1() instanceof Fun) {
+                Fun function = (Fun) stmtList.getCmd1();
+                functionTable.addFunction(function);
+            }
+
+            // Verifica se cmd2 é uma função, se cmd2 não for nulo
+            if (stmtList.getCmd2() != null && stmtList.getCmd2() instanceof Fun) {
+                Fun function = (Fun) stmtList.getCmd2();
+                functionTable.addFunction(function);
+            }
+
+            // Recursivamente verifica se cmd1 ou cmd2 são outros StmtList
+            if (stmtList.getCmd1() instanceof StmtList) {
+                declareFunctions(stmtList.getCmd1(), functionTable);
+            }
+
+            if (stmtList.getCmd2() instanceof StmtList) {
+                declareFunctions(stmtList.getCmd2(), functionTable);
+            }
+        }
+    }
+
+    public void interpreterRunner(Node ast) {
+        FunctionTable.resetInstance();
+        FunctionTable functionTable = FunctionTable.getInstance();
+        declareFunctions(ast, functionTable);
+        functionTable.print();
+
+        DataTable.resetInstance();
+        DataTable dataTable = DataTable.getInstance();
+        declareDatas(ast, dataTable);
+        dataTable.print();
+
+        Fun mainFunction = functionTable.getMainFunction();
+        if (mainFunction == null) {
+            throw new RuntimeException("Função main não definida.");
+        }
+
+        HashMap<String, Object> globalContext = new HashMap<>();
+        System.out.println("Chamando programa...");
+        mainFunction.interpret(globalContext);
     }
 }

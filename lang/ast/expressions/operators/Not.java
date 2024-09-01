@@ -2,8 +2,17 @@ package lang.ast.expressions.operators;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a operação de negação lógica de uma expressão.
+ * 
+ * @Expr !Expr
+ * 
+ * @Example !true
+ * @Error !1 -> Unsupported type for logical negation: java.lang.Integer
+ * @Error !null -> Null value cannot be negated
+ */
 public class Not extends Expr {
 
 	private Expr expr;
@@ -19,9 +28,13 @@ public class Not extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		int value = expr.interpret(m);
-		return (value == 0) ? 1 : 0; // Se o valor for 0 (falso), retorna 1 (verdadeiro), caso contrário, retorna 0
-										// (falso)
+	public Object interpret(HashMap<String, Object> m) {
+		Object value = expr.interpret(m);
+
+		if (value instanceof Boolean) {
+			return ((Boolean) value) ? false : true;
+		} else {
+			throw new RuntimeException("Unsupported type for logical negation: " + value.getClass().getName());
+		}
 	}
 }

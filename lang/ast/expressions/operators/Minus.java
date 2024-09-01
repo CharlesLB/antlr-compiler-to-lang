@@ -1,15 +1,20 @@
 package lang.ast.expressions.operators;
 
-/*
- * Esta classe representa uma expressão de subtração.
- * Expr + Expr
- */
-
 import java.util.HashMap;
 
 import lang.ast.definitions.BinOP;
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a subtração de duas expressões.
+ * 
+ * @Expr Expr - Expr
+ * 
+ * @Example 2 - 1
+ * @Example 1.0 - 2.0
+ * @Error Int + Float -> Unsupported types for subtraction
+ * @Error Null - 1 -> Null values cannot be used in subtraction
+ */
 public class Minus extends BinOP {
 
 	public Minus(int lin, int col, Expr l, Expr r) {
@@ -24,8 +29,26 @@ public class Minus extends BinOP {
 		return s + " - " + getRight().toString();
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		return getLeft().interpret(m) - getRight().interpret(m);
+	@Override
+	public Object interpret(HashMap<String, Object> m) {
+		Object leftValue = getLeft().interpret(m);
+		Object rightValue = getRight().interpret(m);
+
+		if (leftValue == null || rightValue == null) {
+			throw new RuntimeException("Null values cannot be used in subtraction");
+		}
+
+		if (leftValue instanceof Float || rightValue instanceof Float) {
+			return ((Number) leftValue).floatValue() - ((Number) rightValue).floatValue();
+		}
+
+		if (leftValue instanceof Integer && rightValue instanceof Integer) {
+			return (Integer) leftValue - (Integer) rightValue;
+		}
+
+		throw new RuntimeException("Unsupported types for subtraction: " + leftValue.getClass().getName() + " and "
+				+ rightValue.getClass().getName());
+
 	}
 
 }

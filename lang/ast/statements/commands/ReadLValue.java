@@ -2,6 +2,7 @@ package lang.ast.statements.commands;
 
 import java.util.HashMap;
 
+import lang.ast.definitions.Cmd;
 import lang.ast.lvalue.LValue;
 
 public class ReadLValue extends Cmd {
@@ -22,7 +23,25 @@ public class ReadLValue extends Cmd {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1; // Tem que mudar
+	public Object interpret(HashMap<String, Object> context) {
+		// DUVIDAS: É no interpret que fica isso?
+		java.util.Scanner scanner = new java.util.Scanner(System.in);
+
+		System.out.print("Enter a value: ");
+		Object inputValue = null;
+		if (scanner.hasNextInt()) {
+			inputValue = scanner.nextInt();
+		} else if (scanner.hasNextDouble()) {
+			inputValue = scanner.nextDouble();
+		} else {
+			// Para caracter
+			inputValue = scanner.next();
+		}
+
+		context.put(this.getLValue().toString(), inputValue);
+
+		System.out.println("-- Read: " + inputValue + " into " + this.getLValue().toString());
+
+		return context;
 	}
 }

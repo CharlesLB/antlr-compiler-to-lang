@@ -1,6 +1,8 @@
 package lang.ast.lvalue;
 
-import lang.ast.expressions.Expr;
+import java.util.HashMap;
+
+import lang.ast.definitions.Expr;
 
 /*Ex: arr[2] = 5; */
 public class ArrayAccessLValue extends LValue {
@@ -19,5 +21,34 @@ public class ArrayAccessLValue extends LValue {
 
 	public Expr getIndex() {
 		return index;
+	}
+
+	@Override
+	public Object interpret(HashMap<String, Object> context) {
+		System.out.println("Array: " + array);
+
+		Object arrayValue = array.interpret(context);
+
+		System.out.println("ArrayValue: " + arrayValue);
+
+		if (!(arrayValue instanceof Object[])) {
+			throw new RuntimeException("The object is not a valid array.");
+		}
+
+		Object indexValue = index.interpret(context);
+		if (!(indexValue instanceof Integer)) {
+			throw new RuntimeException("The index is not an integer.");
+		}
+
+		int idx = (Integer) indexValue;
+
+		// Forma de acesso ao elemento do array
+		Object[] array = (Object[]) arrayValue;
+
+		if (idx < 0 || idx >= array.length) {
+			throw new RuntimeException("Array index out of bounds.");
+		}
+
+		return array[idx];
 	}
 }

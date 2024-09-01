@@ -2,13 +2,20 @@ package lang.ast.expressions.literals;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa um literal booleano.
+ * 
+ * @Expr true | false
+ * 
+ * @Example true
+ * @Example false
+ */
 public class BoolLiteral extends Expr {
+	private Boolean value;
 
-	private boolean value;
-
-	public BoolLiteral(int lin, int col, boolean value) {
+	public BoolLiteral(int lin, int col, Boolean value) {
 		super(lin, col);
 		this.value = value;
 	}
@@ -19,7 +26,9 @@ public class BoolLiteral extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		return value ? 1 : 0; // Retorna 1 para true, 0 para false
+	public Object interpret(HashMap<String, Object> m) {
+		Object aux = value ? true : false;
+		System.out.println("Node BoolLiteral: " + aux.toString());
+		return value ? true : false; // Retorna 1 para true, 0 para false
 	}
 }

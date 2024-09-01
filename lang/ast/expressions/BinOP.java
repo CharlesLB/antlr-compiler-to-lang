@@ -1,4 +1,6 @@
-package lang.ast.definitions;
+package lang.ast.expressions;
+
+import lang.ast.definitions.Expr;
 
 public abstract class BinOP extends Expr {
 

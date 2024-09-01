@@ -2,10 +2,17 @@ package lang.ast.expressions.literals;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa um literal float.
+ * 
+ * @Expr float
+ * 
+ * @Example 1.0
+ * @Example 3.14
+ */
 public class FloatLiteral extends Expr {
-
 	private float value;
 
 	public FloatLiteral(int lin, int col, float value) {
@@ -19,8 +26,9 @@ public class FloatLiteral extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		return (int) value; // Dependendo da implementação, você pode querer retornar o valor como float ou
-							// int
+	public Object interpret(HashMap<String, Object> m) {
+		System.out.println("Node FloatLiteral: " + value);
+		return value; // Dependendo da implementação, você pode querer retornar o valor como float ou
+		// int
 	}
 }

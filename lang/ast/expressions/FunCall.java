@@ -1,8 +1,14 @@
 package lang.ast.expressions;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
+
+import lang.ast.definitions.Data;
+import lang.ast.definitions.Expr;
+import lang.ast.definitions.Fun;
+import lang.ast.definitions.Param;
+import lang.symbols.DataTable;
+import lang.symbols.FunctionTable;
 
 public class FunCall extends Expr {
 	private ID functionName;
@@ -36,7 +42,86 @@ public class FunCall extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1; // Tem que mudar
+	public Object interpret(HashMap<String, Object> context) {
+
+		System.out.println("----- Entrando Função Call: " + this.functionName.getName() + " ----");
+		HashMap<String, Object> localContext = new HashMap<>(context);
+
+		// Cria uma lista de tipos de parâmetros para a função chamada
+		List<String> argumentTypes = arguments.stream()
+				.map(arg -> {
+					Object value = arg.interpret(context);
+					if (value instanceof Integer) {
+						return "Int";
+					} else if (value instanceof Float) {
+						return "Float";
+					} else if (value instanceof Boolean) {
+						return "Bool";
+					} else if (value instanceof Character) {
+						return "Char";
+					} else if (value instanceof Object[]) {
+						Object[] array = (Object[]) value;
+						if (array.length > 0 && array[0] instanceof HashMap) {
+							HashMap<String, Object> firstElement = (HashMap<String, Object>) array[0];
+
+							String identifiedType = identifyDataType(firstElement, DataTable.getInstance());
+							return identifiedType + "[]";
+						}
+						return "Object[]"; // Caso contrário, trate como Object[] genérico
+					} else if (value instanceof HashMap) {
+						HashMap<String, Object> mapValue = (HashMap<String, Object>) value;
+						// Identifique o tipo baseado nas chaves do HashMap
+						String identifiedType = identifyDataType(mapValue, DataTable.getInstance());
+						return identifiedType;
+					} else {
+						System.out.println("-- " + value.getClass());
+						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
+					}
+				})
+				.collect(Collectors.toList());
+
+		// Busca a função correta na tabela de funções com base no nome e na assinatura
+		Fun function = FunctionTable.getInstance().getFunction(this.functionName.getName(), argumentTypes);
+		if (function == null) {
+			throw new RuntimeException("Função não definida: " + this.functionName.getName() +
+					" com tipos de argumentos: " + argumentTypes);
+		}
+		List<Param> params = function.getParams();
+
+		if (params.size() != arguments.size()) {
+			throw new RuntimeException(
+					"Número de argumentos não corresponde ao número de parâmetros para a função: " + this.functionName.getName());
+		}
+
+		for (int i = 0; i < params.size(); i++) {
+			String paramName = params.get(i).getID().getName();
+			Object argValue = arguments.get(i).interpret(context);
+			localContext.put(paramName, argValue);
+			System.out.println(paramName + " = " + argValue);
+		}
+
+		Object returnValue = function.interpret(localContext);
+
+		if (returnValue instanceof List<?>) {
+			List<?> returnList = (List<?>) returnValue;
+			return returnList;
+		} else {
+			return returnValue;
+		}
+	}
+
+	private String identifyDataType(HashMap<String, Object> element, DataTable dataTable) {
+		System.out.println("--->" + element);
+		for (Map.Entry<String, Data> entry : dataTable.getDataMap().entrySet()) {
+			Data dataType = entry.getValue();
+			Set<String> expectedKeys = dataType.getAttributes();
+
+			if (element.keySet().equals(expectedKeys)) {
+				return entry.getKey();
+			}
+		}
+
+		// Se o tipo não for identificado, retorne "HashMap" como padrão --> Erro
+		return "HashMap";
 	}
 }

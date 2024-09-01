@@ -2,10 +2,19 @@ package lang.ast.expressions.operators;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a operação de negação de uma expressão.
+ * 
+ * @Expr -Expr
+ * 
+ * @Example -2
+ * @Example -1.0
+ * @Error -"string" -> Unsupported type for negation
+ * @Error -null -> Null value cannot be negated
+ */
 public class Neg extends Expr {
-
 	private Expr expr;
 
 	public Neg(int lin, int col, Expr expr) {
@@ -19,7 +28,23 @@ public class Neg extends Expr {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> m) {
-		return -expr.interpret(m); // Retorna o valor negado da expressão
+	public Object interpret(HashMap<String, Object> m) {
+		Object value = expr.interpret(m);
+
+		if (value == null) {
+			throw new RuntimeException("Null value cannot be negated");
+		}
+
+		return -convertToIntOrFloat(value);
+	}
+
+	private float convertToIntOrFloat(Object value) {
+		if (value instanceof Integer) {
+			return (Integer) value;
+		} else if (value instanceof Float) {
+			return (Float) value;
+		} else {
+			throw new RuntimeException("Unsupported type for negation: " + value.getClass().getName());
+		}
 	}
 }

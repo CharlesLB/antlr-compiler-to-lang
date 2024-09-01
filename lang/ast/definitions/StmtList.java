@@ -42,8 +42,10 @@ public class StmtList extends Node {
 		return result;
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		int result = cmd1.interpret(m);
+	public Object interpret(HashMap<String, Object> m) {
+		Object result = cmd1.interpret(m);
+		System.out.println("Stmt: " + result.toString());
+
 		if (cmd2 == null)
 			return result;
 		else

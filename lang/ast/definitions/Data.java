@@ -1,10 +1,11 @@
 package lang.ast.definitions;
 
-import java.util.List;
+import java.util.*;
 
 import lang.ast.Node;
 import lang.ast.expressions.ID;
 import lang.ast.statements.data.Decl;
+import lang.symbols.DataTable;
 
 import java.util.HashMap;
 
@@ -35,6 +36,14 @@ public class Data extends Node {
 		return declarations;
 	}
 
+	public Set<String> getAttributes() {
+		Set<String> attributes = new HashSet<>();
+		for (Decl decl : declarations) {
+			attributes.add(decl.getID().getName());
+		}
+		return attributes;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -47,8 +56,16 @@ public class Data extends Node {
 	}
 
 	@Override
-	public int interpret(HashMap<String, Integer> context) {
-		return 1; // Mudar
+	public Object interpret(HashMap<String, Object> context) {
+		HashMap<String, Object> localContext = new HashMap<String, Object>();
+
+		for (Decl decl : declarations) {
+			localContext.put(decl.getID().getName(), decl.getType());
+		}
+
+		context.put(id.getName(), localContext);
+
+		return context;
 	}
 
 }

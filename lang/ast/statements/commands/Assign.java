@@ -2,7 +2,8 @@ package lang.ast.statements.commands;
 
 import java.util.HashMap;
 
-import lang.ast.expressions.Expr;
+import lang.ast.definitions.Cmd;
+import lang.ast.definitions.Expr;
 import lang.ast.expressions.ID;
 
 public class Assign extends Cmd {
@@ -28,9 +29,10 @@ public class Assign extends Cmd {
 		return id.toString() + " = " + e.toString();
 	}
 
-	public int interpret(HashMap<String, Integer> m) {
-		int x = e.interpret(m);
-		m.put(id.getName(), x);
+	public Object interpret(HashMap<String, Object> context) {
+		Object x = e.interpret(context);
+		context.put(id.getName(), x);
+		System.out.println("Node Assign: " + id.getName() + " => " + x);
 		return x;
 	}
 }
