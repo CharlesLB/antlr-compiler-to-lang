@@ -12,6 +12,13 @@ import lang.ast.expressions.ID;
 import lang.symbols.DataTable;
 import lang.symbols.FunctionTable;
 
+/**
+ * Representa a chamada de uma função com variáveis de retorno.
+ * 
+ * @Parser ID ‘(’ [expr (‘,’ expr)*] ‘)’ [‘<’ lvalue {‘,’ lvalue} ‘>’] ‘;’
+ * 
+ * @Example sum(1, 2) <a, b>;
+ */
 public class FunLValue extends Cmd {
 	private ID functionName;
 	private List<Expr> arguments;
@@ -89,7 +96,8 @@ public class FunLValue extends Cmd {
 						return identifiedType;
 					} else {
 						System.out.println("-- " + value.getClass());
-						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
+						throw new RuntimeException(
+								"Tipo de argumento não suportado: " + value.getClass().getSimpleName());
 					}
 				})
 				.collect(Collectors.toList());
@@ -105,7 +113,8 @@ public class FunLValue extends Cmd {
 
 		if (params.size() != arguments.size()) {
 			throw new RuntimeException(
-					"Número de argumentos não corresponde ao número de parâmetros para a função: " + this.functionName.getName());
+					"Número de argumentos não corresponde ao número de parâmetros para a função: "
+							+ this.functionName.getName());
 		}
 
 		for (int i = 0; i < params.size(); i++) {

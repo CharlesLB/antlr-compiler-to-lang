@@ -3,10 +3,14 @@ package lang.ast.lvalue;
 import java.util.*;
 
 import lang.ast.Node;
-import lang.ast.definitions.Data;
-import lang.symbols.DataTable;
 
-/*Ex: person.name = "John"; */
+/**
+ * Representa um acesso a um atributo de um objeto.
+ * 
+ * @Parser object ‘.’ ID
+ * 
+ * @Example person.name
+ */
 public class AttrAccessLValue extends LValue {
 	private LValue object;
 	private IDLValue attr;

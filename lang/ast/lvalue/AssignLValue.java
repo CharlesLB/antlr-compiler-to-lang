@@ -1,17 +1,18 @@
 package lang.ast.lvalue;
 
-/*
- * Esta classe representa um comando de atribuição.
- * LValue = Expr
- */
-
 import java.util.*;
 
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
 
+/**
+ * Representa um comando de atribuição.
+ * 
+ * @Parser LValue = Expr
+ * 
+ * @Example x = 10
+ */
 public class AssignLValue extends Cmd {
-
 	private LValue id;
 	private Expr e;
 
