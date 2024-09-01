@@ -25,7 +25,6 @@ public class NullLiteral extends Expr {
 
 	@Override
 	public Object interpret(HashMap<String, Object> m) {
-		System.out.println("Node NullLiteral: " + null);
-		return null; // Representa null como 0 na interpretação
+		return null;
 	}
 }

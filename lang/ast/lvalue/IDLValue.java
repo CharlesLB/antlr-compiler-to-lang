@@ -21,8 +21,6 @@ public class IDLValue extends LValue {
 	}
 
 	public Object interpret(HashMap<String, Object> context) {
-		System.out.println("Node IDLvalue: " + this.getName());
-
 		if (!context.containsKey(name)) {
 			throw new RuntimeException("Variable " + name + " is not defined.");
 		}

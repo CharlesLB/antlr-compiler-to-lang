@@ -40,8 +40,6 @@ public class ReadLValue extends Cmd {
 
 		context.put(this.getLValue().toString(), inputValue);
 
-		System.out.println("-- Read: " + inputValue + " into " + this.getLValue().toString());
-
 		return context;
 	}
 }

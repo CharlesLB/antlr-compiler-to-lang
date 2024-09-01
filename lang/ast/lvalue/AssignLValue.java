@@ -36,19 +36,15 @@ public class AssignLValue extends Cmd {
 	public Object interpret(HashMap<String, Object> context) {
 		Object exprObject = e.interpret(context);
 
-		System.out.println("Node AssignLValue: " + id + " -- " + exprObject);
-
 		if (id instanceof IDLValue) {
 			IDLValue variable = (IDLValue) id;
 			context.put(variable.getName(), exprObject);
 		}
 
 		if (id instanceof ArrayAccessLValue) {
-			System.out.println("Array");
 			ArrayAccessLValue arrayAccess = (ArrayAccessLValue) id;
 
 			Object arrayObject = arrayAccess.getArray().interpret(context);
-			System.out.println("ArrayObject: " + arrayObject);
 
 			if (arrayObject instanceof Object[]) {
 				Object[] array = (Object[]) arrayObject;
@@ -58,7 +54,6 @@ public class AssignLValue extends Cmd {
 					int index = (Integer) indexValue;
 
 					if (index >= 0 && index < array.length) {
-						System.out.println("Bs " + array + "[" + index + "]" + exprObject.getClass());
 						array[index] = new HashMap<String, Object>();
 						array[index] = exprObject;
 
@@ -71,7 +66,6 @@ public class AssignLValue extends Cmd {
 
 		if (id instanceof AttrAccessLValue) {
 			AttrAccessLValue attrAccess = (AttrAccessLValue) id;
-			System.out.println("B");
 
 			Object objectObject = attrAccess.getObject().interpret(context);
 			if (objectObject instanceof HashMap) {
@@ -82,14 +76,6 @@ public class AssignLValue extends Cmd {
 			} else {
 				throw new RuntimeException("The object is not a valid structure for attribute access.");
 			}
-			// Object subContextObject = context.get(attrAccess.getObject().toString());
-			// HashMap<String, Object> subContext = (HashMap<String, Object>)
-			// subContextObject;
-			// System.out.println("B");
-			// // Atribui o novo valor ao campo correspondente
-			// subContext.put(attrAccess.getAttr().getName(), exprObject);
-
-			// return exprObject;
 		}
 
 		return exprObject;

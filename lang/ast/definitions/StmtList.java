@@ -44,7 +44,6 @@ public class StmtList extends Node {
 
 	public Object interpret(HashMap<String, Object> m) {
 		Object result = cmd1.interpret(m);
-		System.out.println("Stmt: " + result.toString());
 
 		if (cmd2 == null)
 			return result;

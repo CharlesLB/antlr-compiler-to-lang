@@ -42,8 +42,6 @@ public class Decl extends Data {
 
 		context.put(id.getName(), t);
 
-		System.out.println("Node decl: " + t);
-
 		return context;
 	}
 

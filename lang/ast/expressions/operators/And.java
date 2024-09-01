@@ -35,9 +35,6 @@ public class And extends BinOP {
 		boolean leftBool = toBoolean(leftValue);
 		boolean rightBool = toBoolean(rightValue);
 
-		Object aux = (leftBool && rightBool) ? true : false;
-		System.out.println("--- Node And: " + aux);
-
 		return (leftBool && rightBool) ? true : false;
 	};
 

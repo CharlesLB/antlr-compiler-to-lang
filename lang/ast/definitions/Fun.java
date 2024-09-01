@@ -70,42 +70,27 @@ public class Fun extends Node {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		System.out.println("----- Entrando Função: " + this.getName() + " ----");
-
 		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
 
 		if (params != null) {
 			for (Param param : params) {
 				// Verifica se o param existe no contexto da função
-				Object argValue = param.interpret(localContext);
-				// localContext.put(param.getID().getName(), argValue);
+				param.interpret(localContext);
 			}
 		}
 
 		// Executa o corpo da função
 		Object returnValue = 0;
 		for (Cmd cmd : body) {
-			System.out.println("Executando comando: " + cmd);
-			System.out.println("FICOU AQUI");
-			returnValue = cmd.interpret(localContext); // Usa o contexto local
+			returnValue = cmd.interpret(localContext);
 
 			// Condição para funções recursivas
 			if (returnValue != null) {
-				System.out.println("Retorno: " + returnValue);
-
-				// Imprimir todos os comandos restantes
-				for (Cmd remainingCmd : body.subList(body.indexOf(cmd) + 1, body.size())) {
-					System.out.println("Comando restante: " + remainingCmd);
-				}
-
 				break;
 			}
 		}
 
-		System.out.println("----- Saindo Função: " + this.getName() + " ---- ");
-
 		return returnValue;
-
 	}
 
 }

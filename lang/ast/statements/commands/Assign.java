@@ -32,7 +32,6 @@ public class Assign extends Cmd {
 	public Object interpret(HashMap<String, Object> context) {
 		Object x = e.interpret(context);
 		context.put(id.getName(), x);
-		System.out.println("Node Assign: " + id.getName() + " => " + x);
 		return x;
 	}
 }

@@ -44,9 +44,6 @@ public class LessThan extends BinOP {
 		double left = convertToFloat(leftValue);
 		double right = convertToFloat(rightValue);
 
-		Object aux = left < right ? true : false;
-		System.out.println("-- LessThan: " + left + " < " + right + " =" + aux);
-
 		return left < right ? true : false;
 	}
 

@@ -25,7 +25,6 @@ public class Iterate extends Cmd {
 	public Object interpret(HashMap<String, Object> context) {
 		Object countNumberIterations = count.interpret(context);
 
-		System.out.println("--- Inicio Iteração: " + countNumberIterations);
 		if (!(countNumberIterations instanceof Integer)) {
 			throw new RuntimeException("Count expression must evaluate to an integer.");
 		}
@@ -34,11 +33,9 @@ public class Iterate extends Cmd {
 		Object lastResult = null;
 
 		for (int i = 0; i < iterations; i++) {
-			System.out.println("Iteração " + (i + 1) + " de " + iterations);
 			lastResult = body.interpret(context);
 		}
 
-		System.out.println("--- Fim Iteração: " + lastResult);
 		return lastResult;
 	}
 }

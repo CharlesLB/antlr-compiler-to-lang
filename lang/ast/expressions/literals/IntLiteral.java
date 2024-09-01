@@ -31,7 +31,6 @@ public class IntLiteral extends Expr {
 	}
 
 	public Object interpret(HashMap<String, Object> m) {
-		System.out.println("Node IntLiteral: " + value);
 		return value;
 	}
 }

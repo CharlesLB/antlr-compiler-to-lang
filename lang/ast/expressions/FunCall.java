@@ -44,7 +44,6 @@ public class FunCall extends Expr {
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 
-		System.out.println("----- Entrando Função Call: " + this.functionName.getName() + " ----");
 		HashMap<String, Object> localContext = new HashMap<>(context);
 
 		// Cria uma lista de tipos de parâmetros para a função chamada
@@ -70,17 +69,15 @@ public class FunCall extends Expr {
 						return "Object[]"; // Caso contrário, trate como Object[] genérico
 					} else if (value instanceof HashMap) {
 						HashMap<String, Object> mapValue = (HashMap<String, Object>) value;
-						// Identifique o tipo baseado nas chaves do HashMap
-						String identifiedType = identifyDataType(mapValue, DataTable.getInstance());
-						return identifiedType;
+
+						// Identifica o tipo baseado nas chaves do HashMap
+						return identifyDataType(mapValue, DataTable.getInstance());
 					} else {
-						System.out.println("-- " + value.getClass());
 						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
 					}
 				})
 				.collect(Collectors.toList());
 
-		// Busca a função correta na tabela de funções com base no nome e na assinatura
 		Fun function = FunctionTable.getInstance().getFunction(this.functionName.getName(), argumentTypes);
 		if (function == null) {
 			throw new RuntimeException("Função não definida: " + this.functionName.getName() +
@@ -97,7 +94,6 @@ public class FunCall extends Expr {
 			String paramName = params.get(i).getID().getName();
 			Object argValue = arguments.get(i).interpret(context);
 			localContext.put(paramName, argValue);
-			System.out.println(paramName + " = " + argValue);
 		}
 
 		Object returnValue = function.interpret(localContext);
@@ -111,7 +107,6 @@ public class FunCall extends Expr {
 	}
 
 	private String identifyDataType(HashMap<String, Object> element, DataTable dataTable) {
-		System.out.println("--->" + element);
 		for (Map.Entry<String, Data> entry : dataTable.getDataMap().entrySet()) {
 			Data dataType = entry.getValue();
 			Set<String> expectedKeys = dataType.getAttributes();

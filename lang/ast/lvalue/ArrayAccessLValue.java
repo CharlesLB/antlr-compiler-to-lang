@@ -25,11 +25,7 @@ public class ArrayAccessLValue extends LValue {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		System.out.println("Array: " + array);
-
 		Object arrayValue = array.interpret(context);
-
-		System.out.println("ArrayValue: " + arrayValue);
 
 		if (!(arrayValue instanceof Object[])) {
 			throw new RuntimeException("The object is not a valid array.");

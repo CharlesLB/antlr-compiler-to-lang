@@ -58,7 +58,6 @@ public class FunLValue extends Cmd {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		System.out.println("----- Entrando Função LVALUE: " + this.getFunctionName() + " ----");
 		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
 
 		// Cria uma lista de tipos de parâmetros para a função chamada
@@ -84,11 +83,9 @@ public class FunLValue extends Cmd {
 						return "Object[]"; // Caso contrário, trate como Object[] genérico
 					} else if (value instanceof HashMap) {
 						HashMap<String, Object> mapValue = (HashMap<String, Object>) value;
-						// Identifique o tipo baseado nas chaves do HashMap
-						String identifiedType = identifyDataType(mapValue, DataTable.getInstance());
-						return identifiedType;
+
+						return identifyDataType(mapValue, DataTable.getInstance());
 					} else {
-						System.out.println("-- " + value.getClass());
 						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
 					}
 				})
@@ -110,12 +107,10 @@ public class FunLValue extends Cmd {
 
 		for (int i = 0; i < params.size(); i++) {
 			String paramName = params.get(i).getID().getName();
-			Object argValue = arguments.get(i).interpret(context); // Interpreta valor do argumento da função
-			localContext.put(paramName, argValue); // Associa o argumento ao parâmetro
-			System.out.println(paramName + " = " + argValue);
+			Object argValue = arguments.get(i).interpret(context);
+			localContext.put(paramName, argValue);
 		}
 
-		// Interpreta o corpo da função usando o contexto local
 		Object returnValue = function.interpret(localContext);
 
 		if (returnVars != null && !returnVars.isEmpty()) {
@@ -144,7 +139,6 @@ public class FunLValue extends Cmd {
 	}
 
 	private String identifyDataType(HashMap<String, Object> element, DataTable dataTable) {
-		System.out.println("--->" + element);
 		for (Map.Entry<String, Data> entry : dataTable.getDataMap().entrySet()) {
 			Data dataType = entry.getValue();
 			Set<String> expectedKeys = dataType.getAttributes();

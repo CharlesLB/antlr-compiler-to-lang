@@ -37,8 +37,6 @@ public class Div extends BinOP {
 
 		// Verifica divisão por zero
 
-		System.out.println("Node Div: ");
-
 		if (leftValue instanceof Float || rightValue instanceof Float) {
 			if ((Float) rightValue == 0.0) {
 				throw new RuntimeException("Division by zero");
