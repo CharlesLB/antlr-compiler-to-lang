@@ -72,10 +72,3 @@ INT: [0-9]+;
 FLOAT: [+-]? [0-9]+ '.' [0-9]*;
 IDENT_UPPERCASE: ALPHA_UPPERCASE (ALPHA | [0-9] | '_')*;
 IDENT_LOWERCASE: ALPHA_LOWERCASE (ALPHA | [0-9] | '_')*;
-
-CHAR_NEWLINE: '\\n';
-CHAR_TAB: '\\t';
-CHAR_BACKSPACE: '\\b';
-CHAR_CARRIAGE: '\\r';
-CHAR_BACKSLASH: '\\\\';
-CHAR_QUOTE: '\\\'';
