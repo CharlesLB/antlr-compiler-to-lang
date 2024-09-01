@@ -9,7 +9,10 @@ import lang.ast.definitions.Type;
  * 
  * @Parser type
  * 
- * @Example ID -> Vai contra a regra do Parser, mas funciona
+ * @Example ID
+ * 
+ * @info não respeita perfeitamente a gramática, uma vez que existem 3
+ *       categorias de ID e, na gramática, 2;
  */
 public class IDType extends Type {
 	private String id;

@@ -12,7 +12,7 @@ import lang.ast.definitions.Expr;
  * @Parser if ‘(’ exp ‘)’ cmd
  * @Parser if ‘(’ exp ‘)’ cmd else cmd
  * 
- * @Example if (1) { print 1; }
+ * @Example if (true) { print 1; }
  */
 public class If extends Cmd {
 	private Expr exp;

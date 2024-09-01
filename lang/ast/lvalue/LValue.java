@@ -5,7 +5,7 @@ import java.util.HashMap;
 import lang.ast.definitions.Expr;
 
 /**
- * Representa um valor que pode ser atribuído.
+ * Representa variáveis que podem ter valor atribuido.
  * 
  * @Parser LValue = Expr
  * 
