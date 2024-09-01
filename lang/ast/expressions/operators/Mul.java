@@ -1,7 +1,7 @@
 package lang.ast.expressions.operators;
 
 import java.util.HashMap;
-import lang.ast.definitions.BinOP;
+import lang.ast.expressions.BinOP;
 import lang.ast.definitions.Expr;
 
 /**
