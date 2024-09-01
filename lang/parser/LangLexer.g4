@@ -7,18 +7,8 @@ package lang.parser;
 // Keywords
 IF: 'if';
 ELSE: 'else';
-WHILE: 'while';
-FOR: 'for';
 RETURN: 'return';
-BREAK: 'break';
-CONTINUE: 'continue';
 NEW: 'new';
-VOID: 'void';
-STRUCT: 'struct';
-TYPEDEF: 'typedef';
-SWITCH: 'switch';
-CASE: 'case';
-DEFAULT: 'default';
 NULL: 'null';
 TRUE: 'true';
 FALSE: 'false';
@@ -51,16 +41,10 @@ RIGHT_BRACE: '}';
 DOT: '.';
 MINUS: '-';
 DIVIDE: '/';
-NOT_EQUAL: '<>';
-LESS_THAN_OR_EQUAL: '<=';
 LESS_THAN: '<';
-GREATER_THAN_OR_EQUAL: '>=';
 GREATER_THAN: '>';
 DOUBLE_AMPERSAND: '&&';
-AMPERSAND: '&';
 EXCLAMATION_MARK: '!';
-DOUBLE_PIPE: '||';
-PIPE: '|';
 
 // Identifiers and literals
 ID: IDENT_LOWERCASE | TYPE;
@@ -88,10 +72,3 @@ INT: [0-9]+;
 FLOAT: [+-]? [0-9]+ '.' [0-9]*;
 IDENT_UPPERCASE: ALPHA_UPPERCASE (ALPHA | [0-9] | '_')*;
 IDENT_LOWERCASE: ALPHA_LOWERCASE (ALPHA | [0-9] | '_')*;
-
-CHAR_NEWLINE: '\\n';
-CHAR_TAB: '\\t';
-CHAR_BACKSPACE: '\\b';
-CHAR_CARRIAGE: '\\r';
-CHAR_BACKSLASH: '\\\\';
-CHAR_QUOTE: '\\\'';
