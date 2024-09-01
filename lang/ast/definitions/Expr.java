@@ -33,9 +33,9 @@ import lang.ast.Node;
  * @Parser '(' exp ')'
  * @Parser new type [ '[' exp ']' ]
  * 
- * @exp Chamadas de função e acesso a elementos de array
+ * @exp Chamadas de função sem valor de retorno e acesso a elementos de array
  * @Parser ID '(' [exps] ')'
- * @Parser ID '[' exp ']'
+ * @Parser ID '(' [exps] ')' '[' exp ']'
  */
 public abstract class Expr extends Node {
 	public Expr(int l, int c) {

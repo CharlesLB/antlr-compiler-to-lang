@@ -27,7 +27,7 @@ import lang.ast.Node;
  * @cmd Atribuição
  * @Parser lvalue = exp ‘;’
  * 
- * @cmd Chamada de função
+ * @cmd Chamada de função com variáveis de retorno
  * @Parser ID ‘(’ [exps] ‘)’ [‘<’ lvalue {‘,’ lvalue} ‘>’] ‘;’
  */
 public abstract class Cmd extends Node {
