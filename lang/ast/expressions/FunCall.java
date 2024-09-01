@@ -10,6 +10,16 @@ import lang.ast.definitions.Param;
 import lang.symbols.DataTable;
 import lang.symbols.FunctionTable;
 
+/**
+ * Representa a chamada de uma função.
+ * 
+ * @Parser ID ‘(’ [expr (‘,’ expr)*] ‘)’
+ * 
+ * @Example sum(1, 2)
+ * @Example sum(1+1)
+ * @Example sum()
+ * @Example sum(a, b)
+ */
 public class FunCall extends Expr {
 	private ID functionName;
 	private List<Expr> arguments;
@@ -75,7 +85,8 @@ public class FunCall extends Expr {
 						return identifiedType;
 					} else {
 						System.out.println("-- " + value.getClass());
-						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
+						throw new RuntimeException(
+								"Tipo de argumento não suportado: " + value.getClass().getSimpleName());
 					}
 				})
 				.collect(Collectors.toList());
@@ -90,7 +101,8 @@ public class FunCall extends Expr {
 
 		if (params.size() != arguments.size()) {
 			throw new RuntimeException(
-					"Número de argumentos não corresponde ao número de parâmetros para a função: " + this.functionName.getName());
+					"Número de argumentos não corresponde ao número de parâmetros para a função: "
+							+ this.functionName.getName());
 		}
 
 		for (int i = 0; i < params.size(); i++) {

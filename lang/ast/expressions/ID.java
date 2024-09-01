@@ -1,14 +1,16 @@
 package lang.ast.expressions;
 
-/*
- * Esta classe representa um comando de Impressão.
- * Expr
- */
-
 import java.util.HashMap;
 
 import lang.ast.definitions.Expr;
 
+/**
+ * Representa um identificador.
+ * 
+ * @Parser ID
+ * 
+ * @Example x
+ */
 public class ID extends Expr {
 
 	private String l;

@@ -5,6 +5,13 @@ import java.util.HashMap;
 import lang.ast.definitions.Expr;
 import lang.ast.definitions.Type;
 
+/**
+ * Representa a criação de um novo array.
+ * 
+ * @Parser new type '[' exp ']'
+ * 
+ * @Example new Int[10]
+ */
 public class NewArray extends Expr {
 	private Type type;
 	private Expr size;

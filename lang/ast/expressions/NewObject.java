@@ -10,6 +10,13 @@ import lang.ast.types.Btype;
 import lang.ast.types.MatrixType;
 import lang.symbols.DataTable;
 
+/**
+ * Representa a criação de um novo objeto.
+ * 
+ * @Parser new type
+ * 
+ * @Example new Point
+ */
 public class NewObject extends Expr {
 	private Type type;
 
@@ -39,7 +46,8 @@ public class NewObject extends Expr {
 	public Object interpret(HashMap<String, Object> context) {
 		String typeName = this.getType().toString();
 
-		if (type instanceof Btype || (type instanceof MatrixType && ((MatrixType) type).getBaseType() instanceof Btype)) {
+		if (type instanceof Btype
+				|| (type instanceof MatrixType && ((MatrixType) type).getBaseType() instanceof Btype)) {
 			Object defaultValue = null;
 			String btypeName = type instanceof Btype ? type.toString() : ((MatrixType) type).getBaseType().toString();
 
