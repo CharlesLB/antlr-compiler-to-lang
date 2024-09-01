@@ -29,7 +29,6 @@ Rode o comando:
 make compile
 
 java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
-java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bty
 java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bsm
 
 #  ou
