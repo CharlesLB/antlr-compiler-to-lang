@@ -6,8 +6,15 @@ import lang.ast.Node;
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
 
+/**
+ * Representa um comando de if.
+ * 
+ * @Parser if ‘(’ exp ‘)’ cmd
+ * @Parser if ‘(’ exp ‘)’ cmd else cmd
+ * 
+ * @Example if (1) { print 1; }
+ */
 public class If extends Cmd {
-
 	private Expr exp;
 	private Node thn;
 	private Node els;

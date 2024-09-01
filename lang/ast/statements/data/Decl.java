@@ -6,16 +6,18 @@ import lang.ast.definitions.Data;
 import lang.ast.expressions.ID;
 import lang.ast.types.Btype;
 
-/* Utilizada para representar estruturas do tipo:
- * 	x :: Int -> Decl.java
- * Pertencentes à Data ID -> Data.java
- * {
- * 	(...)
- * }
-*/
-
+/**
+ * Utilizada para representar estruturas do Data:
+ * 
+ * @Parser ID ‘::’ type ‘;’
+ * 
+ * @Example ID :: Int -> Decl.java
+ *          Pertencentes à Data ID -> Data.java
+ *          {
+ *          (...)
+ *          }
+ */
 public class Decl extends Data {
-
 	private ID id;
 	private Btype t;
 
