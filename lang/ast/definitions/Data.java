@@ -1,6 +1,6 @@
 package lang.ast.definitions;
 
-import java.util.List;
+import java.util.*;
 
 import lang.ast.Node;
 import lang.ast.expressions.ID;
@@ -36,6 +36,14 @@ public class Data extends Node {
 		return declarations;
 	}
 
+	public Set<String> getAttributes() {
+		Set<String> attributes = new HashSet<>();
+		for (Decl decl : declarations) {
+			attributes.add(decl.getID().getName());
+		}
+		return attributes;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -57,10 +65,7 @@ public class Data extends Node {
 
 		context.put(id.getName(), localContext);
 
-		DataTable.getInstance().addData(this);
-		System.out.println("Data structure " + id.getName() + " has been defined.");
-
-		return null;
+		return context;
 	}
 
 }
