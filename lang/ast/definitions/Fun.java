@@ -85,7 +85,21 @@ public class Fun extends Node {
 		// Executa o corpo da função
 		Object returnValue = 0;
 		for (Cmd cmd : body) {
+			System.out.println("Executando comando: " + cmd);
+			System.out.println("FICOU AQUI");
 			returnValue = cmd.interpret(localContext); // Usa o contexto local
+
+			// Condição para funções recursivas
+			if (returnValue != null) {
+				System.out.println("Retorno: " + returnValue);
+
+				// Imprimir todos os comandos restantes
+				for (Cmd remainingCmd : body.subList(body.indexOf(cmd) + 1, body.size())) {
+					System.out.println("Comando restante: " + remainingCmd);
+				}
+
+				break;
+			}
 		}
 
 		System.out.println("----- Saindo Função: " + this.getName() + " ---- ");
