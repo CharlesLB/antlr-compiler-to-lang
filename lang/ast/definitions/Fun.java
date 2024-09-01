@@ -6,6 +6,13 @@ import java.util.List;
 import lang.ast.Node;
 import lang.ast.expressions.ID;
 
+/**
+ * Representa a definição de uma função.
+ * 
+ * @Parser ID ‘(’ [params] ‘)’ [‘:’ type (‘,’ type)*] ‘{’ {cmd} ‘}’
+ * 
+ * @Example fun sum(a: Int, b: Int) : Int {}
+ */
 public class Fun extends Node {
 	private ID name;
 	private List<Param> params;

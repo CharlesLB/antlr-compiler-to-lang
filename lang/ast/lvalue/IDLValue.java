@@ -2,7 +2,13 @@ package lang.ast.lvalue;
 
 import java.util.*;
 
-/*EX: x = 10; */
+/**
+ * Representa um identificador quando há necessidade de um LValue.
+ * 
+ * @Parser ID
+ * 
+ * @Example x
+ */
 public class IDLValue extends LValue {
 	private String name;
 

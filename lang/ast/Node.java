@@ -2,8 +2,10 @@ package lang.ast;
 
 import java.util.HashMap;
 
+/**
+ * Representa um nó da árvore sintática.
+ */
 public abstract class Node extends SuperNode {
-
 	private int line, col;
 
 	public Node(int l, int c) {

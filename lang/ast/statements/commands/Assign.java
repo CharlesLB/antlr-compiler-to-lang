@@ -6,8 +6,17 @@ import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
 import lang.ast.expressions.ID;
 
+/**
+ * Representa um comando de atribuição.
+ * 
+ * @Parser id ‘=’ exp ‘;’
+ * 
+ * @Example x = 1;
+ * 
+ * @Info O tipo de X NÃO é inferido.
+ * 
+ */
 public class Assign extends Cmd {
-
 	private ID id;
 	private Expr e;
 

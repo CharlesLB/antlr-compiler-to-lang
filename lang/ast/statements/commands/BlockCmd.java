@@ -5,6 +5,16 @@ import java.util.List;
 
 import lang.ast.definitions.Cmd;
 
+/**
+ * Escapsulamento dos comandos que estão dentro do IF.
+ * 
+ * @Parser { cmd* }
+ * 
+ * @example {
+ *          print 1;
+ *          print 2;
+ *          }
+ */
 public class BlockCmd extends Cmd {
 	private List<Cmd> commands;
 

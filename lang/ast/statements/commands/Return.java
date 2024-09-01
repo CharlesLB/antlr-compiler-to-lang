@@ -7,8 +7,15 @@ import java.util.List;
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
 
+/**
+ * Representa um comando de retorno.
+ * 
+ * @Parser return exp {‘,’ exp} ‘;’
+ * 
+ * @Example return 1;
+ * @Example return 1, 2;
+ */
 public class Return extends Cmd {
-
 	private List<Expr> exprList;
 
 	public Return(int lin, int col, List<Expr> exprList) {

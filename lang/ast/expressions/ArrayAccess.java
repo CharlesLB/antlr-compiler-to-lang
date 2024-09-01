@@ -5,6 +5,13 @@ import java.util.List;
 
 import lang.ast.definitions.Expr;
 
+/**
+ * Representa um acesso a um array.
+ * 
+ * @Parser exp '[' exp ']'
+ * 
+ * @Example array[0]
+ */
 public class ArrayAccess extends Expr {
 	private Expr arrayExpr;
 	private Expr indexExpr;

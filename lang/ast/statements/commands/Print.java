@@ -5,8 +5,14 @@ import java.util.HashMap;
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
 
+/**
+ * Representa um comando de impressão.
+ * 
+ * @Parser print exp ‘;’
+ * 
+ * @Example print 1;
+ */
 public class Print extends Cmd {
-
 	private Expr expr;
 
 	public Print(int lin, int col, Expr expr) {

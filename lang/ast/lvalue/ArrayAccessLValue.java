@@ -4,7 +4,14 @@ import java.util.HashMap;
 
 import lang.ast.definitions.Expr;
 
-/*Ex: arr[2] = 5; */
+/**
+ * Representa um acesso a um array.
+ * 
+ * @Parser exp '[' exp ']'
+ * 
+ * @Example array[0] = 5;
+ * @Example array[a] = array[b];
+ */
 public class ArrayAccessLValue extends LValue {
 	private LValue array;
 	private Expr index;
