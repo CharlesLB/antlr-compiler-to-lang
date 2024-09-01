@@ -6,6 +6,8 @@ import lang.ast.definitions.Data;
 import lang.ast.definitions.Expr;
 import lang.ast.definitions.Type;
 import lang.ast.statements.data.Decl;
+import lang.ast.types.Btype;
+import lang.ast.types.MatrixType;
 import lang.symbols.DataTable;
 
 public class NewObject extends Expr {
@@ -37,26 +39,52 @@ public class NewObject extends Expr {
 	public Object interpret(HashMap<String, Object> context) {
 		String typeName = this.getType().toString();
 
-		Data dataDefinition = DataTable.getInstance().getData(typeName);
-		if (dataDefinition == null) {
-			throw new RuntimeException("O tipo '" + typeName + "' não foi definido.");
+		if (type instanceof Btype || (type instanceof MatrixType && ((MatrixType) type).getBaseType() instanceof Btype)) {
+			Object defaultValue = null;
+			String btypeName = type instanceof Btype ? type.toString() : ((MatrixType) type).getBaseType().toString();
+
+			switch (btypeName) {
+				case "Int":
+					defaultValue = 0;
+					break;
+				case "Float":
+					defaultValue = 0.0f;
+					break;
+				case "Char":
+					defaultValue = '\0'; // Null character
+					break;
+				case "Bool":
+					defaultValue = false;
+					break;
+				default:
+					throw new RuntimeException("Tipo básico desconhecido: " + btypeName);
+			}
+
+			context.put(typeName, defaultValue);
+			System.out.println("Parametro básico " + typeName + " registrado com tipo " + type);
+			return context.get(typeName);
+		} else {
+
+			Data dataDefinition = DataTable.getInstance().getData(typeName);
+			if (dataDefinition == null) {
+				throw new RuntimeException("O tipo '" + typeName + "' não foi definido.");
+			}
+
+			HashMap<String, Object> newObject = new HashMap<String, Object>();
+
+			// // Inicialize os campos da nova estrutura com valores nulos
+			for (Decl decl : dataDefinition.getDeclarations()) {
+				String attrName = decl.getID().getName();
+
+				Object initialValue = null;
+				newObject.put(attrName, initialValue);
+
+				System.out.println("Campo '" + attrName + "' inicializado com valor: " +
+						initialValue);
+			}
+
+			return newObject;
 		}
-
-		HashMap<String, Object> newObject = new HashMap<String, Object>();
-
-		// // Inicialize os campos da nova estrutura com valores nulos
-		for (Decl decl : dataDefinition.getDeclarations()) {
-			String attrName = decl.getID().getName();
-
-			Object initialValue = null;
-			newObject.put(attrName, initialValue);
-
-			System.out.println("Campo '" + attrName + "' inicializado com valor: " +
-					initialValue);
-		}
-
-		// Retorne o novo objeto criado
-		return newObject;
 	}
 
 	// Método auxiliar para obter o valor padrão para um tipo específico
