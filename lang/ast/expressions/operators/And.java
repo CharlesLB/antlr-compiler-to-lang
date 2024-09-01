@@ -5,8 +5,17 @@ import java.util.HashMap;
 import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a operação lógica AND entre duas expressões.
+ * 
+ * @Expr Expr && Expr
+ * 
+ * @Example true && false
+ * @Example false && true
+ * @Error Null && true -> Null values cannot be used in logical operations
+ * @Error 1 && 2 -> Unsupported type for logical operation: java.lang.Integer
+ */
 public class And extends BinOP {
-
 	public And(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}

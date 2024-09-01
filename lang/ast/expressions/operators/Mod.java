@@ -5,8 +5,17 @@ import java.util.HashMap;
 import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa a operação de módulo entre duas expressões.
+ * 
+ * @Expr Expr % Expr
+ * 
+ * @Example 2 % 1
+ * @Example 1.0 % 2.0
+ * @Error Int % Float -> Unsupported types for modulo
+ * @Error Null % 1 -> Null values cannot be used in modulo
+ */
 public class Mod extends BinOP {
-
 	public Mod(int lin, int col, Expr l, Expr r) {
 		super(lin, col, l, r);
 	}

@@ -4,8 +4,15 @@ import java.util.HashMap;
 
 import lang.ast.definitions.Expr;
 
+/**
+ * Essa classe representa um literal booleano.
+ * 
+ * @Expr true | false
+ * 
+ * @Example true
+ * @Example false
+ */
 public class BoolLiteral extends Expr {
-
 	private Boolean value;
 
 	public BoolLiteral(int lin, int col, Boolean value) {
