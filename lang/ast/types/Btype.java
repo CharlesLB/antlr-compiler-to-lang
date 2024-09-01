@@ -4,8 +4,15 @@ import java.util.HashMap;
 
 import lang.ast.definitions.Type;
 
+/**
+ * Representa um tipo de dado.
+ * 
+ * @Parser type ‘[’ ‘]’
+ *         | btype
+ * 
+ * @Example Int[], Bool
+ */
 public class Btype extends Type {
-
 	private String type;
 
 	public Btype(int l, int c, String type) {

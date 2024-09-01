@@ -10,6 +10,13 @@ import lang.ast.types.IDType;
 import lang.ast.types.MatrixType;
 import lang.symbols.DataTable;
 
+/**
+ * Representa a definição do parâmetro de uma função.
+ * 
+ * @Parser ID ‘::’ type {‘,’ ID ‘::’ type}
+ * 
+ * @Example a :: Int, b :: Int
+ */
 public class Param extends Node {
 	private ID id;
 	private Type t;

@@ -4,6 +4,15 @@ import java.util.HashMap;
 
 import lang.ast.definitions.Type;
 
+/**
+ * Representa um tipo de dado.
+ * 
+ * @Parser type ‘[’ ‘]’
+ * 
+ * @Example Int[]
+ * @Example ID[]
+ * 
+ */
 public class MatrixType extends Type {
 	private Type baseType; // O tipo base (ex: Int, Float, etc.)
 	private int dimensions;

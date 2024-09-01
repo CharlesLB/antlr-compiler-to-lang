@@ -5,6 +5,13 @@ import java.util.HashMap;
 import lang.ast.definitions.Cmd;
 import lang.ast.lvalue.LValue;
 
+/**
+ * Representa um comando de leitura de um LValue.
+ * 
+ * @Parser read lvalue ‘;’
+ * 
+ * @Example read x;
+ */
 public class ReadLValue extends Cmd {
 	private LValue lvalue;
 

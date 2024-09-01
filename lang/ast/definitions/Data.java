@@ -9,11 +9,16 @@ import lang.symbols.DataTable;
 
 import java.util.HashMap;
 
-/* Utilizada para representar estruturas do tipo: 
- * data Point {
- * 	x :: Int -> Decl.java
- * }
-*/
+/**
+ * Utilizada para representar estruturas de objeto.
+ * 
+ * @Parser data ID '{' {decl} '}'
+ * 
+ * @Example data Point {
+ *          x :: Int ; -> Essa é uma declaração de atributo
+ *          }
+ * 
+ */
 public class Data extends Node {
 	private ID id;
 	private List<Decl> declarations;

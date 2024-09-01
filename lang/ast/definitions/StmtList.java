@@ -1,13 +1,12 @@
 package lang.ast.definitions;
 
-/*
- * Esta classe representa um comando de atribuição.
- * Stmt ; StmtList
- */
 import java.util.HashMap;
 
 import lang.ast.Node;
 
+/**
+ * Representa uma lista de nós reponsável por contruir a AST.
+ */
 public class StmtList extends Node {
 
 	private Node cmd1;

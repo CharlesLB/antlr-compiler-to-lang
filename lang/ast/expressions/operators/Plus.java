@@ -2,8 +2,8 @@ package lang.ast.expressions.operators;
 
 import java.util.HashMap;
 
-import lang.ast.definitions.BinOP;
 import lang.ast.definitions.Expr;
+import lang.ast.expressions.BinOP;
 
 /**
  * Essa classe representa a operação de soma de duas expressões.
