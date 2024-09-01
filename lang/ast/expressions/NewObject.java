@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions;
 
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class NewObject extends Expr {
 					defaultValue = 0.0f;
 					break;
 				case "Char":
-					defaultValue = '\0'; // Null character
+					defaultValue = '\0'; /* Null character */
 					break;
 				case "Bool":
 					defaultValue = false;
@@ -72,7 +74,7 @@ public class NewObject extends Expr {
 
 			HashMap<String, Object> newObject = new HashMap<String, Object>();
 
-			// Inicializa os campos da nova estrutura com valores nulos
+			/* Inicializa os campos da nova estrutura com valores nulos */
 			for (Decl decl : dataDefinition.getDeclarations()) {
 				String attrName = decl.getID().getName();
 

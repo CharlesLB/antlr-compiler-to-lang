@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions.operators;
 
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class LessThan extends BinOP {
 
 	@Override
 	public String toString() {
-		// Garante que os valores de left e right não são nulos
+		/* Garante que os valores de left e right não são nulos */
 		String leftStr = (getLeft() != null) ? getLeft().toString() : "null";
 		String rightStr = (getRight() != null) ? getRight().toString() : "null";
 		return "(" + leftStr + " < " + rightStr + ")";

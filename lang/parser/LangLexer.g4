@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 lexer grammar LangLexer;
 
 @lexer::header {
@@ -48,7 +50,6 @@ EXCLAMATION_MARK: '!';
 
 // Identifiers and literals
 ID: IDENT_LOWERCASE | TYPE;
-// PROFESSOR: o ID pose ser Uppercase? Exemplo: data Racional, o data é um ID, não um type
 TYPE: IDENT_UPPERCASE;
 INT_LITERAL: INT;
 FLOAT_LITERAL: FLOAT;

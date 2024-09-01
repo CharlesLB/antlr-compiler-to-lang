@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.lvalue;
 
 import java.util.HashMap;
@@ -45,7 +47,7 @@ public class ArrayAccessLValue extends LValue {
 
 		int idx = (Integer) indexValue;
 
-		// Forma de acesso ao elemento do array
+		/* Forma de acesso ao elemento do array */
 		Object[] array = (Object[]) arrayValue;
 
 		if (idx < 0 || idx >= array.length) {

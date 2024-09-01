@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.definitions;
 
 import java.util.HashMap;
@@ -43,7 +45,7 @@ public class Param extends Node {
 			return context.get(paramName);
 		}
 
-		// Verifica se o tipo é um Btype ou MatrixType de Btype
+		/* Verifica se o tipo é um Btype ou MatrixType de Btype */
 		if (t instanceof Btype || (t instanceof MatrixType && ((MatrixType) t).getBaseType() instanceof Btype)) {
 			Object defaultValue = null;
 			String btypeName = t instanceof Btype ? t.toString() : ((MatrixType) t).getBaseType().toString();
@@ -56,7 +58,7 @@ public class Param extends Node {
 					defaultValue = 0.0f;
 					break;
 				case "Char":
-					defaultValue = '\0'; // Null character
+					defaultValue = '\0'; /* Null character */
 					break;
 				case "Bool":
 					defaultValue = false;
@@ -68,7 +70,7 @@ public class Param extends Node {
 			context.put(paramName, defaultValue);
 			return context.get(paramName);
 		}
-		// Verifica se o tipo é um MatrixType de Data
+		/* Verifica se o tipo é um MatrixType de Data */
 		else if (t instanceof MatrixType && ((MatrixType) t).getBaseType() instanceof IDType) {
 			IDType baseType = (IDType) ((MatrixType) t).getBaseType();
 			Data data = DataTable.getInstance().getData(baseType.toString());
@@ -77,14 +79,14 @@ public class Param extends Node {
 				throw new RuntimeException("Estrutura de dados " + baseType.toString() + " não definida.");
 			}
 
-			// Inicializa uma matriz de HashMap para o Data
+			/* Inicializa uma matriz para o Data */
 			int dimensions = ((MatrixType) t).getDimensions();
 			Object[] dataMatrix = initializeDataMatrix(dimensions, data);
 			context.put(paramName, dataMatrix);
 
 			return context.get(paramName);
 		}
-		// Verifica se o tipo é um Data comum
+		/* Verifica se o tipo é um Data comum */
 		else {
 			Data data = DataTable.getInstance().getData(t.toString());
 

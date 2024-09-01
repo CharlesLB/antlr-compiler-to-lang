@@ -1,3 +1,6 @@
+
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.symbols;
 
 import java.util.*;
@@ -40,7 +43,7 @@ public class FunctionTable {
 			return;
 		}
 
-		// Funções normais com suporte a sobrecarga
+		/* Funções normais com suporte a sobrecarga */
 		functions.computeIfAbsent(functionName, k -> new ArrayList<>()).add(function);
 	}
 
@@ -48,7 +51,7 @@ public class FunctionTable {
 		return mainFunction;
 	}
 
-	// Obtém a função com base no nome e na assinatura
+	/* Obtém a função com base no nome e na assinatura */
 	public Fun getFunction(String name, List<String> paramTypes) {
 		if (name.equals("main")) {
 			return mainFunction;
