@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.definitions;
 
 import java.util.HashMap;
@@ -81,17 +83,17 @@ public class Fun extends Node {
 
 		if (params != null) {
 			for (Param param : params) {
-				// Verifica se o param existe no contexto da função
+				/* Verifica se o param existe no contexto da função */
 				param.interpret(localContext);
 			}
 		}
 
-		// Executa o corpo da função
+		/* Executa o corpo da função */
 		Object returnValue = 0;
 		for (Cmd cmd : body) {
 			returnValue = cmd.interpret(localContext);
 
-			// Condição para funções recursivas
+			/* Condição para funções recursivas */
 			if (returnValue != null) {
 				break;
 			}

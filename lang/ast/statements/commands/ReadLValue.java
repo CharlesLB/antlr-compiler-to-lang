@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.statements.commands;
 
 import java.util.HashMap;
@@ -31,7 +33,6 @@ public class ReadLValue extends Cmd {
 
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
-		// DUVIDAS: É no interpret que fica isso?
 		java.util.Scanner scanner = new java.util.Scanner(System.in);
 
 		System.out.print("Enter a value: ");

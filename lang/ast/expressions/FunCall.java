@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions;
 
 import java.util.*;
@@ -56,7 +58,7 @@ public class FunCall extends Expr {
 
 		HashMap<String, Object> localContext = new HashMap<>(context);
 
-		// Cria uma lista de tipos de parâmetros para a função chamada
+		/* Cria uma lista de tipos de parâmetros para a função chamada */
 		List<String> argumentTypes = arguments.stream()
 				.map(arg -> {
 					Object value = arg.interpret(context);
@@ -80,7 +82,7 @@ public class FunCall extends Expr {
 					} else if (value instanceof HashMap) {
 						HashMap<String, Object> mapValue = (HashMap<String, Object>) value;
 
-						// Identifica o tipo baseado nas chaves do HashMap
+						/* Identifica o tipo baseado nas chaves do HashMap */
 						return identifyDataType(mapValue, DataTable.getInstance());
 					} else {
 						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
@@ -127,7 +129,7 @@ public class FunCall extends Expr {
 			}
 		}
 
-		// Se o tipo não for identificado, retorne "HashMap" como padrão --> Erro
+		// Se o tipo não for identificado, retorne "HashMap" como padrão --> Indica Erro
 		return "HashMap";
 	}
 }

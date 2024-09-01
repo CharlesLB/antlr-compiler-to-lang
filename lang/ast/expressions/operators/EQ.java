@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions.operators;
 
 import java.util.HashMap;
@@ -53,12 +55,12 @@ public class EQ extends BinOP {
 			return ((Character) leftValue).charValue() == ((Character) rightValue).charValue() ? true : false;
 		}
 
-		// Comparação para outros tipos usando equals
+		/* Comparação para outros tipos usando equals */
 		if (leftValue.equals(rightValue)) {
 			return true;
 		}
 
-		// Caso os valores não sejam iguais
+		/* Caso os valores não sejam iguais */
 		return 0;
 	}
 }

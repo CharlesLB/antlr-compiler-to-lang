@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.lvalue;
 
 import java.util.*;
@@ -67,7 +69,7 @@ public class FunLValue extends Cmd {
 	public Object interpret(HashMap<String, Object> context) {
 		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
 
-		// Cria uma lista de tipos de parâmetros para a função chamada
+		/* Cria uma lista de tipos de parâmetros para a função chamada */
 		List<String> argumentTypes = arguments.stream()
 				.map(arg -> {
 					Object value = arg.interpret(context);
@@ -87,7 +89,7 @@ public class FunLValue extends Cmd {
 							String identifiedType = identifyDataType(firstElement, DataTable.getInstance());
 							return identifiedType + "[]";
 						}
-						return "Object[]"; // Caso contrário, trate como Object[] genérico
+						return "Object[]"; /* Caso contrário, trate como Object[] genérico */
 					} else if (value instanceof HashMap) {
 						HashMap<String, Object> mapValue = (HashMap<String, Object>) value;
 
@@ -98,7 +100,7 @@ public class FunLValue extends Cmd {
 				})
 				.collect(Collectors.toList());
 
-		// Busca a função correta na tabela de funções com base no nome e na assinatura
+		/* Busca a função na tabela de funções com base no nome e na assinatura */
 		Fun function = FunctionTable.getInstance().getFunction(this.functionName.getName(), argumentTypes);
 		if (function == null) {
 			throw new RuntimeException("Função não definida: " + this.functionName.getName() +
@@ -123,8 +125,10 @@ public class FunLValue extends Cmd {
 
 		if (returnVars != null && !returnVars.isEmpty()) {
 			if (returnVars.size() == 1) {
-				// Se houver apenas uma variável de retorno, o valor deve ser diretamente
-				// mapeado
+				/*
+				 * Se houver apenas uma variável de retorno, o valor deve ser diretamente
+				 * mapeado
+				 */
 				context.put(returnVars.get(0).toString(), returnValue);
 			} else if (returnValue instanceof List<?>) {
 				List<?> returnList = (List<?>) returnValue;
@@ -156,7 +160,7 @@ public class FunLValue extends Cmd {
 			}
 		}
 
-		// Se o tipo não for identificado, retorne "HashMap" como padrão --> Erro
+		/* Se o tipo não for identificado, retorne "HashMap" como padrão --> Erro */
 		return "HashMap";
 	}
 }

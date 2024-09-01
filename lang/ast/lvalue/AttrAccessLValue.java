@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.lvalue;
 
 import java.util.*;
@@ -51,7 +53,7 @@ public class AttrAccessLValue extends LValue {
 		if (attrValue instanceof Node) {
 			return ((Node) attrValue).interpret(context);
 		} else {
-			// Se não for um Node, retorne o valor diretamente
+			/* Se não for um Node, retorne o valor diretamente */
 			return attrValue;
 		}
 	}

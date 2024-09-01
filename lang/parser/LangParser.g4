@@ -1,3 +1,6 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+
 parser grammar LangParser;
 options {
 	tokenVocab = LangLexer;
@@ -18,7 +21,6 @@ import lang.ast.statements.data.*;
 import lang.ast.types.*;
 }
 
-// prog: def+;
 prog
 	returns[StmtList ast]:
 	s1 = stmt {$ast = new StmtList($s1.ast.getLine(), $s1.ast.getColumn(), $s1.ast);} (
@@ -27,13 +29,12 @@ prog
 
 stmt
 	returns[Node ast]: d = def {$ast = $d.ast;};
-// def: data | fun;
+
 def
 	returns[Node ast]:
 	d = data {$ast = $d.ast;}
 	| f = fun {$ast = $f.ast;};
 
-// data: 'data' ID '{' decl* '}';
 data
 	returns[Data ast]:
 	'data' ID '{' ds += decl* '}' { 
@@ -44,14 +45,12 @@ data
         $ast = new Data($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), declList);
     };
 
-// decl: ID '::' type ';';
 decl
 	returns[Decl ast]:
 	ID '::' t = BTYPE ';' {
         $ast = new Decl($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), new Btype($t.line, $t.pos, $t.text));
     };
 
-// fun: ID '(' params? ')' (':' type (',' type)*)? '{' cmd* '}';
 fun
 	returns[Fun ast]:
 	name = ID '(' p = params? ')' (
@@ -77,7 +76,6 @@ fun
 		paramsList, returnTypes, cmdList);
 	};
 
-// params: ID '::' type (',' ID '::' type)*;
 params
 	returns[List<Param> paramsList]:
 	id1 = ID '::' type1 = type {
@@ -94,8 +92,6 @@ params
 		}
 	)*;
 
-/* btype: BTYPE | ID; => não estou mais fazendo isso, verificar depois */
-//  type: type '[' ']' | btype;
 type
 	returns[Type ast]:
 	t = (BTYPE | ID) {
@@ -119,9 +115,6 @@ type
         }
     };
 
-// cmd: '{' cmd* '}' | 'if' '(' expr ')' cmd | 'if' '(' expr ')' cmd 'else' cmd | 'iterate' '('
-// expr')' cmd | 'print' expr ';' | 'return' expr (',' expr)* ';' | lvalue '=' expr ';' | 'read'
-// lvalue ';' | ID '(' exps? ')' ('<' lvalue (',' lvalue)* '>')? ';'
 cmd
 	returns[Cmd ast]:
 	'if' '(' cond = expr ')' thenCmd = cmd 'else' elseCmd = cmd {
@@ -179,12 +172,6 @@ cmd
         $ast = new BlockCmd(line, column, cmdList);
     };
 
-// exp: exp '&&' exp | exp '<' exp | exp '==' exp | exp '!=' exp | exp '+' exp | exp '-' exp | exp
-// '*' exp | exp '/' exp | exp '%' exp | '!' exp | '-' exp | 'true' | 'false' | 'null' | INT_LITERAL
-// | FLOAT_LITERAL | CHAR_LITERAL | '(' exp ')' | lvalue | 'new' type ('[' exp ']')? | ID '(' exps?
-// ')' '[' exp ']'
-
-// Regras para expressões
 expr
 	returns[Expr ast]:
 	compExpr {
@@ -197,7 +184,6 @@ expr
         $ast = new NewObject($start.getLine(), $start.getCharPositionInLine(), $t.ast);
     };
 
-// lvalue: ID | lvalue '[' expr ']' | lvalue '.' ID;
 lvalue
 	returns[LValue ast]:
 	ID { 
@@ -210,7 +196,6 @@ lvalue
         $ast = new AttrAccessLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, new IDLValue($attr.line, $attr.pos, $attr.text)); 
     };
 
-// exps: expr (',' expr)*;
 exps
 	returns[List<Expr> astList]:
 	e1 = expr {
@@ -240,7 +225,6 @@ compExpr
         $ast = $addExpr.ast;
     };
 
-// Regras para adição e subtração
 addExpr
 	returns[Expr ast]:
 	mulExpr op = '+' right = addExpr {
@@ -253,7 +237,6 @@ addExpr
         $ast = $mulExpr.ast;
     };
 
-// Regras para multiplicação e divisão
 mulExpr
 	returns[Expr ast]:
 	factor op = '*' right = mulExpr {
@@ -269,7 +252,6 @@ mulExpr
         $ast = $factor.ast;
     };
 
-// Fatores simples (identificadores e números)
 factor
 	returns[Expr ast]:
 	'-' expr {
