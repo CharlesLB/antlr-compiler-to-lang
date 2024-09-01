@@ -5,7 +5,6 @@ import java.util.*;
 import lang.ast.Node;
 import lang.ast.expressions.ID;
 import lang.ast.statements.data.Decl;
-import lang.symbols.DataTable;
 
 import java.util.HashMap;
 

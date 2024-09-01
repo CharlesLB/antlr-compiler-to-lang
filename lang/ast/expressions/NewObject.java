@@ -6,9 +6,9 @@ import lang.ast.definitions.Data;
 import lang.ast.definitions.Expr;
 import lang.ast.definitions.Type;
 import lang.ast.statements.data.Decl;
+import lang.ast.symbols.DataTable;
 import lang.ast.types.Btype;
 import lang.ast.types.MatrixType;
-import lang.symbols.DataTable;
 
 /**
  * Representa a criação de um novo objeto.

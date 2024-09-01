@@ -7,8 +7,8 @@ import lang.ast.definitions.Data;
 import lang.ast.definitions.Expr;
 import lang.ast.definitions.Fun;
 import lang.ast.definitions.Param;
-import lang.symbols.DataTable;
-import lang.symbols.FunctionTable;
+import lang.ast.symbols.DataTable;
+import lang.ast.symbols.FunctionTable;
 
 /**
  * Representa a chamada de uma função.

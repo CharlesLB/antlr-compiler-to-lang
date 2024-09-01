@@ -1,10 +1,13 @@
-package lang.symbols;
+package lang.ast.symbols;
 
 import java.util.*;
 
 import lang.ast.definitions.Data;
 import lang.ast.expressions.ID;
 
+/**
+ * Estrutura que armazena todos os Datas do código.
+ */
 public class DataTable {
 	private static DataTable instance;
 	private HashMap<String, Data> dataMap;

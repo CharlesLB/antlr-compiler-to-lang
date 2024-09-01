@@ -4,25 +4,19 @@ import java.util.HashMap;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.antlr.v4.runtime.tree.*;
 import lang.ast.*;
 import lang.ast.definitions.Data;
 import lang.ast.definitions.Fun;
 import lang.ast.definitions.StmtList;
-import lang.parser.LangLexer;
-import lang.parser.LangParser;
-import lang.symbols.DataTable;
-import lang.symbols.FunctionTable;
+import lang.ast.symbols.DataTable;
+import lang.ast.symbols.FunctionTable;
 
 public class LangParserAdaptor implements ParseAdaptor {
 
     @Override
     public SuperNode parseFile(String path) {
         try {
-
             CharStream stream = CharStreams.fromFileName(path);
-
-            // System.out.println("Parsing file: " + path);
 
             LangLexer lexer = new LangLexer(stream);
             lexer.removeErrorListeners();
@@ -57,23 +51,32 @@ public class LangParserAdaptor implements ParseAdaptor {
         }
     }
 
+    /**
+     * Percorre a árvore de sintaxe abstrata (AST) a partir de um nó raiz e adiciona
+     * todas as definições de estruturas de dados encontradas à tabela de dados
+     * (`DataTable`).
+     *
+     * A função verifica se os comandos dentro de um `StmtList` (lista de comandos)
+     * são instâncias de `Data`, representando definições de estruturas de dados, e
+     * as adiciona
+     * à `DataTable`. Se um comando for outra `StmtList`, a função é chamada
+     * recursivamente
+     * para continuar a busca por definições de estruturas de dados.
+     */
     public void declareDatas(Node ast, DataTable dataTable) {
         if (ast instanceof StmtList) {
             StmtList stmtList = (StmtList) ast;
 
-            // Verifica se cmd1 é uma função
             if (stmtList.getCmd1() instanceof Data) {
                 Data data = (Data) stmtList.getCmd1();
                 dataTable.addData(data);
             }
 
-            // Verifica se cmd2 é uma função, se cmd2 não for nulo
             if (stmtList.getCmd2() != null && stmtList.getCmd2() instanceof Data) {
                 Data data = (Data) stmtList.getCmd2();
                 dataTable.addData(data);
             }
 
-            // Recursivamente verifica se cmd1 ou cmd2 são outros StmtList
             if (stmtList.getCmd1() instanceof StmtList) {
                 declareDatas(stmtList.getCmd1(), dataTable);
             }
@@ -84,23 +87,30 @@ public class LangParserAdaptor implements ParseAdaptor {
         }
     }
 
+    /**
+     * Percorre a árvore de sintaxe abstrata (AST) a partir de um nó raiz e adiciona
+     * todas as definições de funções encontradas à tabela de funções
+     * (`FunctionTable`).
+     *
+     * A função verifica se os comandos dentro de um `StmtList` (lista de comandos)
+     * são instâncias de `Fun`, representando definições de funções, e as adiciona
+     * à `FunctionTable`. Se um comando for outra `StmtList`, a função é chamada
+     * recursivamente para continuar a busca por definições de funções.
+     */
     public void declareFunctions(Node ast, FunctionTable functionTable) {
         if (ast instanceof StmtList) {
             StmtList stmtList = (StmtList) ast;
 
-            // Verifica se cmd1 é uma função
             if (stmtList.getCmd1() instanceof Fun) {
                 Fun function = (Fun) stmtList.getCmd1();
                 functionTable.addFunction(function);
             }
 
-            // Verifica se cmd2 é uma função, se cmd2 não for nulo
             if (stmtList.getCmd2() != null && stmtList.getCmd2() instanceof Fun) {
                 Fun function = (Fun) stmtList.getCmd2();
                 functionTable.addFunction(function);
             }
 
-            // Recursivamente verifica se cmd1 ou cmd2 são outros StmtList
             if (stmtList.getCmd1() instanceof StmtList) {
                 declareFunctions(stmtList.getCmd1(), functionTable);
             }
@@ -128,7 +138,6 @@ public class LangParserAdaptor implements ParseAdaptor {
         }
 
         HashMap<String, Object> globalContext = new HashMap<>();
-        // System.out.println("Chamando programa...");
         mainFunction.interpret(globalContext);
     }
 }

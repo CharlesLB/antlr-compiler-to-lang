@@ -1,10 +1,13 @@
-package lang.symbols;
+package lang.ast.symbols;
 
 import java.util.*;
 
 import lang.ast.definitions.Fun;
 import lang.ast.expressions.ID;
 
+/**
+ * Estrutura que armazena todas as funções do código.
+ */
 public class FunctionTable {
 	private static FunctionTable instance;
 	private HashMap<String, List<Fun>> functions;

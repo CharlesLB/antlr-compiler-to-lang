@@ -5,10 +5,10 @@ import java.util.HashMap;
 import lang.ast.Node;
 import lang.ast.expressions.ID;
 import lang.ast.statements.data.Decl;
+import lang.ast.symbols.DataTable;
 import lang.ast.types.Btype;
 import lang.ast.types.IDType;
 import lang.ast.types.MatrixType;
-import lang.symbols.DataTable;
 
 /**
  * Representa a definição do parâmetro de uma função.
@@ -92,7 +92,7 @@ public class Param extends Node {
 				throw new RuntimeException("Estrutura de dados " + t.toString() + " não definida.");
 			}
 
-			// Inicializa a estrutura Data
+			/** Inicializa a estrutura Data */
 			HashMap<String, Object> dataInstance = new HashMap<String, Object>();
 			for (Decl decl : data.getDeclarations()) {
 				dataInstance.put(decl.getID().getName(), decl.getType());
@@ -103,7 +103,7 @@ public class Param extends Node {
 		}
 	}
 
-	// Método auxiliar para inicializar uma matriz de Data
+	/** Método auxiliar para inicializar uma matriz de Data */
 	private Object[] initializeDataMatrix(int dimensions, Data data) {
 		if (dimensions == 1) {
 			HashMap<String, Object>[] dataArray = new HashMap[data.getDeclarations().size()];
