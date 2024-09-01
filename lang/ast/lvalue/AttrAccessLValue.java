@@ -7,7 +7,7 @@ import lang.ast.Node;
 /**
  * Representa um acesso a um atributo de um objeto.
  * 
- * @Parser object ‘.’ ID
+ * @Parser lvalue ‘.’ ID
  * 
  * @Example person.name
  */
