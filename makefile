@@ -16,16 +16,22 @@ clean:
 	find . -type f -name "*.java~" -delete || true
 
 
+clean:
+	rm -R lang/parser/*Listener.java lang/parser/LangLexer.java lang/parser/LangParser.java lang/parser/*.interp lang/parser/*.tokens lang/parser/.antlr lang/parser/Lang.java || true
+	find bin -type f -name "*.class" -delete || true
+	find . -type f -name "*.java~" -delete || true
+
 genparser: lang/parser/LangParser.g4
 	java -jar ./lib/antlr-4.8-complete.jar lang/parser/LangParser.g4
 
 genlexer: lang/parser/LangLexer.g4
 	java -jar ./lib/antlr-4.8-complete.jar lang/parser/LangLexer.g4
 
-compile : genlexer genparser
+compile: genlexer genparser
+	mkdir -p bin
 	find . -name "*.java" > javalist
-	javac -cp .:lib/antlr-4.8-complete.jar @javalist
+	javac -cp .:lib/antlr-4.8-complete.jar -d bin @javalist
 	rm -f javalist
-	
+
 run: compile
-	java -cp .:lib/antlr-4.8-complete.jar lang.Teste
+	java -cp bin:lib/antlr-4.8-complete.jar lang.Teste
