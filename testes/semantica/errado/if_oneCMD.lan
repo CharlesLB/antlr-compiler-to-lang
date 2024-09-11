@@ -1,3 +1,5 @@
+-- Variável não pode mudar de tipo
+
 main(){
   x = true;
   if(x) 

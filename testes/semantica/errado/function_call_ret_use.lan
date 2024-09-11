@@ -1,3 +1,4 @@
+-- Uma variável não pode mudar de tipo
 
 f(x :: Int) : Int, Float{
    y = 2*x  + 1;

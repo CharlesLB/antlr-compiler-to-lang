@@ -1,3 +1,4 @@
+-- Não pode pegar um atributo que não existe -> A função deve retornar um vetor
 
 f(x :: Int) : Int, Int{
    y = 2*x  + 1;

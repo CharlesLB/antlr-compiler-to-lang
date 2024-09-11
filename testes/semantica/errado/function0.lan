@@ -1,3 +1,4 @@
+-- Não pode chamar mais parâmetro do que a função possui
 
 f(x :: Int){
    y = 2*x  + 1;

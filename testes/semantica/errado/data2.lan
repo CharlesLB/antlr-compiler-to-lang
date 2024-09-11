@@ -1,3 +1,5 @@
+-- Data já declarado
+
 data Ponto {
    x :: Float;
    y :: Float;
