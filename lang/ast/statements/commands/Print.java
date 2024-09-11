@@ -1,24 +1,22 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.statements.commands;
-
-import java.util.HashMap;
 
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
+import visitors.Visitor;
 
 /**
  * Representa um comando de impressão.
- * 
+ *
  * @Parser print exp ‘;’
- * 
+ *
  * @Example print 1;
  */
 public class Print extends Cmd {
 	private Expr expr;
 
-	public Print(int lin, int col, Expr expr) {
-		super(lin, col);
+	public Print(Expr expr) {
 		this.expr = expr;
 	}
 
@@ -27,10 +25,7 @@ public class Print extends Cmd {
 		return "print " + expr.toString() + ";";
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> m) {
-		Object value = expr.interpret(m);
-		System.out.print(value); // Imprime o valor da expressão
-		return value;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

@@ -2,10 +2,9 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.statements.commands;
 
-import java.util.HashMap;
-
 import lang.ast.definitions.Cmd;
 import lang.ast.lvalue.LValue;
+import visitors.Visitor;
 
 /**
  * Representa um comando de leitura de um LValue.
@@ -17,8 +16,7 @@ import lang.ast.lvalue.LValue;
 public class ReadLValue extends Cmd {
 	private LValue lvalue;
 
-	public ReadLValue(int line, int column, LValue lvalue) {
-		super(line, column);
+	public ReadLValue(LValue lvalue) {
 		this.lvalue = lvalue;
 	}
 
@@ -31,23 +29,7 @@ public class ReadLValue extends Cmd {
 		return "read " + lvalue.toString() + ";";
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> context) {
-		java.util.Scanner scanner = new java.util.Scanner(System.in);
-
-		System.out.print("Enter a value: ");
-		Object inputValue = null;
-		if (scanner.hasNextInt()) {
-			inputValue = scanner.nextInt();
-		} else if (scanner.hasNextDouble()) {
-			inputValue = scanner.nextDouble();
-		} else {
-			// Para caracter
-			inputValue = scanner.next();
-		}
-
-		context.put(this.getLValue().toString(), inputValue);
-
-		return context;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

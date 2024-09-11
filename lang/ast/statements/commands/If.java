@@ -2,11 +2,10 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.statements.commands;
 
-import java.util.HashMap;
-
 import lang.ast.Node;
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
+import visitors.Visitor;
 
 /**
  * Representa um comando de if.
@@ -21,15 +20,13 @@ public class If extends Cmd {
 	private Node thn;
 	private Node els;
 
-	public If(int lin, int col, Expr exp, Node thn, Node els) {
-		super(lin, col);
+	public If(Expr exp, Node thn, Node els) {
 		this.exp = exp;
 		this.thn = thn;
 		this.els = els;
 	}
 
-	public If(int lin, int col, Expr exp, Node thn) {
-		super(lin, col);
+	public If(Expr exp, Node thn) {
 		this.exp = exp;
 		this.thn = thn;
 		this.els = null;
@@ -61,22 +58,8 @@ public class If extends Cmd {
 		return s;
 	}
 
-	public Object interpret(HashMap<String, Object> context) {
-		Object conditionResult = exp.interpret(context);
-
-		if (conditionResult instanceof Boolean) {
-			if ((Boolean) conditionResult) {
-				Object thenResult = thn.interpret(context);
-				return thenResult;
-			} else if (els != null) {
-				Object elseResult = els.interpret(context);
-				return elseResult;
-			}
-		} else {
-			throw new RuntimeException("Unsupported type for condition in if statement");
-		}
-
-		return null;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 
 }

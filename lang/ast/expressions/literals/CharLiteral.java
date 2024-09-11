@@ -1,24 +1,22 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions.literals;
 
-import java.util.HashMap;
-
 import lang.ast.definitions.Expr;
+import visitors.Visitor;
 
 /**
  * Essa classe representa um literal caractere.
- * 
+ *
  * @Expr 'char'
- * 
+ *
  * @Example 'a'
  * @Example '\n'
  */
 public class CharLiteral extends Expr {
 	private String value;
 
-	public CharLiteral(int lin, int col, String value) {
-		super(lin, col);
+	public CharLiteral(String value) {
 		this.value = value;
 	}
 
@@ -27,13 +25,7 @@ public class CharLiteral extends Expr {
 		return "'" + value + "'";
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> m) {
-		String strippedValue = value.substring(1, value.length() - 1);
-
-		if (strippedValue.equals("\\n")) {
-			return "\n";
-		}
-		return strippedValue;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

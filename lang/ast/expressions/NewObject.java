@@ -1,29 +1,22 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions;
 
-import java.util.HashMap;
-
-import lang.ast.definitions.Data;
 import lang.ast.definitions.Expr;
 import lang.ast.definitions.Type;
-import lang.ast.statements.data.Decl;
-import lang.ast.symbols.DataTable;
-import lang.ast.types.Btype;
-import lang.ast.types.MatrixType;
+import visitors.Visitor;
 
 /**
  * Representa a criação de um novo objeto.
- * 
+ *
  * @Parser new type
- * 
+ *
  * @Example new Point
  */
 public class NewObject extends Expr {
 	private Type type;
 
-	public NewObject(int line, int column, Type type) {
-		super(line, column);
+	public NewObject(Type type) {
 		this.type = type;
 	}
 
@@ -36,53 +29,7 @@ public class NewObject extends Expr {
 		return "new " + type.toString();
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> context) {
-		String typeName = this.getType().toString();
-
-		if (type instanceof Btype
-				|| (type instanceof MatrixType && ((MatrixType) type).getBaseType() instanceof Btype)) {
-			Object defaultValue = null;
-			String btypeName = type instanceof Btype ? type.toString() : ((MatrixType) type).getBaseType().toString();
-
-			switch (btypeName) {
-				case "Int":
-					defaultValue = 0;
-					break;
-				case "Float":
-					defaultValue = 0.0f;
-					break;
-				case "Char":
-					defaultValue = '\0'; /* Null character */
-					break;
-				case "Bool":
-					defaultValue = false;
-					break;
-				default:
-					throw new RuntimeException("Tipo básico desconhecido: " + btypeName);
-			}
-
-			context.put(typeName, defaultValue);
-			System.out.println("Parametro básico " + typeName + " registrado com tipo " + type);
-			return context.get(typeName);
-		} else {
-
-			Data dataDefinition = DataTable.getInstance().getData(typeName);
-			if (dataDefinition == null) {
-				throw new RuntimeException("O tipo '" + typeName + "' não foi definido.");
-			}
-
-			HashMap<String, Object> newObject = new HashMap<String, Object>();
-
-			/* Inicializa os campos da nova estrutura com valores nulos */
-			for (Decl decl : dataDefinition.getDeclarations()) {
-				String attrName = decl.getID().getName();
-
-				Object initialValue = null;
-				newObject.put(attrName, initialValue);
-			}
-
-			return newObject;
-		}
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

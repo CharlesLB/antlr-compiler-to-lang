@@ -2,9 +2,8 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.types;
 
-import java.util.HashMap;
-
 import lang.ast.definitions.Type;
+import visitors.Visitor;
 
 /**
  * Representa um tipo de dado.
@@ -19,8 +18,7 @@ public class MatrixType extends Type {
 	private Type baseType; // (ex: Int, Float, etc.)
 	private int dimensions;
 
-	public MatrixType(int l, int c, Type baseType, int dimensions) {
-		super(l, c);
+	public MatrixType(Type baseType, int dimensions) {
 		this.baseType = baseType;
 		this.dimensions = dimensions;
 	}
@@ -47,8 +45,7 @@ public class MatrixType extends Type {
 		return sb.toString();
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> context) {
-		return context.get(baseType);
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

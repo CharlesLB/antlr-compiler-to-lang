@@ -2,10 +2,10 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.statements.commands;
 
-import java.util.HashMap;
 import java.util.List;
 
 import lang.ast.definitions.Cmd;
+import visitors.Visitor;
 
 /**
  * Escapsulamento dos comandos que estão dentro do IF.
@@ -20,8 +20,7 @@ import lang.ast.definitions.Cmd;
 public class BlockCmd extends Cmd {
 	private List<Cmd> commands;
 
-	public BlockCmd(int line, int column, List<Cmd> commands) {
-		super(line, column);
+	public BlockCmd(List<Cmd> commands) {
 		this.commands = commands;
 	}
 
@@ -40,12 +39,7 @@ public class BlockCmd extends Cmd {
 		return sb.toString();
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> context) {
-		Object lastResult = null;
-		for (Cmd command : commands) {
-			lastResult = command.interpret(context);
-		}
-		return lastResult;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

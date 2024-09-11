@@ -2,11 +2,12 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.definitions;
 
-import java.util.HashMap;
 import java.util.List;
 
 import lang.ast.Node;
 import lang.ast.expressions.ID;
+
+import visitors.Visitor;
 
 /**
  * Representa a definição de uma função.
@@ -21,8 +22,7 @@ public class Fun extends Node {
 	private List<Type> returnTypes;
 	private List<Cmd> body;
 
-	public Fun(int l, int c, ID name, List<Param> params, List<Type> returnTypes, List<Cmd> body) {
-		super(l, c);
+	public Fun(ID name, List<Param> params, List<Type> returnTypes, List<Cmd> body) {
 		this.name = name;
 		this.params = params;
 		this.returnTypes = returnTypes;
@@ -77,29 +77,8 @@ public class Fun extends Node {
 		return sb.toString();
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> context) {
-		HashMap<String, Object> localContext = new HashMap<String, Object>(context);
-
-		if (params != null) {
-			for (Param param : params) {
-				/* Verifica se o param existe no contexto da função */
-				param.interpret(localContext);
-			}
-		}
-
-		/* Executa o corpo da função */
-		Object returnValue = 0;
-		for (Cmd cmd : body) {
-			returnValue = cmd.interpret(localContext);
-
-			/* Condição para funções recursivas */
-			if (returnValue != null) {
-				break;
-			}
-		}
-
-		return returnValue;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 
 }

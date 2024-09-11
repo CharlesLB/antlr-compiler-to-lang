@@ -2,10 +2,9 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.lvalue;
 
-import java.util.*;
-
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
+import visitors.Visitor;
 
 /**
  * Representa um comando de atribuição.
@@ -18,8 +17,7 @@ public class AssignLValue extends Cmd {
 	private LValue id;
 	private Expr e;
 
-	public AssignLValue(int l, int c, LValue id, Expr e) {
-		super(l, c);
+	public AssignLValue(LValue id, Expr e) {
 		this.id = id;
 		this.e = e;
 	}
@@ -36,52 +34,7 @@ public class AssignLValue extends Cmd {
 		return id.toString() + " = " + e.toString();
 	}
 
-	public Object interpret(HashMap<String, Object> context) {
-		Object exprObject = e.interpret(context);
-
-		if (id instanceof IDLValue) {
-			IDLValue variable = (IDLValue) id;
-			context.put(variable.getName(), exprObject);
-		}
-
-		if (id instanceof ArrayAccessLValue) {
-			ArrayAccessLValue arrayAccess = (ArrayAccessLValue) id;
-
-			Object arrayObject = arrayAccess.getArray().interpret(context);
-
-			if (arrayObject instanceof Object[]) {
-				Object[] array = (Object[]) arrayObject;
-				Object indexValue = arrayAccess.getIndex().interpret(context);
-
-				if (indexValue instanceof Integer) {
-					int index = (Integer) indexValue;
-
-					if (index >= 0 && index < array.length) {
-						array[index] = new HashMap<String, Object>();
-						array[index] = exprObject;
-
-					} else {
-						throw new RuntimeException("ArrayList index out of bounds.");
-					}
-				}
-			}
-		}
-
-		if (id instanceof AttrAccessLValue) {
-			AttrAccessLValue attrAccess = (AttrAccessLValue) id;
-
-			Object objectObject = attrAccess.getObject().interpret(context);
-			if (objectObject instanceof HashMap) {
-				@SuppressWarnings("unchecked")
-				HashMap<String, Object> subContext = (HashMap<String, Object>) objectObject;
-				subContext.put(attrAccess.getAttr().getName(), exprObject);
-				return exprObject;
-			} else {
-				throw new RuntimeException("The object is not a valid structure for attribute access.");
-			}
-		}
-
-		return exprObject;
-
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

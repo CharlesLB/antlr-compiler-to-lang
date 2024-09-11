@@ -1,14 +1,14 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions;
 
 import lang.ast.definitions.Expr;
 
 /**
  * Essa classe representa uma operação binária.
- * 
+ *
  * @Expr Expr OP Expr
- * 
+ *
  * @Example 2 + 1
  * @Example 1.0 - 2.0
  * @Example 1 * 2
@@ -17,7 +17,7 @@ import lang.ast.definitions.Expr;
  * @Example 1 < 2
  * @Example !1
  * @Example 1 && 2
- * 
+ *
  * @Error 2 > 1 -> Não existe Greater Than
  * @Error 2 || 1 -> Não existe OR
  * @Error 2 <= 1 -> Não existe Less Than or Equal
@@ -28,10 +28,17 @@ public abstract class BinOP extends Expr {
 	private Expr l;
 	private Expr r;
 
-	public BinOP(int lin, int col, Expr l, Expr r) {
-		super(lin, col);
+	public BinOP(Expr l, Expr r) {
 		this.l = l;
 		this.r = r;
+	}
+
+	public void setLeft(Expr n) {
+		l = n;
+	}
+
+	public void setRight(Expr n) {
+		r = n;
 	}
 
 	public Expr getLeft() {
@@ -41,4 +48,5 @@ public abstract class BinOP extends Expr {
 	public Expr getRight() {
 		return r;
 	}
+
 }

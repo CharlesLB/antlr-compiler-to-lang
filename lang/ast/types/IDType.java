@@ -2,9 +2,8 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.types;
 
-import java.util.HashMap;
-
 import lang.ast.definitions.Type;
+import visitors.Visitor;
 
 /**
  * Representa um tipo de dado.
@@ -19,8 +18,7 @@ import lang.ast.definitions.Type;
 public class IDType extends Type {
 	private String id;
 
-	public IDType(int line, int column, String id) {
-		super(line, column);
+	public IDType(String id) {
 		this.id = id;
 	}
 
@@ -33,7 +31,7 @@ public class IDType extends Type {
 		return id;
 	}
 
-	public Object interpret(HashMap<String, Object> context) {
-		return context.get(id);
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

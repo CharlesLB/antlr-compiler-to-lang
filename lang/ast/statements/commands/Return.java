@@ -2,12 +2,11 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.statements.commands;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import lang.ast.definitions.Cmd;
 import lang.ast.definitions.Expr;
+import visitors.Visitor;
 
 /**
  * Representa um comando de retorno.
@@ -20,8 +19,7 @@ import lang.ast.definitions.Expr;
 public class Return extends Cmd {
 	private List<Expr> exprList;
 
-	public Return(int lin, int col, List<Expr> exprList) {
-		super(lin, col);
+	public Return(List<Expr> exprList) {
 		this.exprList = exprList;
 	}
 
@@ -37,18 +35,7 @@ public class Return extends Cmd {
 		return sb.toString();
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> m) {
-		List<Object> returnValues = new ArrayList<>();
-
-		for (Expr expr : exprList) {
-			returnValues.add(expr.interpret(m));
-		}
-
-		if (returnValues.size() == 1) {
-			return returnValues.get(0);
-		}
-
-		return returnValues;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

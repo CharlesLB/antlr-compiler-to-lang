@@ -8,7 +8,7 @@ import lang.ast.Node;
 import lang.ast.expressions.ID;
 import lang.ast.statements.data.Decl;
 
-import java.util.HashMap;
+import visitors.Visitor;
 
 /**
  * Utilizada para representar estruturas de objeto.
@@ -24,14 +24,13 @@ public class Data extends Node {
 	private ID id;
 	private List<Decl> declarations;
 
-	public Data(int l, int c, ID id, List<Decl> declarations) {
-		super(l, c);
+	public Data(ID id, List<Decl> declarations) {
 		this.id = id;
 		this.declarations = declarations;
 	}
 
-	public Data(int l, int c) {
-		super(l, c);
+	public Data() {
+
 	}
 
 	public ID getID() {
@@ -61,17 +60,8 @@ public class Data extends Node {
 		return sb.toString();
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> context) {
-		HashMap<String, Object> localContext = new HashMap<String, Object>();
-
-		for (Decl decl : declarations) {
-			localContext.put(decl.getID().getName(), decl.getType());
-		}
-
-		context.put(id.getName(), localContext);
-
-		return context;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 
 }

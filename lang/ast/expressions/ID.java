@@ -1,24 +1,23 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions;
 
-import java.util.HashMap;
+import visitors.Visitor;
 
 import lang.ast.definitions.Expr;
 
 /**
  * Representa um identificador.
- * 
+ *
  * @Parser ID
- * 
+ *
  * @Example x
  */
 public class ID extends Expr {
 
 	private String l;
 
-	public ID(int l, int c, String name) {
-		super(l, c);
+	public ID(String name) {
 		this.l = name;
 	}
 
@@ -31,7 +30,7 @@ public class ID extends Expr {
 		return l;
 	}
 
-	public Object interpret(HashMap<String, Object> m) {
-		return m.get(l);
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

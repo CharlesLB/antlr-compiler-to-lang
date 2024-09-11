@@ -2,9 +2,8 @@
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.types;
 
-import java.util.HashMap;
-
 import lang.ast.definitions.Type;
+import visitors.Visitor;
 
 /**
  * Representa um tipo de dado.
@@ -17,8 +16,7 @@ import lang.ast.definitions.Type;
 public class Btype extends Type {
 	private String type;
 
-	public Btype(int l, int c, String type) {
-		super(l, c);
+	public Btype(String type) {
 		this.type = type;
 	}
 
@@ -31,7 +29,7 @@ public class Btype extends Type {
 		return type;
 	}
 
-	public Object interpret(HashMap<String, Object> context) {
-		return context.get(type);
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

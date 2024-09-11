@@ -1,24 +1,22 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions.literals;
 
-import java.util.HashMap;
-
 import lang.ast.definitions.Expr;
+import visitors.Visitor;
 
 /**
  * Essa classe representa um literal float.
- * 
+ *
  * @Expr float
- * 
+ *
  * @Example 1.0
  * @Example 3.14
  */
 public class FloatLiteral extends Expr {
 	private float value;
 
-	public FloatLiteral(int lin, int col, float value) {
-		super(lin, col);
+	public FloatLiteral(float value) {
 		this.value = value;
 	}
 
@@ -27,8 +25,7 @@ public class FloatLiteral extends Expr {
 		return String.valueOf(value);
 	}
 
-	@Override
-	public Object interpret(HashMap<String, Object> m) {
-		return value;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

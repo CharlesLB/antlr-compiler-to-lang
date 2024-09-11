@@ -1,16 +1,15 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.ast.expressions.literals;
 
-import java.util.HashMap;
-
 import lang.ast.definitions.Expr;
+import visitors.Visitor;
 
 /**
  * Essa classe representa um literal inteiro.
- * 
+ *
  * @Expr int
- * 
+ *
  * @Example 1
  * @Example 42
  * @Example -1
@@ -18,8 +17,7 @@ import lang.ast.definitions.Expr;
 public class IntLiteral extends Expr {
 	private int value;
 
-	public IntLiteral(int value, int c, int v) {
-		super(value, c);
+	public IntLiteral(int v) {
 		this.value = v;
 	}
 
@@ -27,12 +25,7 @@ public class IntLiteral extends Expr {
 		return value;
 	}
 
-	// @Override
-	public String toString() {
-		return "" + value;
-	}
-
-	public Object interpret(HashMap<String, Object> m) {
-		return value;
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }
