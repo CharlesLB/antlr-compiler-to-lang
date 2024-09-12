@@ -1,3 +1,4 @@
+-- Parâmetros com o mesmo nome
 
 f(x :: Int, x :: Float) : Int, Float{
    y = 2*x  + 1;

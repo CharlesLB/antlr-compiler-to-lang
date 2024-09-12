@@ -1,3 +1,6 @@
+
+-- Data não declarado
+
 main(){
    p = new Ponto;
    print p.x;

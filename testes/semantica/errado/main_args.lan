@@ -1,3 +1,4 @@
+-- Não pode usar variável não declarada (l)
 
 f(x :: Int) : Int{
    y = 2*x  + 1;

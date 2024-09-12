@@ -3,6 +3,8 @@
 --- The marvelous env Debugger ------
 --k  :  5
 
+-- Função spook (Int, Int, Int) não declarada
+
 
 fat(n :: Int) : Int{
   if(n == 0){

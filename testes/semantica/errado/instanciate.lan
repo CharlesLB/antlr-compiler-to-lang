@@ -1,3 +1,6 @@
+-- Não pode usar variável não declarada (l) ?
+-- Não pode criar um objeto Int ?
+
 data Ponto {
    x :: Float;
    y :: Float;

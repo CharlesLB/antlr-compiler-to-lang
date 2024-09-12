@@ -1,3 +1,5 @@
+-- && só aceita boolean
+
 main(){
   x = 10 && 10;
 }
