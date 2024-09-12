@@ -62,8 +62,8 @@ data
 
 decl
 	returns[Decl ast]:
-	ID '::' t = BTYPE ';' {
-        $ast = new Decl(new ID($ID.text), new Btype($t.text));
+	ID '::' t = type ';' {
+        $ast = new Decl(new ID($ID.text), $t.ast);
     };
 
 fun
@@ -140,6 +140,9 @@ cmd
 	| 'iterate' '(' count = expr ')' body = cmd {
         $ast = new Iterate($count.ast, $body.ast);
     }
+	| 'read' lv = lvalue ';' {
+        $ast = new ReadLValue($lv.ast);
+    }
 	| 'print' ex = expr ';' {
         $ast = new Print($ex.ast);
     }
@@ -150,14 +153,9 @@ cmd
         }
         $ast = new Return(exprList);
     }
-	| ID '=' expr ';' {
-        $ast = new Assign(new ID($ID.text), $expr.ast);
-    }
+	// | ID '=' expr ';' { $ast = new Assign(new ID($ID.text), $expr.ast); }
 	| lv = lvalue '=' ex = expr ';' {
         $ast = new AssignLValue($lv.ast, $ex.ast);
-    }
-	| 'read' lv = lvalue ';' {
-        $ast = new ReadLValue($lv.ast);
     }
 	| ID '(' es = exps? ')' (
 		'<' lvs += lvalue (',' lvs += lvalue)* '>'
@@ -282,9 +280,6 @@ factor
 	| 'null' {
         $ast = new NullLiteral();
     }
-	| ID {
-        $ast = new ID($ID.text);
-    }
 	| INT_LITERAL {
         $ast = new IntLiteral(Integer.parseInt($INT_LITERAL.text));
     }
@@ -293,6 +288,9 @@ factor
     }
 	| CHAR_LITERAL {
         $ast = new CharLiteral($CHAR_LITERAL.text); 
+    }
+	| lval = lvalue {
+        $ast = $lval.ast;
     }
 	| '(' expr ')' {
         $ast = $expr.ast;
@@ -303,7 +301,4 @@ factor
             exprList.addAll($args.astList); 
         }
         $ast = new ArrayAccess(new FunCall(new ID($id.text), exprList), $index.ast);
-    }
-	| lval = lvalue {
-        $ast = $lval.ast;
     };

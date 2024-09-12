@@ -13,7 +13,7 @@ import java.io.IOException;
 public class Teste {
 
 	// Caminho para o diretório de testes
-	private static String testDirectory = "testes/semantica/errado";
+	private static String testDirectory = "testes/pessoal";
 	private static File testFolder = new File(testDirectory);
 
 	public static void main(String[] args) throws Exception {
