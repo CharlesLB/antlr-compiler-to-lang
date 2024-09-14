@@ -3,7 +3,7 @@
 lexer grammar LangLexer;
 
 @lexer::header {
-package lang.core.parser;
+package lang.core.lexer;
 }
 
 // Keywords

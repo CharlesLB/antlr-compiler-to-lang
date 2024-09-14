@@ -1,7 +1,7 @@
 package lang;
 
-import lang.core.parser.*;
 import lang.enums.Mode;
+import lang.test.lexer.LexerTest;
 
 public class LangCompiler {
 
@@ -19,7 +19,7 @@ public class LangCompiler {
 
             switch (mode) {
                 case "lexical":
-                    // new LexicalTest(file).run();
+                    new LexerTest(path).run();
                     break;
                 case "sintatic":
                     // new SintaticTest(file).run();

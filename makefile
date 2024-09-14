@@ -4,8 +4,8 @@ compile: genlexer genparser
 genparser: lang/core/parser/LangParser.g4
 	java -jar ./lib/antlr-4.8-complete.jar lang/core/parser/LangParser.g4
 
-genlexer: lang/core/parser/LangLexer.g4
-	java -jar ./lib/antlr-4.8-complete.jar lang/core/parser/LangLexer.g4
+genlexer: lang/core/lexer/LangLexer.g4
+	java -jar ./lib/antlr-4.8-complete.jar lang/core/lexer/LangLexer.g4
 
 run: compile
 	java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler $(MODE) $(FILE)
