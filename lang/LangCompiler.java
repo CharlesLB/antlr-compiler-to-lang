@@ -1,7 +1,7 @@
 package lang;
 
-import lang.parser.*;
-import lang.ast.*;
+import lang.core.parser.*;
+import lang.core.ast.*;
 
 public class LangCompiler {
 
