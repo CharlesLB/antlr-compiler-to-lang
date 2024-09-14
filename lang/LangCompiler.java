@@ -1,7 +1,7 @@
 package lang;
 
 import lang.core.parser.*;
-import lang.core.ast.*;
+import lang.enums.Mode;
 
 public class LangCompiler {
 
@@ -14,23 +14,28 @@ public class LangCompiler {
         }
 
         try {
-            LangParserAdaptor langParser = new LangParserAdaptor();
+            String mode = args[0];
+            String path = args[2];
 
-            if (args[0].equals("-bs")) {
-                System.out.println("Executando bateria de testes sintáticos:");
-                langParser.skipOnSintaticTest = true;
-
-                new TestParser(langParser);
-                return;
-            }
-            if (args[0].equals("-bsm")) {
-                System.out.println("Executa uma bateria de testes no interpretador");
-                new TestParser(langParser);
-                return;
-            }
-            if (args.length != 2) {
-                System.out.println("Para usar essa opção, especifique um nome de arquivo");
-                return;
+            switch (mode) {
+                case "lexical":
+                    // new LexicalTest(file).run();
+                    break;
+                case "sintatic":
+                    // new SintaticTest(file).run();
+                    break;
+                case "semantic":
+                    // new SemanticTest(file).run();
+                    break;
+                case "interpreter":
+                    // new InterpreterTest(file).run();
+                    break;
+                case "gvz":
+                    // new GVZTest(file).run();
+                    break;
+                default:
+                    printHelp();
+                    break;
             }
 
         } catch (Exception e) {
@@ -44,21 +49,24 @@ public class LangCompiler {
         String ANSI_YELLOW = "\u001B[33m";
         String ANSI_BLUE = "\u001B[34m";
 
-        System.out.println(ANSI_YELLOW + "use <make run MODE=... FILE=...>" + ANSI_RESET);
+        System.out.println(ANSI_YELLOW + "use <make run MODE=... PATH=...>" + ANSI_RESET);
+        System.out.println("Exemplo: make run MODE=lexical FILE=example.lan \n");
+
+        System.out.println(ANSI_BLUE + "Path can be a file or a dir." + ANSI_RESET + "\n");
+
         System.out.println(ANSI_GREEN + "MODE (uma das seguintes possibilidades):  \n" + ANSI_RESET);
 
-        System.out.println(ANSI_YELLOW + "lexical" + ANSI_RESET + ": Executa uma bateria de testes léxicos");
-        System.out.println(ANSI_YELLOW + "sintatic" + ANSI_RESET + ": Executa uma bateria de testes sintáticos");
-        System.out.println(ANSI_YELLOW + "semantic" + ANSI_RESET + ": Executa uma bateria de testes semânticos");
+        System.out.println(ANSI_YELLOW + Mode.LEXICAL + ANSI_RESET + ": Executa uma bateria de testes léxicos");
+        System.out.println(ANSI_YELLOW + Mode.SINTATIC + ANSI_RESET + ": Executa uma bateria de testes sintáticos");
+        System.out.println(ANSI_YELLOW + Mode.SEMANTIC + ANSI_RESET + ": Executa uma bateria de testes semânticos");
         System.out
-                .println(ANSI_YELLOW + "interpreter" + ANSI_RESET + ": Executa uma bateria de testes no interpretador");
+                .println(ANSI_YELLOW + Mode.INTERPRETER + ANSI_RESET
+                        + ": Executa uma bateria de testes no interpretador");
 
-        System.out.println(ANSI_YELLOW + "gvz" + ANSI_RESET
+        System.out.println(ANSI_YELLOW + Mode.GVZ + ANSI_RESET
                 + ": Create a dot file. (Feed it to graphviz dot tool to generate graphical representation of the AST)");
 
-        System.out.println("\n" + ANSI_BLUE + "File is optional" + ANSI_RESET + "\n");
-
-        System.out.println("Exemplo: make run MODE=lexical FILE=example.lan");
+        System.out.println("");
 
         return;
     }
