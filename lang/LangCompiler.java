@@ -4,30 +4,15 @@ import lang.parser.*;
 import lang.ast.*;
 
 public class LangCompiler {
-    // Recupera o nome base (sem extensão) de um arquivo.
+
     public static void main(String[] args) {
+        System.out.println("\n Welcome to the Lang compiler! \n");
+
         if (args.length < 1) {
-            System.out.println("Lang compiler v 0.0.1 - Maio de 2020");
-            System.out.println("Use java -cp . <Lang> <ação> ");
-            System.out.println("Ação (uma das seguintes possibilidades): ");
-
-            System.out.println(" -bs : Executa uma bateria de testes sintáticos");
-            // System.out.println(" -bty : Executa uma bateria de testes no sistemas de
-            // tipos");
-            System.out.println(" -bsm : Executa uma bateria de testes no interpretador");
-
-            // System.out.println(" -pp: Pretty print program.");
-            // System.out.println(" -tp: Verficar tipos e imprimir o ambiente de tipos");
-            // System.out.println(" -i : Apenas interpretar");
-
-            // System.out.println(" -ti: Verificar tipos e depois interpretar");
-            // System.out.println(" -dti: Verificar tipos, imprimir o ambiente de tipos e
-            // depois interpretar");
-            // System.out.println(
-            // " -gvz: Create a dot file. (Feed it to graphviz dot tool to generate
-            // graphical representation of the AST)");
-
+            printHelp();
+            return;
         }
+
         try {
             LangParserAdaptor langParser = new LangParserAdaptor();
 
@@ -38,11 +23,6 @@ public class LangCompiler {
                 new TestParser(langParser);
                 return;
             }
-            // if (args[0].equals("-bty")) {
-            // System.out.println("Executa uma bateria de testes no sistemas de tipos:");
-            // new TestParser(langParser);
-            // return;
-            // }
             if (args[0].equals("-bsm")) {
                 System.out.println("Executa uma bateria de testes no interpretador");
                 new TestParser(langParser);
@@ -53,27 +33,33 @@ public class LangCompiler {
                 return;
             }
 
-            SuperNode result = langParser.parseFile(args[1]);
-
-            if (result == null) {
-                System.err.println("Aborting due to syntax error(s)");
-                System.exit(1);
-            } else if (args[0].equals("-i")) {
-                // langParser.file = args[1];
-
-            } else if (args[0].equals("-ii")) {
-                // iv = new InteractiveInterpreterVisitor();
-                // result.accept(iv);
-            } else if (args[0].equals("-tp")) {
-                // iv = new TypeChecker();
-                // result.accept(iv);
-            } else if (args[0].equals("-pp")) {
-                // iv = new PPrint();
-                // result.accept(iv);
-                // ((PPrint)iv).print();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void printHelp() {
+        String ANSI_RESET = "\u001B[0m";
+        String ANSI_GREEN = "\u001B[32m";
+        String ANSI_YELLOW = "\u001B[33m";
+        String ANSI_BLUE = "\u001B[34m";
+
+        System.out.println(ANSI_YELLOW + "use <make run MODE=... FILE=...>" + ANSI_RESET);
+        System.out.println(ANSI_GREEN + "MODE (uma das seguintes possibilidades):  \n" + ANSI_RESET);
+
+        System.out.println(ANSI_YELLOW + "lexical" + ANSI_RESET + ": Executa uma bateria de testes léxicos");
+        System.out.println(ANSI_YELLOW + "sintatic" + ANSI_RESET + ": Executa uma bateria de testes sintáticos");
+        System.out.println(ANSI_YELLOW + "semantic" + ANSI_RESET + ": Executa uma bateria de testes semânticos");
+        System.out
+                .println(ANSI_YELLOW + "interpreter" + ANSI_RESET + ": Executa uma bateria de testes no interpretador");
+
+        System.out.println(ANSI_YELLOW + "gvz" + ANSI_RESET
+                + ": Create a dot file. (Feed it to graphviz dot tool to generate graphical representation of the AST)");
+
+        System.out.println("\n" + ANSI_BLUE + "File is optional" + ANSI_RESET + "\n");
+
+        System.out.println("Exemplo: make run MODE=lexical FILE=example.lan");
+
+        return;
     }
 }

@@ -8,7 +8,7 @@ genlexer: lang/parser/LangLexer.g4
 	java -jar ./lib/antlr-4.8-complete.jar lang/parser/LangLexer.g4
 
 run: compile
-	java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
+	java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler $(MODE) $(FILE)
 
 clean:
 	rm -R lang/parser/*Listener.java lang/parser/LangLexer.java lang/parser/LangParser.java lang/parser/*.interp lang/parser/*.tokens lang/parser/.antlr lang/parser/Lang.java || true
