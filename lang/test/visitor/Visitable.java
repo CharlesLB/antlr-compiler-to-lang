@@ -1,5 +1,7 @@
 package lang.test.visitor;
 
-public interface Visitable {
-    public void accept(Visitor v);
+public abstract class Visitable {
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 }

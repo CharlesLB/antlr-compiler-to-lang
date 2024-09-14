@@ -4,10 +4,12 @@ package lang.core.ast;
 
 import java.util.HashMap;
 
+import lang.test.visitor.Visitable;
+
 /**
  * Representa um nó da árvore sintática.
  */
-public abstract class Node extends SuperNode {
+public abstract class Node extends Visitable implements SuperNode {
     private int line, col;
 
     public Node(int l, int c) {
