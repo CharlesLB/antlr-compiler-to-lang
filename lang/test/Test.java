@@ -58,7 +58,7 @@ public abstract class Test {
         System.out.println("Total de erros: " + flops);
     }
 
-    public abstract String test(File file) throws Exception;
+    public abstract void test(File file) throws Exception;
 
     private String filler(int n) {
         String s = "";

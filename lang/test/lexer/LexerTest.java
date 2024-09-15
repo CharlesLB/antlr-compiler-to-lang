@@ -13,13 +13,13 @@ public class LexerTest extends Test {
         super(path);
     }
 
-    public String test(File file) throws Exception {
+    public void test(File file) throws Exception {
         try {
             CommonTokenStream tokens = Lexer.getTokens(file);
 
             printTokensTable(tokens);
 
-            return "Lexer test passed";
+            return;
         } catch (Exception e) {
             Logger.error("\nLexer test failed: " + e.getMessage());
             throw e;
