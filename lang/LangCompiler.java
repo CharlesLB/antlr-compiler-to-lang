@@ -2,6 +2,8 @@ package lang;
 
 import lang.enums.Mode;
 import lang.test.lexer.LexerTest;
+import lang.core.ast.*;
+import lang.core.parser.*;
 import lang.utils.Logger;
 
 public class LangCompiler {

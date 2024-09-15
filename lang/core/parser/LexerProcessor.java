@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.File;
 
-public class Lexer {
+public class LexerProcessor {
 
     public static CommonTokenStream getTokens(File file) throws Exception {
         CharStream stream = CharStreams.fromFileName(file.getAbsolutePath());

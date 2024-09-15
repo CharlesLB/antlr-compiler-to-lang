@@ -3,7 +3,7 @@ package lang.test.lexer;
 import java.io.File;
 
 import org.antlr.v4.runtime.*;
-import lang.core.parser.Lexer;
+import lang.core.parser.LexerProcessor;
 import lang.test.Test;
 import lang.utils.Logger;
 
@@ -15,7 +15,7 @@ public class LexerTest extends Test {
 
     public void test(File file) throws Exception {
         try {
-            CommonTokenStream tokens = Lexer.getTokens(file);
+            CommonTokenStream tokens = LexerProcessor.getTokens(file);
 
             printTokensTable(tokens);
 
