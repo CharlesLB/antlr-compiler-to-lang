@@ -2,7 +2,13 @@ package lang.test.parser;
 
 import java.io.File;
 
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import lang.core.ast.SuperNode;
+import lang.core.parser.LexerProcessor;
+import lang.core.parser.ParserProcessor;
 import lang.test.Test;
+import lang.utils.Logger;
 
 public class ParserTest extends Test {
 
@@ -11,6 +17,29 @@ public class ParserTest extends Test {
     }
 
     public void test(File file) throws Exception {
-        return;
+        CommonTokenStream tokens;
+
+        try {
+            tokens = LexerProcessor.getTokens(file);
+        } catch (Exception e) {
+            Logger.error("\n Lexer test failed: " + e.getMessage());
+            throw e;
+        }
+
+        try {
+            SuperNode ast = ParserProcessor.parserByTokens(tokens);
+
+            if (Logger.verbose) {
+                this._printAstTable(ast);
+            }
+
+        } catch (Exception e) {
+            Logger.error("\n Lexer test failed: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    private void _printAstTable(SuperNode ast) {
+        System.out.println(ast.toString());
     }
 }

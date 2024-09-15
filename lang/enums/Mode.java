@@ -1,8 +1,8 @@
 package lang.enums;
 
 public enum Mode {
-    LEXICAL("lexical"),
-    SINTATIC("sintatic"),
+    LEXICAL("lexer"),
+    SINTATIC("parser"),
     SEMANTIC("semantic"),
     INTERPRETER("interpreter"),
     GVZ("gvz");

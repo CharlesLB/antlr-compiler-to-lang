@@ -17,7 +17,9 @@ public class LexerTest extends Test {
         try {
             CommonTokenStream tokens = LexerProcessor.getTokens(file);
 
-            printTokensTable(tokens);
+            if (Logger.verbose) {
+                printTokensTable(tokens);
+            }
 
             return;
         } catch (Exception e) {
@@ -27,14 +29,11 @@ public class LexerTest extends Test {
     }
 
     private void printTokensTable(CommonTokenStream tokens) {
-        if (!Logger.verbose) {
-            return;
-        }
-
         for (Token token : tokens.getTokens()) {
             Logger.log("\nToken: " + token.getText() + " - " + token.getType() + " - " + token.getLine() + ":"
                     + token.getCharPositionInLine());
         }
+
         System.out.println();
     }
 

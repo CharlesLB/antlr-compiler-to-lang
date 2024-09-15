@@ -2,6 +2,7 @@ package lang;
 
 import lang.enums.Mode;
 import lang.test.lexer.LexerTest;
+import lang.test.parser.ParserTest;
 import lang.core.ast.*;
 import lang.core.parser.*;
 import lang.utils.Logger;
@@ -26,11 +27,11 @@ public class LangCompiler {
             }
 
             switch (mode) {
-                case "lexical":
+                case "lexer":
                     new LexerTest(path).run();
                     break;
-                case "sintatic":
-                    // new SintaticTest(file).run();
+                case "parser":
+                    new ParserTest(path).run();
                     break;
                 case "semantic":
                     // new SemanticTest(file).run();

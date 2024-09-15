@@ -21,6 +21,11 @@ public class Mul extends BinOP {
 		super(lin, col, l, r);
 	}
 
+	@Override
+	public String toString() {
+		return getLeft().toString() + " * " + getRight().toString();
+	}
+
 	// @Override
 	public Object interpret(HashMap<String, Object> m) {
 		Object leftValue = getLeft().interpret(m);
