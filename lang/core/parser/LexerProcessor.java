@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import lang.utils.ThrowingError;
+
 import java.io.File;
 
 public class LexerProcessor {

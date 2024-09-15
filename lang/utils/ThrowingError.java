@@ -1,6 +1,6 @@
 /*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
 /*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
-package lang.core.parser;
+package lang.utils;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
