@@ -19,7 +19,7 @@ public class LangCompiler {
 
             switch (mode) {
                 case "lexical":
-                    new LexerTest(path).run();
+                    // new LexerTest(path).run();
                     break;
                 case "sintatic":
                     // new SintaticTest(file).run();
@@ -49,10 +49,12 @@ public class LangCompiler {
         String ANSI_YELLOW = "\u001B[33m";
         String ANSI_BLUE = "\u001B[34m";
 
-        System.out.println(ANSI_YELLOW + "use <make run MODE=... PATH=...>" + ANSI_RESET);
+        System.out.println(ANSI_YELLOW + "use <make run MODE=... PATH=... LOGS?=...>" + ANSI_RESET);
         System.out.println("Exemplo: make run MODE=lexical FILE=example.lan \n");
 
         System.out.println(ANSI_BLUE + "Path can be a file or a dir." + ANSI_RESET + "\n");
+
+        System.out.println(ANSI_GREEN + "PATH (caminho para o arquivo ou diretório): \n" + ANSI_RESET);
 
         System.out.println(ANSI_GREEN + "MODE (uma das seguintes possibilidades):  \n" + ANSI_RESET);
 
@@ -66,7 +68,11 @@ public class LangCompiler {
         System.out.println(ANSI_YELLOW + Mode.GVZ + ANSI_RESET
                 + ": Create a dot file. (Feed it to graphviz dot tool to generate graphical representation of the AST)");
 
-        System.out.println("");
+        System.out.println(ANSI_GREEN + "\nLOGS (opcional):" + ANSI_RESET);
+
+        System.out.println(ANSI_GREEN + "Se definido como true, exibirá logs de execução" + ANSI_RESET);
+
+        System.out.println();
 
         return;
     }

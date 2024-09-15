@@ -12,7 +12,6 @@ import lang.core.ast.definitions.Fun;
 import lang.core.ast.definitions.StmtList;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
-import lang.core.lexer.LangLexer;
 
 public class LangParserAdaptor implements ParseAdaptor {
 
