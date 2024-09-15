@@ -40,13 +40,16 @@ public abstract class Test {
         Integer flips = 0, flops = 0;
 
         for (File file : this.files) {
-            path = file.getPath();
-            System.out.print("Testando " + path + filler(50 - path.length()) + "[");
-            if (this.test(file) != null) {
-                System.out.println("  OK  ]");
+
+            try {
+                path = file.getPath();
+                System.out.print("Testando " + path + filler(50 - path.length()));
+                this.test(file);
+                System.out.println("[  OK  ]");
                 flips++;
-            } else {
-                System.out.println("FALHOU]");
+
+            } catch (Exception e) {
+                System.out.println("[FALHOU]");
                 flops++;
             }
         }

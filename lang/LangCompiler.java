@@ -7,7 +7,7 @@ import lang.utils.Logger;
 public class LangCompiler {
 
     public static void main(String[] args) {
-        System.out.println("\n Welcome to the Lang compiler! \n");
+        System.out.println("\nWelcome to the Lang compiler! \n");
 
         if (args.length < 1) {
             printHelp();
@@ -17,9 +17,9 @@ public class LangCompiler {
         try {
             String mode = args[0];
             String path = args[1];
-            String logs = args.length > 3 ? args[2] : "false";
+            Boolean logs = args.length >= 3 ? true : false;
 
-            if (logs.equals("true")) {
+            if (logs) {
                 Logger.setVerbose(true);
             }
 

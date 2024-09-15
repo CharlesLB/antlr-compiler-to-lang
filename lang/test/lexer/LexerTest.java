@@ -2,11 +2,8 @@ package lang.test.lexer;
 
 import java.io.File;
 
-import org.antlr.v4.runtime.CharStreams;
-
 import org.antlr.v4.runtime.*;
-import lang.core.parser.LangLexer;
-import lang.core.parser.ThrowingError;
+import lang.core.parser.Lexer;
 import lang.test.Test;
 import lang.utils.Logger;
 
@@ -18,20 +15,13 @@ public class LexerTest extends Test {
 
     public String test(File file) throws Exception {
         try {
-            CharStream stream = CharStreams.fromFileName(file.getAbsolutePath());
-
-            LangLexer lexer = new LangLexer(stream);
-            lexer.removeErrorListeners();
-            lexer.addErrorListener(ThrowingError.INSTANCE);
-
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-            tokens.fill();
+            CommonTokenStream tokens = Lexer.getTokens(file);
 
             printTokensTable(tokens);
 
             return "Lexer test passed";
         } catch (Exception e) {
+            Logger.error("\nLexer test failed: " + e.getMessage());
             throw e;
         }
     }
@@ -42,9 +32,10 @@ public class LexerTest extends Test {
         }
 
         for (Token token : tokens.getTokens()) {
-            Logger.log("Token: " + token.getText() + " - " + token.getType() + " - " + token.getLine() + ":"
-                    + token.getCharPositionInLine() + "\n");
+            Logger.log("\nToken: " + token.getText() + " - " + token.getType() + " - " + token.getLine() + ":"
+                    + token.getCharPositionInLine());
         }
+        System.out.println();
     }
 
 }

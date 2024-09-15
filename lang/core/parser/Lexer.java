@@ -7,7 +7,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import java.io.File;
 
 public class Lexer {
-    public static void String(File file) throws Exception {
+
+    public static CommonTokenStream getTokens(File file) throws Exception {
         CharStream stream = CharStreams.fromFileName(file.getAbsolutePath());
 
         LangLexer lexer = new LangLexer(stream);
@@ -15,5 +16,9 @@ public class Lexer {
         lexer.addErrorListener(ThrowingError.INSTANCE);
 
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        tokens.fill();
+
+        return tokens;
     }
 }

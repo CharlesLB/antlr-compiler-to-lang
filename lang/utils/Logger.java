@@ -37,7 +37,7 @@ public final class Logger {
 
     public static void error(String message) {
         if (verbose) {
-            System.err.print(ANSI_RED + message + ANSI_RESET);
+            System.out.print(ANSI_RED + message + ANSI_RESET);
         }
     }
 
