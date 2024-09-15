@@ -2,6 +2,7 @@ package lang;
 
 import lang.enums.Mode;
 import lang.test.lexer.LexerTest;
+import lang.utils.Logger;
 
 public class LangCompiler {
 
@@ -15,11 +16,16 @@ public class LangCompiler {
 
         try {
             String mode = args[0];
-            String path = args[2];
+            String path = args[1];
+            String logs = args.length > 3 ? args[2] : "false";
+
+            if (logs.equals("true")) {
+                Logger.setVerbose(true);
+            }
 
             switch (mode) {
                 case "lexical":
-                    // new LexerTest(path).run();
+                    new LexerTest(path).run();
                     break;
                 case "sintatic":
                     // new SintaticTest(file).run();
