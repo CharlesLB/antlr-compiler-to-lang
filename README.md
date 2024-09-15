@@ -28,9 +28,7 @@ Rode o comando:
 ```bash
 make compile
 
-java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
-java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bsm
-
+java -cp ./bin:./lib/antlr-4.8-complete.jar lang.App interpreter ./samples/semantic/true/teste0.lan 
 #  ou
 
 make run # java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
