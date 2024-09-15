@@ -1,13 +1,13 @@
 package lang;
 
 import lang.enums.Mode;
-import lang.test.lexer.LexerTest;
-import lang.test.parser.ParserTest;
-import lang.core.ast.*;
-import lang.core.parser.*;
+import lang.test.InterpreterTest;
+import lang.test.LexerTest;
+import lang.test.ParserTest;
+
 import lang.utils.Logger;
 
-public class LangCompiler {
+public class App {
 
     public static void main(String[] args) {
         System.out.println("\nWelcome to the Lang compiler! \n");
@@ -37,7 +37,7 @@ public class LangCompiler {
                     // new SemanticTest(file).run();
                     break;
                 case "interpreter":
-                    // new InterpreterTest(file).run();
+                    new InterpreterTest(path).run();
                     break;
                 case "gvz":
                     // new GVZTest(file).run();

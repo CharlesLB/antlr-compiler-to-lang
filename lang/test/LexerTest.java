@@ -1,10 +1,9 @@
-package lang.test.lexer;
+package lang.test;
 
 import java.io.File;
 
 import org.antlr.v4.runtime.*;
 import lang.core.parser.LexerProcessor;
-import lang.test.Test;
 import lang.utils.Logger;
 
 public class LexerTest extends Test {

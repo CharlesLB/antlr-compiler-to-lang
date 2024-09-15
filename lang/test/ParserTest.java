@@ -1,4 +1,4 @@
-package lang.test.parser;
+package lang.test;
 
 import java.io.File;
 
@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import lang.core.ast.SuperNode;
 import lang.core.parser.LexerProcessor;
 import lang.core.parser.ParserProcessor;
-import lang.test.Test;
 import lang.utils.Logger;
 
 public class ParserTest extends Test {
@@ -34,7 +33,7 @@ public class ParserTest extends Test {
             }
 
         } catch (Exception e) {
-            Logger.error("\n Lexer test failed: " + e.getMessage());
+            Logger.error("\n Parser test failed: " + e.getMessage());
             throw e;
         }
     }

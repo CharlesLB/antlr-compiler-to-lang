@@ -92,11 +92,6 @@ public class Fun extends Node {
 		Object returnValue = 0;
 		for (Cmd cmd : body) {
 			returnValue = cmd.interpret(localContext);
-
-			/* Condição para funções recursivas */
-			if (returnValue != null) {
-				break;
-			}
 		}
 
 		return returnValue;

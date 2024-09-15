@@ -1,61 +1,49 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
-package lang.core.parser;
+package lang.test;
 
+import java.io.File;
 import java.util.HashMap;
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
-import lang.core.ast.*;
+
+import lang.core.ast.SuperNode;
 import lang.core.ast.definitions.Data;
 import lang.core.ast.definitions.Fun;
 import lang.core.ast.definitions.StmtList;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
+import lang.core.parser.LexerProcessor;
+import lang.core.parser.ParserProcessor;
+import lang.utils.Logger;
 
-public class LangParserAdaptor implements ParseAdaptor {
+public class InterpreterTest extends Test {
 
-    public Boolean skipOnSintaticTest = false;
+    public InterpreterTest(String path) {
+        super(path);
+    }
 
-    @Override
-    public SuperNode parseFile(String path) {
+    public void test(File file) throws Exception {
+        CommonTokenStream tokens;
+        SuperNode ast;
+
         try {
-            CharStream stream = CharStreams.fromFileName(path);
-
-            LangLexer lexer = new LangLexer(stream);
-            lexer.removeErrorListeners();
-            lexer.addErrorListener(ThrowingError.INSTANCE);
-
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-            LangParser parser = new LangParser(tokens);
-            parser.removeErrorListeners();
-            parser.addErrorListener(ThrowingError.INSTANCE);
-
-            try {
-                parser.setBuildParseTree(false);
-
-                Node ast = parser.prog().ast;
-
-                if (ast == null) {
-                    System.err.println("Parsing failed for file: " + path);
-                    return null;
-                }
-
-                if (skipOnSintaticTest) {
-                    return ast;
-                }
-
-                interpreterRunner(ast);
-
-                return ast;
-            } catch (ParseCancellationException e) {
-                System.err.println("Erro de parsing: " + e.getMessage());
-                return null;
-            }
+            tokens = LexerProcessor.getTokens(file);
         } catch (Exception e) {
-            System.out.println("Error parsing file: " + e.getMessage());
-            return null;
+            Logger.error("\n Lexer test failed: " + e.getMessage());
+            throw e;
+        }
+
+        try {
+            ast = ParserProcessor.parserByTokens(tokens);
+        } catch (Exception e) {
+            Logger.error("\n Parser test failed: " + e.getMessage());
+            throw e;
+        }
+
+        try {
+            this.interpreterRunner(ast);
+        } catch (Exception e) {
+            Logger.error("\n Interpreter test failed: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -71,7 +59,7 @@ public class LangParserAdaptor implements ParseAdaptor {
      * recursivamente
      * para continuar a busca por definições de estruturas de dados.
      */
-    public void declareDatas(Node ast, DataTable dataTable) {
+    public void declareDatas(SuperNode ast, DataTable dataTable) {
         if (ast instanceof StmtList) {
             StmtList stmtList = (StmtList) ast;
 
@@ -105,7 +93,7 @@ public class LangParserAdaptor implements ParseAdaptor {
      * à `FunctionTable`. Se um comando for outra `StmtList`, a função é chamada
      * recursivamente para continuar a busca por definições de funções.
      */
-    public void declareFunctions(Node ast, FunctionTable functionTable) {
+    public void declareFunctions(SuperNode ast, FunctionTable functionTable) {
         if (ast instanceof StmtList) {
             StmtList stmtList = (StmtList) ast;
 
@@ -129,7 +117,7 @@ public class LangParserAdaptor implements ParseAdaptor {
         }
     }
 
-    public void interpreterRunner(Node ast) {
+    public void interpreterRunner(SuperNode ast) {
         FunctionTable.resetInstance();
         FunctionTable functionTable = FunctionTable.getInstance();
         declareFunctions(ast, functionTable);
