@@ -1,15 +1,9 @@
 package lang.test.visitor.symbols;
 
 public class TypeSymbol extends Symbol {
-	private String type;
 
 	public TypeSymbol(String name) {
-		super(name);
-		this.type = name;
-	}
-
-	public String getType() {
-		return type;
+		super(name); // Nome do tipo, como "Int", "Float", etc.
 	}
 
 	@Override

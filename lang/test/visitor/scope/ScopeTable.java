@@ -50,4 +50,11 @@ public class ScopeTable {
 		}
 		return null;
 	}
+
+	public void printScopes() {
+		for (int i = 0; i <= scope_level; i++) {
+			System.out.println("Escopo Nível " + i + ":");
+			System.out.println(scopes[i]);
+		}
+	}
 }

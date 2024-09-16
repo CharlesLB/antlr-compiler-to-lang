@@ -17,4 +17,13 @@ public class SymbolTable {
     public Symbol lookup(String key) {
         return map.get(key);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (String key : map.keySet()) {
+            sb.append(key).append(" -> ").append(map.get(key).toString()).append("\n");
+        }
+        return sb.toString();
+    }
 }
