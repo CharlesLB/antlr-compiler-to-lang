@@ -5,6 +5,7 @@ package lang.core.ast.types;
 import java.util.HashMap;
 
 import lang.core.ast.definitions.Type;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um tipo de dado.
@@ -50,5 +51,9 @@ public class MatrixType extends Type {
     @Override
     public Object interpret(HashMap<String, Object> context) {
         return context.get(baseType);
+    }
+
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 }

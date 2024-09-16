@@ -5,6 +5,7 @@ package lang.core.ast.expressions.operators;
 import java.util.HashMap;
 
 import lang.core.ast.expressions.BinOP;
+import lang.test.visitor.Visitor;
 import lang.core.ast.definitions.Expr;
 
 /**
@@ -62,5 +63,9 @@ public class EQ extends BinOP {
 
 		/* Caso os valores não sejam iguais */
 		return 0;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

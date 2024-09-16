@@ -11,6 +11,7 @@ import lang.core.ast.statements.data.Decl;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.types.Btype;
 import lang.core.ast.types.MatrixType;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa a criação de um novo objeto.
@@ -84,5 +85,9 @@ public class NewObject extends Expr {
 
 			return newObject;
 		}
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

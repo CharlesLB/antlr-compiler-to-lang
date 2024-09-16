@@ -7,8 +7,7 @@ import java.util.*;
 import lang.core.ast.Node;
 import lang.core.ast.expressions.ID;
 import lang.core.ast.statements.data.Decl;
-
-import java.util.HashMap;
+import lang.test.visitor.Visitor;
 
 /**
  * Utilizada para representar estruturas de objeto.
@@ -72,6 +71,10 @@ public class Data extends Node {
 		context.put(id.getName(), localContext);
 
 		return context;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 
 }

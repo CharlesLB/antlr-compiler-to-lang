@@ -5,6 +5,7 @@ package lang.core.ast.lvalue;
 import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um acesso a um array.
@@ -55,5 +56,9 @@ public class ArrayAccessLValue extends LValue {
 		}
 
 		return array[idx];
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

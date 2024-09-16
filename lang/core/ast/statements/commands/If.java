@@ -7,6 +7,7 @@ import java.util.HashMap;
 import lang.core.ast.Node;
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um comando de if.
@@ -77,6 +78,10 @@ public class If extends Cmd {
 		}
 
 		return null;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 
 }

@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import lang.core.ast.SuperNode;
+import lang.core.ast.Node;
 import lang.core.parser.LexerProcessor;
 import lang.core.parser.ParserProcessor;
 import lang.utils.Logger;
@@ -26,7 +26,7 @@ public class ParserTest extends Test {
         }
 
         try {
-            SuperNode ast = ParserProcessor.parserByTokens(tokens);
+            Node ast = ParserProcessor.parserByTokens(tokens);
 
             if (Logger.verbose) {
                 this._printAstTable(ast);
@@ -38,7 +38,7 @@ public class ParserTest extends Test {
         }
     }
 
-    private void _printAstTable(SuperNode ast) {
+    private void _printAstTable(Node ast) {
         System.out.println(ast.toString());
     }
 }

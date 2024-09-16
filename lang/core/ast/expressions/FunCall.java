@@ -11,6 +11,7 @@ import lang.core.ast.definitions.Fun;
 import lang.core.ast.definitions.Param;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa a chamada de uma função.
@@ -132,5 +133,9 @@ public class FunCall extends Expr {
 
 		// Se o tipo não for identificado, retorne "HashMap" como padrão --> Indica Erro
 		return "HashMap";
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

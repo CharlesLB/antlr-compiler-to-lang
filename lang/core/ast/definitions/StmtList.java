@@ -5,11 +5,13 @@ package lang.core.ast.definitions;
 import java.util.HashMap;
 
 import lang.core.ast.Node;
+import lang.test.visitor.Visitable;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa uma lista de nós reponsável por contruir a AST.
  */
-public class StmtList extends Node {
+public class StmtList extends Node implements Visitable {
 
 	private Node cmd1;
 	private Node cmd2;
@@ -60,6 +62,11 @@ public class StmtList extends Node {
 	// @Override
 	public int getColumn() {
 		return super.getColumn();
+	}
+
+	@Override
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 
 }

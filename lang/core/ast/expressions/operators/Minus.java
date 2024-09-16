@@ -5,6 +5,7 @@ package lang.core.ast.expressions.operators;
 import java.util.HashMap;
 
 import lang.core.ast.expressions.BinOP;
+import lang.test.visitor.Visitor;
 import lang.core.ast.definitions.Expr;
 
 /**
@@ -53,4 +54,7 @@ public class Minus extends BinOP {
 
 	}
 
+	public void accept(Visitor v) {
+		v.visit(this);
+	}
 }

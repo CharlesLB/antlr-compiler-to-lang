@@ -5,6 +5,7 @@ package lang.core.ast.expressions.literals;
 import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
 
 /**
  * Essa classe representa um literal booleano.
@@ -30,5 +31,9 @@ public class BoolLiteral extends Expr {
 	@Override
 	public Object interpret(HashMap<String, Object> m) {
 		return value ? true : false;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

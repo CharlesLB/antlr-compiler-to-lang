@@ -11,6 +11,7 @@ import lang.core.ast.symbols.DataTable;
 import lang.core.ast.types.Btype;
 import lang.core.ast.types.IDType;
 import lang.core.ast.types.MatrixType;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa a definição do parâmetro de uma função.
@@ -123,5 +124,9 @@ public class Param extends Node {
 			}
 			return outerArray;
 		}
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

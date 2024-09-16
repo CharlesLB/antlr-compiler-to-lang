@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.lvalue.LValue;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um comando de leitura de um LValue.
@@ -49,5 +50,9 @@ public class ReadLValue extends Cmd {
 		context.put(this.getLValue().toString(), inputValue);
 
 		return context;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

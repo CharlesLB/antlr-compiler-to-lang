@@ -8,6 +8,7 @@ import java.util.List;
 
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um comando de retorno.
@@ -50,5 +51,9 @@ public class Return extends Cmd {
 		}
 
 		return returnValues;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

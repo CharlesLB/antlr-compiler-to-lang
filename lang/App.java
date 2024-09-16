@@ -4,7 +4,7 @@ import lang.enums.Mode;
 import lang.test.InterpreterTest;
 import lang.test.LexerTest;
 import lang.test.ParserTest;
-
+import lang.test.SemanticTest;
 import lang.utils.Logger;
 
 public class App {
@@ -34,7 +34,7 @@ public class App {
                     new ParserTest(path).run();
                     break;
                 case "semantic":
-                    // new SemanticTest(file).run();
+                    new SemanticTest(path).run();
                     break;
                 case "interpreter":
                     new InterpreterTest(path).run();

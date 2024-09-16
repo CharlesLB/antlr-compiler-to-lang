@@ -9,7 +9,7 @@ import lang.test.visitor.Visitable;
 /**
  * Representa um nó da árvore sintática.
  */
-public abstract class Node extends Visitable implements SuperNode {
+public abstract class Node implements Visitable {
     private int line, col;
 
     public Node(int l, int c) {

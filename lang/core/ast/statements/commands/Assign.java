@@ -7,6 +7,7 @@ import java.util.HashMap;
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
 import lang.core.ast.expressions.ID;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um comando de atribuição.
@@ -44,5 +45,9 @@ public class Assign extends Cmd {
 		Object x = e.interpret(context);
 		context.put(id.getName(), x);
 		return x;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

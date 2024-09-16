@@ -5,6 +5,7 @@ package lang.core.ast.lvalue;
 import java.util.*;
 
 import lang.core.ast.Node;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um acesso a um atributo de um objeto.
@@ -56,5 +57,9 @@ public class AttrAccessLValue extends LValue {
 			/* Se não for um Node, retorne o valor diretamente */
 			return attrValue;
 		}
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

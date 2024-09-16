@@ -5,7 +5,7 @@ import lang.core.ast.*;
 
 public class ParserProcessor {
 
-    public static SuperNode parserByTokens(CommonTokenStream tokens) throws Exception {
+    public static Node parserByTokens(CommonTokenStream tokens) throws Exception {
         LangParser parser = new LangParser(tokens);
 
         Node ast = parser.prog().ast;

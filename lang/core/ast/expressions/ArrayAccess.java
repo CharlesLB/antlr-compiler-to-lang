@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um acesso a um array.
@@ -61,5 +62,9 @@ public class ArrayAccess extends Expr {
 
 		/* Caso base onde retorno da função tem tamanho 1 */
 		return arrayValue;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

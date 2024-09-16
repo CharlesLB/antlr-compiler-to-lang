@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa um comando de impressão.
@@ -32,5 +33,9 @@ public class Print extends Cmd {
 		Object value = expr.interpret(m);
 		System.out.print(value); // Imprime o valor da expressão
 		return value;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

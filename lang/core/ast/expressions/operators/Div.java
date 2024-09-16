@@ -5,6 +5,7 @@ package lang.core.ast.expressions.operators;
 import java.util.HashMap;
 
 import lang.core.ast.expressions.BinOP;
+import lang.test.visitor.Visitor;
 import lang.core.ast.definitions.Expr;
 
 /**
@@ -57,5 +58,9 @@ public class Div extends BinOP {
 		throw new RuntimeException("Unsupported types for division: " + leftValue.getClass().getName() + " and "
 				+ rightValue.getClass().getName());
 
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

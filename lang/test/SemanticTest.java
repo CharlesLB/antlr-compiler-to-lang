@@ -13,11 +13,13 @@ import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
 import lang.core.parser.LexerProcessor;
 import lang.core.parser.ParserProcessor;
+import lang.core.parser.SemanticProcessor;
+import lang.test.visitor.ScopeVisitor;
 import lang.utils.Logger;
 
-public class InterpreterTest extends Test {
+public class SemanticTest extends Test {
 
-    public InterpreterTest(String path) {
+    public SemanticTest(String path) {
         super(path);
     }
 
@@ -40,11 +42,20 @@ public class InterpreterTest extends Test {
         }
 
         try {
-            this.interpreterRunner(ast);
+            System.out.println("Estou no semantico");
+            SemanticProcessor.semanticTest(ast);
+            System.out.println("Saiu do semantico");
         } catch (Exception e) {
-            Logger.error("\n Interpreter test failed: " + e.getMessage());
+            Logger.error("\n Parser test failed: " + e.getMessage());
             throw e;
         }
+
+        // try {
+        // this.interpreterRunner(ast);
+        // } catch (Exception e) {
+        // Logger.error("\n Interpreter test failed: " + e.getMessage());
+        // throw e;
+        // }
     }
 
     /**

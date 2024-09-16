@@ -5,6 +5,7 @@ package lang.core.ast.expressions.operators;
 import java.util.HashMap;
 
 import lang.core.ast.expressions.BinOP;
+import lang.test.visitor.Visitor;
 import lang.core.ast.definitions.Expr;
 
 /**
@@ -61,5 +62,9 @@ public class LessThan extends BinOP {
 		} else {
 			throw new RuntimeException("Unsupported type for comparison: " + value.getClass().getName());
 		}
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

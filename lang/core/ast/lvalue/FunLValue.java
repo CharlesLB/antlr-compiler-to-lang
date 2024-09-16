@@ -13,6 +13,7 @@ import lang.core.ast.definitions.Param;
 import lang.core.ast.expressions.ID;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa a chamada de uma função com variáveis de retorno.
@@ -163,5 +164,9 @@ public class FunLValue extends Cmd {
 
 		/* Se o tipo não for identificado, retorne "HashMap" como padrão --> Erro */
 		return "HashMap";
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

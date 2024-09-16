@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
 import lang.core.ast.definitions.Type;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa a criação de um novo array.
@@ -59,5 +60,9 @@ public class NewArray extends Expr {
 
 	private Object getDefaultValueForType(String typeName) {
 		return null;
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

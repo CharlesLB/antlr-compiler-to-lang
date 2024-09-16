@@ -7,6 +7,7 @@ import java.util.List;
 
 import lang.core.ast.Node;
 import lang.core.ast.expressions.ID;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa a definição de uma função.
@@ -95,6 +96,12 @@ public class Fun extends Node {
 		}
 
 		return returnValue;
+	}
+
+	@Override
+	public void accept(Visitor v) {
+		System.out.println("Calling accept in Fun...");
+		v.visit(this);
 	}
 
 }
