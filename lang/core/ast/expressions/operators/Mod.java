@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import lang.core.ast.expressions.BinOP;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 import lang.core.ast.definitions.Expr;
 
 /**
@@ -50,6 +51,11 @@ public class Mod extends BinOP {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

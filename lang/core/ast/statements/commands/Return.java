@@ -9,6 +9,7 @@ import java.util.List;
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um comando de retorno.
@@ -54,6 +55,11 @@ public class Return extends Cmd {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

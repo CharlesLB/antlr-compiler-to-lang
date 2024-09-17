@@ -50,7 +50,12 @@ public class Assign extends Cmd {
 
 	public void accept(Visitor v) {
 		try {
-			v.visit(this);
+			try {
+				v.visit(this);
+			} catch (TypeMismatchException e) {
+				System.err.println(e.getMessage());
+				throw e;
+			}
 		} catch (TypeMismatchException e) {
 			System.err.println(e.getMessage());
 			throw e;

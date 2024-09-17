@@ -5,6 +5,7 @@ package lang.core.ast.lvalue;
 import java.util.*;
 
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um identificador quando há necessidade de um LValue.
@@ -39,6 +40,11 @@ public class IDLValue extends LValue {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

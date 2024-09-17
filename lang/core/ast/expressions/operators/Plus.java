@@ -7,6 +7,7 @@ import java.util.HashMap;
 import lang.core.ast.definitions.Expr;
 import lang.core.ast.expressions.BinOP;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Essa classe representa a operação de soma de duas expressões.
@@ -55,7 +56,12 @@ public class Plus extends BinOP {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 
 }

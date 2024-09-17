@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Essa classe representa a operação de negação de uma expressão.
@@ -23,6 +24,10 @@ public class Neg extends Expr {
 	public Neg(int lin, int col, Expr expr) {
 		super(lin, col);
 		this.expr = expr;
+	}
+
+	public Expr getExpr() {
+		return expr;
 	}
 
 	@Override
@@ -52,6 +57,11 @@ public class Neg extends Expr {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import lang.core.ast.definitions.Expr;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um acesso a um array.
@@ -65,6 +66,11 @@ public class ArrayAccess extends Expr {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

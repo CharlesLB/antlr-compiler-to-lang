@@ -14,6 +14,7 @@ import lang.core.ast.expressions.ID;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa a chamada de uma função com variáveis de retorno.
@@ -167,6 +168,11 @@ public class FunLValue extends Cmd {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

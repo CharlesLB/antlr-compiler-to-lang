@@ -12,6 +12,7 @@ import lang.core.ast.definitions.Param;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa a chamada de uma função.
@@ -136,6 +137,11 @@ public class FunCall extends Expr {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

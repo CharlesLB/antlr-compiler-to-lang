@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Type;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um tipo de dado.
@@ -39,6 +40,11 @@ public class IDType extends Type {
     }
 
     public void accept(Visitor v) {
-        v.visit(this);
+        try {
+            v.visit(this);
+        } catch (TypeMismatchException e) {
+            System.err.println(e.getMessage());
+            throw e;
+        }
     }
 }

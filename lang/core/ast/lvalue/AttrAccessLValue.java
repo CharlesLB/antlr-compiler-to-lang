@@ -6,6 +6,7 @@ import java.util.*;
 
 import lang.core.ast.Node;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um acesso a um atributo de um objeto.
@@ -60,6 +61,11 @@ public class AttrAccessLValue extends LValue {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

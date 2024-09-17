@@ -7,6 +7,7 @@ import java.util.HashMap;
 import lang.core.ast.Node;
 import lang.test.visitor.Visitable;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa uma lista de nós reponsável por contruir a AST.
@@ -66,7 +67,12 @@ public class StmtList extends Node implements Visitable {
 
 	@Override
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 
 }

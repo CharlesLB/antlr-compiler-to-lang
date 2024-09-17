@@ -12,6 +12,7 @@ import lang.core.ast.types.Btype;
 import lang.core.ast.types.IDType;
 import lang.core.ast.types.MatrixType;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa a definição do parâmetro de uma função.
@@ -127,6 +128,11 @@ public class Param extends Node {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

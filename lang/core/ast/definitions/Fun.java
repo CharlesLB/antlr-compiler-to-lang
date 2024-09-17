@@ -8,6 +8,7 @@ import java.util.List;
 import lang.core.ast.Node;
 import lang.core.ast.expressions.ID;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa a definição de uma função.
@@ -101,7 +102,12 @@ public class Fun extends Node {
 	@Override
 	public void accept(Visitor v) {
 		System.out.println("Calling accept in Fun...");
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 
 }
