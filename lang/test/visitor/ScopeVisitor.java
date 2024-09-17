@@ -1,19 +1,31 @@
 package lang.test.visitor;
 
 import lang.core.ast.definitions.StmtList;
+import lang.core.ast.definitions.Type;
 import lang.core.ast.Node;
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
 import lang.core.ast.definitions.Fun;
 import lang.core.ast.definitions.Param;
-import lang.core.ast.definitions.Type;
 import lang.core.ast.expressions.ArrayAccess;
+import lang.core.ast.expressions.BinOP;
 import lang.core.ast.expressions.ID;
 import lang.core.ast.expressions.literals.BoolLiteral;
 import lang.core.ast.expressions.literals.CharLiteral;
 import lang.core.ast.expressions.literals.FloatLiteral;
 import lang.core.ast.expressions.literals.IntLiteral;
 import lang.core.ast.expressions.literals.NullLiteral;
+import lang.core.ast.expressions.operators.Not;
+import lang.core.ast.expressions.operators.NotEq;
+import lang.core.ast.expressions.operators.Plus;
+import lang.core.ast.expressions.operators.And;
+import lang.core.ast.expressions.operators.Div;
+import lang.core.ast.expressions.operators.EQ;
+import lang.core.ast.expressions.operators.LessThan;
+import lang.core.ast.expressions.operators.Minus;
+import lang.core.ast.expressions.operators.Mod;
+import lang.core.ast.expressions.operators.Mul;
+import lang.core.ast.expressions.operators.Neg;
 import lang.core.ast.lvalue.IDLValue;
 import lang.core.ast.lvalue.LValue;
 import lang.core.ast.statements.commands.Assign;
@@ -127,7 +139,7 @@ public class ScopeVisitor extends Visitor {
 
 			// Se a variável não foi encontrada no escopo, infere o tipo e a insere
 			if (symbol == null) {
-				TypeSymbol inferredType = visitExp(expr);
+				TypeSymbol inferredType = visit(expr);
 
 				System.out.println("Inferindo tipo da variável '" + variableName + "' como " + inferredType);
 
@@ -152,14 +164,16 @@ public class ScopeVisitor extends Visitor {
 			// // Verifica o tipo do array
 			// TypeSymbol arrayType = visitLValue(array);
 			// if (!arrayType.isArray()) {
-			// throw new RuntimeException("Erro semântico: o tipo " + arrayType + " não é um
+			// throw new TypeMismatchException("Erro semântico: o tipo " + arrayType + " não
+			// é um
 			// array.");
 			// }
 
 			// // Verifica se o índice é um inteiro
 			// TypeSymbol indexType = visitExp(index);
 			// if (!indexType.equals(new TypeSymbol("Int"))) {
-			// throw new RuntimeException("Erro semântico: índice do array deve ser do tipo
+			// throw new TypeMismatchException("Erro semântico: índice do array deve ser do
+			// tipo
 			// Int.");
 			// }
 
@@ -175,29 +189,36 @@ public class ScopeVisitor extends Visitor {
 			// // Verifica o tipo do objeto
 			// TypeSymbol objectType = visitLValue(object);
 			// if (!objectType.isStruct() && !objectType.isObject()) {
-			// throw new RuntimeException("Erro semântico: o tipo " + objectType + " não é
+			// throw new TypeMismatchException("Erro semântico: o tipo " + objectType + "
+			// não é
 			// um objeto ou estrutura.");
 			// }
 
 			// // Verificar se o campo existe no objeto ou estrutura
 			// TypeSymbol fieldType = objectType.getFieldType(field.getName());
 			// if (fieldType == null) {
-			// throw new RuntimeException("Erro semântico: o campo '" + field.getName() + "'
+			// throw new TypeMismatchException("Erro semântico: o campo '" + field.getName()
+			// + "'
 			// não existe em " + objectType);
 			// }
 
 			// return fieldType;
 
 		} else {
-			throw new RuntimeException("Erro semântico: tipo de lvalue desconhecido.");
+			throw new TypeMismatchException("Erro semântico: tipo de lvalue desconhecido.");
 		}
 	}
 
-	public TypeSymbol visitExp(Expr exp) {
+	public TypeSymbol visit(Expr exp) {
 		TypeSymbol exprType;
 
-		// Verificar o tipo da expressão com instanceof
-		if (exp instanceof IntLiteral) {
+		if (exp instanceof BinOP) {
+			exprType = visit((BinOP) exp);
+		} else if (exp instanceof Not) {
+			exprType = visit((Not) exp);
+		} else if (exp instanceof Neg) {
+			exprType = visit((Neg) exp);
+		} else if (exp instanceof IntLiteral) {
 			exprType = new TypeSymbol("Int");
 		} else if (exp instanceof FloatLiteral) {
 			exprType = new TypeSymbol("Float");
@@ -207,7 +228,7 @@ public class ScopeVisitor extends Visitor {
 			// Para IDs, verificamos se a variável já foi declarada e pegamos seu tipo
 			exprType = visitLValue((IDLValue) exp, exp);
 		} else {
-			throw new RuntimeException("Erro semântico: tipo de expressão desconhecido.");
+			throw new TypeMismatchException("Erro semântico: tipo de expressão desconhecido.");
 		}
 
 		System.out.println("Tipo da expressão é: " + exprType);
@@ -225,8 +246,10 @@ public class ScopeVisitor extends Visitor {
 		// Visita o lado esquerdo (lv)
 		TypeSymbol varType = visitLValue(variable, expr);
 
+		System.out.println(varType);
+
 		// Visita o lado direito (e)
-		TypeSymbol exprType = visitExp(expr);
+		TypeSymbol exprType = visit(expr);
 
 		// Verifica se os tipos são compatíveis
 		if (!varType.equals(exprType)) {
@@ -240,6 +263,95 @@ public class ScopeVisitor extends Visitor {
 		scopes.put(variable.getName(), symbol);
 
 		scopes.printScopes();
+	}
+
+	public TypeSymbol visit(BinOP binaryExpr) {
+		// Obtenha os tipos das subexpressões e1 e e2
+		TypeSymbol leftType = visit(binaryExpr.getLeft());
+		TypeSymbol rightType = visit(binaryExpr.getRight());
+
+		// Verificar operadores aritmético (+, -, *, /)
+		if (binaryExpr instanceof Plus | binaryExpr instanceof Minus | binaryExpr instanceof Mul
+				| binaryExpr instanceof Div) {
+			if (leftType.equals(new TypeSymbol("Int")) && rightType.equals(new TypeSymbol("Int"))) {
+				return new TypeSymbol("Int");
+			} else if (leftType.equals(new TypeSymbol("Float")) && rightType.equals(new TypeSymbol("Float"))) {
+				return new TypeSymbol("Float");
+			} else {
+				throw new TypeMismatchException("Erro semântico: tipos incompatíveis na operação de " + binaryExpr.toString());
+			}
+		}
+
+		// Verificar operadores aritmético (%)
+		if (binaryExpr instanceof Mod) {
+			if (leftType.equals(new TypeSymbol("Int")) && rightType.equals(new TypeSymbol("Int"))) {
+				return new TypeSymbol("Int");
+			} else {
+				throw new TypeMismatchException("Erro semântico: '%' só pode ser usado com inteiros.");
+			}
+		}
+
+		// Verificar operadores relacionais (==, !=, <)
+		if (binaryExpr instanceof EQ || binaryExpr instanceof NotEq || binaryExpr instanceof LessThan) {
+			if ((leftType.equals(new TypeSymbol("Int")) || leftType.equals(new TypeSymbol("Float"))
+					|| leftType.equals(new TypeSymbol("Char"))) && leftType.equals(rightType)) {
+				return new TypeSymbol("Bool");
+			} else {
+				throw new TypeMismatchException("Erro semântico: tipos incompatíveis na operação relacional.");
+			}
+		}
+
+		// Verificar operador lógico (&&)
+		if (binaryExpr instanceof And) {
+			if (leftType.equals(new TypeSymbol("Bool")) && rightType.equals(new TypeSymbol("Bool"))) {
+				return new TypeSymbol("Bool");
+			} else {
+				throw new TypeMismatchException("Erro semântico: '&&' só pode ser usado com booleanos.");
+			}
+		}
+
+		throw new TypeMismatchException("Erro semântico: operador binário desconhecido.");
+	}
+
+	public TypeSymbol visit(Neg neg) {
+		// Obtenha o tipo da subexpressão e1
+		TypeSymbol exprType = visit(neg.getExpr());
+
+		// Obtenha o operador unário
+		String operator = neg.toString();
+
+		// Verifique o tipo para o operador '!'
+		if (operator.equals("!")) {
+			if (exprType.equals(new TypeSymbol("Bool"))) {
+				return new TypeSymbol("Bool");
+			} else {
+				throw new TypeMismatchException("Erro semântico: '!' só pode ser usado com booleanos.");
+			}
+		}
+
+		throw new TypeMismatchException("Erro semântico: operador unário desconhecido '" + operator + "'");
+	}
+
+	public TypeSymbol visit(Not not) {
+		// Obtenha o tipo da subexpressão e1
+		TypeSymbol exprType = visit(not.getExpr());
+
+		// Obtenha o operador unário
+		String operator = not.toString();
+
+		// Verifique o tipo para o operador '!'
+		if (operator.equals("-"))
+
+		{
+			if (exprType.equals(new TypeSymbol("Int")) || exprType.equals(new TypeSymbol("Float"))) {
+				return exprType; // Retorna o mesmo tipo da expressão
+			} else {
+				throw new TypeMismatchException("Erro semântico: '-' só pode ser usado com inteiros ou floats.");
+			}
+		}
+
+		throw new TypeMismatchException("Erro semântico: operador unário desconhecido '" + operator + "'");
+
 	}
 
 	// @Override
