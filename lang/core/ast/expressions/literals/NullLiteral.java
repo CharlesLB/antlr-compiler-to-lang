@@ -21,6 +21,10 @@ public class NullLiteral extends Expr {
 		super(lin, col);
 	}
 
+	public Object getValue() {
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		return "null";

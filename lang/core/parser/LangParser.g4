@@ -137,7 +137,7 @@ cmd
         $ast = new Return($start.getLine(), $start.getCharPositionInLine(), exprList);
     }
 	| ID '=' expr ';' {
-        $ast = new Assign($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), $expr.ast);
+        $ast = new Assign($ID.line, $ID.pos, new IDLValue($ID.line, $ID.pos, $ID.text), $expr.ast);
     }
 	| lv = lvalue '=' ex = expr ';' {
         $ast = new AssignLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $ex.ast);

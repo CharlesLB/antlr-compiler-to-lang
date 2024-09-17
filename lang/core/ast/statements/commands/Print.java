@@ -23,6 +23,10 @@ public class Print extends Cmd {
 		this.expr = expr;
 	}
 
+	public Expr getExpr() {
+		return expr;
+	}
+
 	@Override
 	public String toString() {
 		return "print " + expr.toString() + ";";

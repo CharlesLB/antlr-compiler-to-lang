@@ -6,8 +6,9 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
-import lang.core.ast.expressions.ID;
+import lang.core.ast.lvalue.IDLValue;
 import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um comando de atribuição.
@@ -20,16 +21,16 @@ import lang.test.visitor.Visitor;
  * 
  */
 public class Assign extends Cmd {
-	private ID id;
+	private IDLValue id;
 	private Expr e;
 
-	public Assign(int l, int c, ID id, Expr e) {
+	public Assign(int l, int c, IDLValue id, Expr e) {
 		super(l, c);
 		this.id = id;
 		this.e = e;
 	}
 
-	public ID getID() {
+	public IDLValue getID() {
 		return id;
 	}
 
@@ -48,6 +49,11 @@ public class Assign extends Cmd {
 	}
 
 	public void accept(Visitor v) {
-		v.visit(this);
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }
