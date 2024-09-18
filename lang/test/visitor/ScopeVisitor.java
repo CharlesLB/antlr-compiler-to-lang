@@ -32,6 +32,7 @@ import lang.core.ast.lvalue.LValue;
 import lang.core.ast.statements.commands.Assign;
 import lang.core.ast.statements.commands.BlockCmd;
 import lang.core.ast.statements.commands.If;
+import lang.core.ast.statements.commands.Iterate;
 import lang.core.ast.statements.commands.Print;
 import lang.core.ast.statements.commands.ReadLValue;
 import lang.core.ast.statements.commands.Return;
@@ -69,7 +70,7 @@ public class ScopeVisitor extends Visitor {
 			List<TypeSymbol> returnTypeSymbol = new ArrayList<>();
 			for (Type returnTytpe : p.getReturnTypes()) {
 				TypeSymbol typeSymbol = visit(returnTytpe); // Converter o Type em TypeSymbol
-				returnTypeSymbol.add(typeSymbol); // Adicionar o TypeSymbol à lista
+				returnTypeSymbol.add(typeSymbol);
 			}
 
 			List<VarSymbol> parameterSymbols = new ArrayList<>();
@@ -83,7 +84,6 @@ public class ScopeVisitor extends Visitor {
 					parameterSymbols.add(varSymbol); // Adicionar o VarSymbol à lista
 				}
 			}
-			System.out.println("A");
 
 			FunctionSymbol functionSymbol = new FunctionSymbol(functionName, returnTypeSymbol, parameterSymbols);
 			scopes.put(functionName, functionSymbol); // Registrar a função no escopo global
@@ -126,6 +126,7 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		level = scopes.pop();
+		currentFunction = null;
 	}
 
 	public void visit(Param param) {
@@ -174,7 +175,7 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		if (expr instanceof ID) {
-			String variableName = expr.toString(); // Supondo que o ID tenha um método toString() ou getName()
+			String variableName = expr.toString();
 			Pair<Symbol, Integer> symbol = scopes.search(variableName);
 
 			if (symbol == null) {
@@ -186,10 +187,8 @@ public class ScopeVisitor extends Visitor {
 
 		if (typeSymbol.getName().equals("Int") || typeSymbol.getName().equals("Float")
 				|| typeSymbol.getName().equals("Char")) {
-			// Tipo válido para impressão
 			System.out.println("Expressão de tipo '" + typeSymbol.getName() + "' é válida para o comando print.");
 		} else {
-			// Tipo inválido para o comando print
 			System.out.println("Erro semântico: tipo '" + typeSymbol.getName() + "' inválido para o comando print.");
 		}
 	}
@@ -275,14 +274,13 @@ public class ScopeVisitor extends Visitor {
 			TypeSymbol inferredType = visit(idlValue);
 			return inferredType;
 		}
-		// Mudarr
-		return new TypeSymbol("Int");
+		VarSymbol var = (VarSymbol) symbol.first();
+
+		return var.getType();
 	}
 
 	public TypeSymbol visit(Expr exp) {
 		TypeSymbol exprType;
-
-		System.out.println(exp + " - " + exp.getClass());
 
 		if (exp instanceof BinOP) {
 			exprType = visit((BinOP) exp);
@@ -297,22 +295,19 @@ public class ScopeVisitor extends Visitor {
 		} else if (exp instanceof CharLiteral) {
 			exprType = new TypeSymbol("Char");
 		} else if (exp instanceof IDLValue) {
-			// Para IDs, verificamos se a variável já foi declarada e pegamos seu tipo
 			exprType = visit((IDLValue) exp);
 		} else if (exp instanceof FunCallWithIndex) {
-			// Para IDs, verificamos se a variável já foi declarada e pegamos seu tipo
 			exprType = visit((FunCallWithIndex) exp);
 		} else {
 			throw new TypeMismatchException("Erro semântico: tipo de expressão desconhecido.");
 		}
 
 		System.out.println("Tipo da expressão é: " + exprType);
-		return exprType; // Retorna o tipo da expressão
+		return exprType;
 	}
 
 	public void visit(Assign assignment) {
 		System.out.println("Atribuição: " + assignment.getID().getName() + " = " + assignment.getExp());
-		System.out.println("Atribuição: " + assignment.getID().getClass() + " = " + assignment.getExp().getClass());
 
 		IDLValue variable = assignment.getID();
 		Expr expr = assignment.getExp();
@@ -391,6 +386,8 @@ public class ScopeVisitor extends Visitor {
 	}
 
 	public void visit(Return returnCmd) {
+		System.out.println("Entrando no 'visit(Return)': " + returnCmd);
+
 		if (currentFunction == null) {
 			throw new TypeMismatchException("Erro semântico: comando 'return' fora de uma função.");
 		}
@@ -398,30 +395,28 @@ public class ScopeVisitor extends Visitor {
 		List<Type> expectedReturnTypes = currentFunction.getReturnTypes();
 		List<Expr> returnExpressions = returnCmd.getExprList();
 
-		// Verificar se o número de expressões no 'return' corresponde ao número de
-		// tipos de retorno
 		if (expectedReturnTypes.size() != returnExpressions.size()) {
 			throw new TypeMismatchException("Erro semântico: Número incorreto de valores retornados.");
 		}
 
-		// Verificar cada expressão do 'return'
 		for (int i = 0; i < returnExpressions.size(); i++) {
 			Type expectedType = expectedReturnTypes.get(i);
 			TypeSymbol returnTypeSymbol = visit(returnExpressions.get(i));
 
-			// Verificar se o tipo da expressão retornada corresponde ao tipo esperado
 			if (!returnTypeSymbol.equals(visit(expectedType))) {
 				throw new TypeMismatchException("Erro semântico: Tipo incompatível no valor de retorno " + (i + 1) +
 						". Esperado: " + expectedType + ", Encontrado: " + returnTypeSymbol);
 			}
 		}
+
+		System.out.println("Comando 'return' verificado com sucesso.");
 	}
 
 	public void visit(If ifStmt) {
 		System.out.println("Visitando estrutura If no escopo " + level);
 
 		// 1. Verificar a expressão condicional (exp) deve ser do tipo Bool
-		TypeSymbol conditionType = visit(ifStmt.getExp()); // Visitar a expressão condicional
+		TypeSymbol conditionType = visit(ifStmt.getExp());
 		if (!conditionType.equals(new TypeSymbol("Bool"))) {
 			throw new RuntimeException("Erro semântico: A condição do 'if' deve ser do tipo Bool.");
 		}
@@ -435,7 +430,6 @@ public class ScopeVisitor extends Visitor {
 		if (ifStmt.getThenCmd() instanceof BlockCmd) {
 			visit((BlockCmd) ifStmt.getThenCmd()); // Visitar o bloco de comandos
 		} else {
-			System.out.println("ESTTOUUUU");
 			visit(ifStmt.getThenCmd()); // Caso seja um único comando, visitá-lo diretamente
 		}
 
@@ -563,10 +557,8 @@ public class ScopeVisitor extends Visitor {
 	}
 
 	public TypeSymbol visit(Not not) {
-		// Obtenha o tipo da subexpressão e1
 		TypeSymbol exprType = visit(not.getExpr());
 
-		// Obtenha o operador unário
 		String operator = not.toString();
 
 		// Verifique o tipo para o operador '!'
@@ -574,7 +566,7 @@ public class ScopeVisitor extends Visitor {
 
 		{
 			if (exprType.equals(new TypeSymbol("Int")) || exprType.equals(new TypeSymbol("Float"))) {
-				return exprType; // Retorna o mesmo tipo da expressão
+				return exprType;
 			} else {
 				throw new TypeMismatchException("Erro semântico: '-' só pode ser usado com inteiros ou floats.");
 			}
@@ -632,16 +624,35 @@ public class ScopeVisitor extends Visitor {
 
 	}
 
+	public void visit(Cmd cmd) {
+		if (cmd instanceof BlockCmd) {
+			visit((BlockCmd) cmd);
+		} else if (cmd instanceof If) {
+			visit((If) cmd);
+		} else if (cmd instanceof Return) {
+			visit((Return) cmd);
+		} else if (cmd instanceof Print) {
+			visit((Print) cmd);
+		} else if (cmd instanceof Assign) {
+			visit((Assign) cmd);
+		} else {
+			throw new RuntimeException("Erro semântico: Tipo de comando desconhecido: " + cmd.getClass().getSimpleName());
+		}
+	}
+
 	public void visit(Node node) {
 		if (node instanceof BlockCmd) {
 			visit((BlockCmd) node);
-		} else if (node instanceof Cmd) {
-			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			visit((Cmd) node);
 		} else if (node instanceof If) {
 			visit((If) node);
+		} else if (node instanceof Return) {
+			visit((Return) node);
+		} else if (node instanceof Print) {
+			visit((Print) node);
+		} else if (node instanceof Assign) {
+			visit((Assign) node);
 		} else {
-			throw new RuntimeException("Erro semântico: Tipo de Node desconhecido: " + node.getClass().getSimpleName());
+			throw new RuntimeException("Erro semântico: Tipo de comando desconhecido: " + node.getClass().getSimpleName());
 		}
 	}
 

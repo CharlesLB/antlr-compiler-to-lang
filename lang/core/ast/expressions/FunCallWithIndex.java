@@ -12,7 +12,7 @@ import lang.test.visitor.Visitor;
 /**
  * Representa a chamada de uma função.
  * 
- * @Parser IDLValue ‘(’ [expr (‘,’ expr)*] ‘)’
+ * @Parser IDLValue ‘(’ [expr (‘,’ expr)*] ‘)’ [‘<’ lvalue {‘,’ lvalue} ‘>’] ‘;’
  * 
  * @Example sum(1, 2)
  * @Example sum(1+1)
