@@ -1,5 +1,6 @@
 package lang.test.visitor;
 
+import lang.core.ast.definitions.Data;
 import lang.core.ast.definitions.Fun;
 import lang.core.ast.definitions.Param;
 import lang.core.ast.definitions.StmtList;
@@ -34,6 +35,7 @@ import lang.core.ast.statements.commands.Iterate;
 import lang.core.ast.statements.commands.Print;
 import lang.core.ast.statements.commands.ReadLValue;
 import lang.core.ast.statements.commands.Return;
+import lang.core.ast.statements.data.Decl;
 import lang.test.visitor.symbols.TypeSymbol;
 
 public abstract class Visitor {
@@ -53,6 +55,10 @@ public abstract class Visitor {
     public abstract void visit(Print print);
 
     public abstract void visit(Return returnCmd);
+
+    public abstract void visit(Data data);
+
+    public abstract void visit(Decl decl);
 
     public abstract void visit(If ifStmt);
 

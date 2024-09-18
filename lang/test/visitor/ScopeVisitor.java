@@ -4,6 +4,7 @@ import lang.core.ast.definitions.StmtList;
 import lang.core.ast.definitions.Type;
 import lang.core.ast.Node;
 import lang.core.ast.definitions.Cmd;
+import lang.core.ast.definitions.Data;
 import lang.core.ast.definitions.Expr;
 import lang.core.ast.definitions.Fun;
 import lang.core.ast.definitions.Param;
@@ -37,10 +38,12 @@ import lang.core.ast.statements.commands.Iterate;
 import lang.core.ast.statements.commands.Print;
 import lang.core.ast.statements.commands.ReadLValue;
 import lang.core.ast.statements.commands.Return;
+import lang.core.ast.statements.data.Decl;
 import lang.core.ast.types.Btype;
 import lang.core.ast.types.IDType;
 import lang.test.visitor.scope.Pair;
 import lang.test.visitor.scope.ScopeTable;
+import lang.test.visitor.symbols.DataSymbol;
 import lang.test.visitor.symbols.FunctionSymbol;
 import lang.test.visitor.symbols.Symbol;
 import lang.test.visitor.symbols.TypeSymbol;
@@ -447,6 +450,58 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		System.out.println("Função '" + functionName + "' verificada com sucesso com múltiplas variáveis de retorno.");
+	}
+
+	public void visit(Data data) {
+		String dataTypeName = data.getID().getName();
+
+		// Passo 1: Verificar se o tipo já foi declarado no escopo global (nível 0)
+		if (scopes.search(dataTypeName) != null) {
+			throw new TypeMismatchException("Erro semântico: O tipo '" + dataTypeName + "' já foi declarado.");
+		}
+
+		// Passo 2: Criar um escopo local para os campos da estrutura 'Data'
+		level = scopes.push(); // Empilhar um novo escopo para os campos de 'Data'
+
+		// Passo 3: Inicializar a lista de campos (VarSymbol) para o Data
+		List<VarSymbol> fields = new ArrayList<>();
+
+		// Passo 4: Visitar cada declaração de campo (Decl) e adicionar à lista de
+		// campos
+		for (Decl decl : data.getDeclarations()) {
+			visit(decl); // Visitar cada Decl e verificar a declaração
+			TypeSymbol type = new TypeSymbol(decl.getType().toString());
+			VarSymbol varSymbol = new VarSymbol(decl.getID().getName(), type, null);
+			fields.add(varSymbol); // Adicionar à lista de campos (não no escopo global)
+		}
+
+		// Passo 5: Criar um símbolo para o Data e adicionar à tabela de símbolos global
+		// (nível 0)
+		DataSymbol dataSymbol = new DataSymbol(dataTypeName, fields);
+		this.level = 0; // Definir o escopo para o nível global
+		scopes.put(dataTypeName, dataSymbol); // Adicionar ao SymbolTable global
+
+		// Desempilhar o escopo após adicionar os campos no escopo local
+		level = scopes.pop();
+
+		System.out.println("Tipo 'Data' definido com sucesso: " + dataSymbol);
+	}
+
+	public void visit(Decl decl) {
+		String fieldName = decl.getID().getName(); // Nome do campo
+		Type fieldType = decl.getType(); // Tipo do campo
+
+		// Verificar se o campo já foi declarado anteriormente
+		if (scopes.search(fieldName) != null) {
+			throw new TypeMismatchException("Erro semântico: O campo '" + fieldName + "' já foi declarado.");
+		}
+
+		// Adicionar o campo à tabela de símbolos local
+		TypeSymbol type = new TypeSymbol(decl.getType().toString());
+		VarSymbol varSymbol = new VarSymbol(fieldName, type, null);
+		scopes.put(fieldName, varSymbol);
+
+		System.out.println("Campo '" + fieldName + "' declarado com sucesso: " + fieldType);
 	}
 
 	public void visit(Return returnCmd) {
