@@ -27,6 +27,7 @@ import lang.core.ast.expressions.operators.Mod;
 import lang.core.ast.expressions.operators.Mul;
 import lang.core.ast.expressions.operators.Neg;
 import lang.core.ast.lvalue.ArrayAccessLValue;
+import lang.core.ast.lvalue.FunLValue;
 import lang.core.ast.lvalue.IDLValue;
 import lang.core.ast.lvalue.LValue;
 import lang.core.ast.statements.commands.Assign;
@@ -118,6 +119,7 @@ public class ScopeVisitor extends Visitor {
 		if (body != null && !body.isEmpty()) {
 			System.out.println("Function body:");
 			for (Cmd cmd : body) {
+				System.out.println("Cmd: " + cmd + " " + cmd.getClass());
 				cmd.accept(this);
 			}
 		} else {
@@ -369,6 +371,84 @@ public class ScopeVisitor extends Visitor {
 		return returnTypes.get(index);
 	}
 
+	public void visit(FunLValue funLValue) {
+		System.out.println("Chamando Função: " + funLValue.getFunctionName().getName());
+
+		// Obter o nome da função
+		String functionName = funLValue.getFunctionName().getName();
+		Pair<Symbol, Integer> symbol = scopes.search(functionName);
+		System.out.println(symbol);
+
+		// Verificar se a função foi declarada
+		if (symbol == null) {
+			throw new TypeMismatchException("Erro semântico: função '" + functionName + "' não foi declarada.");
+		}
+		FunctionSymbol functionSymbol = (FunctionSymbol) symbol.first();
+
+		// Verificar os tipos dos argumentos
+		List<Expr> arguments = funLValue.getArguments();
+		List<VarSymbol> expectedParameters = functionSymbol.getParameters();
+
+		if (arguments.size() != expectedParameters.size()) {
+			throw new TypeMismatchException(
+					"Erro semântico: número de argumentos incorreto para a função '" + functionName + "'.");
+		}
+
+		// Verificar o tipo de cada argumento
+		for (int i = 0; i < arguments.size(); i++) {
+			TypeSymbol argType = visit(arguments.get(i)); // Verificar o tipo do argumento
+			if (!argType.equals(expectedParameters.get(i).getType())) {
+				throw new TypeMismatchException("Erro semântico: tipo do argumento " + (i + 1) + " da função '"
+						+ functionName + "' não corresponde. Esperado: " + expectedParameters.get(i).getType()
+						+ ", Encontrado: " + argType);
+			}
+		}
+
+		// Verificar os lvalues e o número de retornos da função
+		List<LValue> lvalues = funLValue.getLValues(); // Obter as variáveis à esquerda (lvalues)
+		List<TypeSymbol> returnTypes = functionSymbol.getReturnTypes(); // Obter os tipos de retorno da função
+
+		if (lvalues.size() != returnTypes.size()) {
+			throw new TypeMismatchException(
+					"Erro semântico: O número de variáveis à esquerda (lvalues) não corresponde ao número de retornos da função '"
+							+ functionName + "'.");
+		}
+
+		// Verificar e inferir tipos das variáveis lvalues
+		for (int i = 0; i < lvalues.size(); i++) {
+			System.out.println("Visitando: " + lvalues.get(i));
+
+			// Verificar se a variável está no escopo
+			LValue lvalue = lvalues.get(i);
+			Pair<Symbol, Integer> lvalueSymbol = scopes.search(lvalue.toString());
+
+			TypeSymbol returnType = returnTypes.get(i); // Obter o tipo de retorno da função
+
+			if (lvalueSymbol == null) {
+				// A variável não foi declarada, inferir o tipo com base no retorno da função
+				System.out.println("Inferindo tipo da variável '" + lvalue + "' como: " + returnType);
+
+				// Adicionar ao escopo
+				VarSymbol inferredVar = new VarSymbol(lvalue.toString(), returnType, null); // O valor pode ser inicializado
+																																										// como null
+				scopes.put(lvalue.toString(), inferredVar);
+				System.out.println("Variável '" + lvalue + "' adicionada ao escopo com o tipo inferido: " + returnType);
+			} else {
+				// A variável foi encontrada, verificar o tipo
+				VarSymbol lvalueVarSymbol = (VarSymbol) lvalueSymbol.first();
+				TypeSymbol lvalueType = lvalueVarSymbol.getType();
+
+				System.out.println(lvalueType + " " + returnType);
+				if (!lvalueType.equals(returnType)) {
+					throw new TypeMismatchException("Erro semântico: Tipo incompatível para a variável " + (i + 1)
+							+ ". Esperado: " + returnType + ", Encontrado: " + lvalueType);
+				}
+			}
+		}
+
+		System.out.println("Função '" + functionName + "' verificada com sucesso com múltiplas variáveis de retorno.");
+	}
+
 	public void visit(Return returnCmd) {
 		System.out.println("Entrando no 'visit(Return)': " + returnCmd);
 
@@ -462,18 +542,6 @@ public class ScopeVisitor extends Visitor {
 		System.out.println("Escopo desempilhado após o bloco de comandos: Nível " + level);
 	}
 
-	// public void visit(ReadLValue readLValue) {
-	// String variableName = readLValue.getLValue().toString();
-
-	// Pair<Symbol, Integer> symbol = scopes.search(variableName);
-	// if (symbol == null) {
-	// System.out.println("Erro semântico: variável '" + variableName + "' não foi
-	// declarada.");
-	// } else {
-	// System.out.println("Variável '" + variableName + "' está declarada.");
-	// }
-	// }
-
 	public void visit(ReadLValue readCmd) {
 		String varName = readCmd.getLValue().toString();
 
@@ -503,25 +571,50 @@ public class ScopeVisitor extends Visitor {
 		System.out.println("Comando 'read' verificado com sucesso para a variável: " + varName);
 	}
 
+	public void visit(Iterate iterateCmd) {
+		System.out.println("Visitando comando 'iterate' no escopo " + level);
+
+		// Passo 1: Verificar a expressão de controle do laço (deve ser do tipo Int)
+		TypeSymbol conditionType = visit(iterateCmd.getExpr());
+		System.out.println("AAAAAAA: " + conditionType);
+		if (!conditionType.equals(new TypeSymbol("Int"))) {
+			throw new RuntimeException("Erro semântico: A expressão do comando 'iterate' deve ser do tipo Int.");
+		}
+		System.out.println("Expressão de controle do 'iterate' verificada com sucesso. Tipo: Int");
+
+		// Passo 2: Empilhar um novo escopo para o bloco de comandos (cs)
+		level = scopes.push();
+		System.out.println("Novo escopo empilhado para o bloco 'iterate': Nível " + level);
+
+		// Passo 3: Visitar o bloco de comandos (cs) dentro do laço -> do tipo BlockCmd
+		visit(iterateCmd.getBody());
+
+		// Passo 4: Desempilhar o escopo após visitar o bloco de comandos
+		level = scopes.pop();
+		System.out.println("Escopo desempilhado após o bloco 'iterate': Nível " + level);
+
+		// Passo 5: O ambiente e o contexto (V, Γ) são mantidos
+	}
+
 	/* Operações */
-	public TypeSymbol visit(BinOP binaryExpr) {
-		TypeSymbol leftType = visit(binaryExpr.getLeft());
-		TypeSymbol rightType = visit(binaryExpr.getRight());
+	public TypeSymbol visit(BinOP binOP) {
+		TypeSymbol leftType = visit(binOP.getLeft());
+		TypeSymbol rightType = visit(binOP.getRight());
 
 		// Verificar operadores aritmético (+, -, *, /)
-		if (binaryExpr instanceof Plus | binaryExpr instanceof Minus | binaryExpr instanceof Mul
-				| binaryExpr instanceof Div) {
+		if (binOP instanceof Plus | binOP instanceof Minus | binOP instanceof Mul
+				| binOP instanceof Div) {
 			if (leftType.equals(new TypeSymbol("Int")) && rightType.equals(new TypeSymbol("Int"))) {
 				return new TypeSymbol("Int");
 			} else if (leftType.equals(new TypeSymbol("Float")) && rightType.equals(new TypeSymbol("Float"))) {
 				return new TypeSymbol("Float");
 			} else {
-				throw new TypeMismatchException("Erro semântico: tipos incompatíveis na operação de " + binaryExpr.toString());
+				throw new TypeMismatchException("Erro semântico: tipos incompatíveis na operação de " + binOP.toString());
 			}
 		}
 
 		// Verificar operadores aritmético (%)
-		if (binaryExpr instanceof Mod) {
+		if (binOP instanceof Mod) {
 			if (leftType.equals(new TypeSymbol("Int")) && rightType.equals(new TypeSymbol("Int"))) {
 				return new TypeSymbol("Int");
 			} else {
@@ -530,7 +623,7 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		// Verificar operadores relacionais (==, !=, <)
-		if (binaryExpr instanceof EQ || binaryExpr instanceof NotEq || binaryExpr instanceof LessThan) {
+		if (binOP instanceof EQ || binOP instanceof NotEq || binOP instanceof LessThan) {
 			if ((leftType.equals(new TypeSymbol("Int")) || leftType.equals(new TypeSymbol("Float"))
 					|| leftType.equals(new TypeSymbol("Char"))) && leftType.equals(rightType)) {
 				return new TypeSymbol("Bool");
@@ -540,7 +633,7 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		// Verificar operador lógico (&&)
-		if (binaryExpr instanceof And) {
+		if (binOP instanceof And) {
 			if (leftType.equals(new TypeSymbol("Bool")) && rightType.equals(new TypeSymbol("Bool"))) {
 				return new TypeSymbol("Bool");
 			} else {
@@ -647,6 +740,8 @@ public class ScopeVisitor extends Visitor {
 			visit((Print) cmd);
 		} else if (cmd instanceof Assign) {
 			visit((Assign) cmd);
+		} else if (cmd instanceof FunLValue) {
+			visit((FunLValue) cmd);
 		} else {
 			throw new TypeMismatchException(
 					"Erro semântico: Tipo de comando desconhecido: " + cmd.getClass().getSimpleName());

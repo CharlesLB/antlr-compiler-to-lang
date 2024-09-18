@@ -26,6 +26,14 @@ public class Iterate extends Cmd {
 		this.body = body;
 	}
 
+	public Expr getExpr() {
+		return count;
+	}
+
+	public Cmd getBody() {
+		return body;
+	}
+
 	@Override
 	public String toString() {
 		return "iterate (" + count.toString() + ") " + body.toString();
