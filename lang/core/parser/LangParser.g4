@@ -270,7 +270,7 @@ factor
         $ast = new NullLiteral($start.getLine(), $start.getCharPositionInLine());
     }
 	| ID {
-        $ast = new ID($ID.line, $ID.pos, $ID.text);
+        $ast = new IDLValue($ID.line, $ID.pos, $ID.text);
     }
 	| INT_LITERAL {
         $ast = new IntLiteral($INT_LITERAL.line, $INT_LITERAL.pos, Integer.parseInt($INT_LITERAL.text));
@@ -285,11 +285,11 @@ factor
         $ast = $expr.ast;
     }
 	| id = ID '(' args = exps? ')' '[' index = expr ']' {
-        List<Expr> exprList = new ArrayList<>();
-        if (_localctx.args != null) {
-            exprList.addAll($args.astList); 
-        }
-        $ast = new ArrayAccess(new FunCall($id.line, $id.pos, new ID($id.line, $id.pos, $id.text), exprList), $index.ast);
+    List<Expr> exprList = new ArrayList<>();
+    if (_localctx.args != null) {
+        exprList.addAll($args.astList); 
+    }
+    $ast = new FunCallWithIndex($id.line, $id.pos, new IDLValue($id.line, $id.pos, $id.text), exprList, $index.ast);
     }
 	| lval = lvalue {
         $ast = $lval.ast;

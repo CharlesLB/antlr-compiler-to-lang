@@ -27,6 +27,10 @@ public class Return extends Cmd {
 		this.exprList = exprList;
 	}
 
+	public List<Expr> getExprList() {
+		return exprList;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("return ");
