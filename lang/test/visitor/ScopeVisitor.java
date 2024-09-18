@@ -155,42 +155,26 @@ public class ScopeVisitor extends Visitor {
 		}
 	}
 
-	public void visit(Print print) {
-		Expr expr = print.getExpr();
+	public void visit(Print printCmd) {
+		// Passo 1: Obter a expressão a ser impressa
+		Expr expr = printCmd.getExpr();
 
-		TypeSymbol typeSymbol = null;
+		// Passo 2: Verificar o tipo da expressão
+		TypeSymbol exprType = visit(expr);
 
-		if (expr instanceof IntLiteral) {
-			typeSymbol = new TypeSymbol("Int");
-		} else if (expr instanceof FloatLiteral) {
-			typeSymbol = new TypeSymbol("Float");
-		} else if (expr instanceof BoolLiteral) {
-			typeSymbol = new TypeSymbol("Bool");
-		} else if (expr instanceof CharLiteral) {
-			typeSymbol = new TypeSymbol("Char");
-		} else {
-			// Depois verificar tipo data
-			System.out.println("Tipo não reconhecido para a expressão: " + expr);
-			return;
+		// Passo 3: Verificar se o tipo da expressão está entre os permitidos: {Int,
+		// Float, Char, Bool}
+		if (!exprType.equals(new TypeSymbol("Int")) &&
+				!exprType.equals(new TypeSymbol("Float")) &&
+				!exprType.equals(new TypeSymbol("Char")) &&
+				!exprType.equals(new TypeSymbol("Bool"))) {
+			throw new RuntimeException(
+					"Erro semântico: O comando 'print' só pode imprimir expressões dos tipos Int, Float, Char ou Bool.");
 		}
 
-		if (expr instanceof ID) {
-			String variableName = expr.toString();
-			Pair<Symbol, Integer> symbol = scopes.search(variableName);
-
-			if (symbol == null) {
-				System.out.println("Erro semântico: variável '" + variableName + "' não foi declarada.");
-			} else {
-				System.out.println("Variável '" + variableName + "' está declarada.");
-			}
-		}
-
-		if (typeSymbol.getName().equals("Int") || typeSymbol.getName().equals("Float")
-				|| typeSymbol.getName().equals("Char")) {
-			System.out.println("Expressão de tipo '" + typeSymbol.getName() + "' é válida para o comando print.");
-		} else {
-			System.out.println("Erro semântico: tipo '" + typeSymbol.getName() + "' inválido para o comando print.");
-		}
+		// Passo 4: O ambiente e o contexto não são alterados, então apenas imprimimos
+		// uma mensagem de sucesso
+		System.out.println("Comando 'print' verificado com sucesso para a expressão: " + expr);
 	}
 
 	public TypeSymbol visit(LValue lvalue, Expr expr) {
@@ -418,7 +402,7 @@ public class ScopeVisitor extends Visitor {
 		// 1. Verificar a expressão condicional (exp) deve ser do tipo Bool
 		TypeSymbol conditionType = visit(ifStmt.getExp());
 		if (!conditionType.equals(new TypeSymbol("Bool"))) {
-			throw new RuntimeException("Erro semântico: A condição do 'if' deve ser do tipo Bool.");
+			throw new TypeMismatchException("Erro semântico: A condição do 'if' deve ser do tipo Bool.");
 		}
 		System.out.println("Condição do 'if' verificada com sucesso. Tipo: Bool");
 
@@ -467,7 +451,7 @@ public class ScopeVisitor extends Visitor {
 
 		// Processar o primeiro comando e obter os resultados (V1; Γ1)
 		if (commands.isEmpty()) {
-			throw new RuntimeException("Erro semântico: Bloco de comandos vazio.");
+			throw new TypeMismatchException("Erro semântico: Bloco de comandos vazio.");
 		}
 
 		for (Cmd cmd : commands) {
@@ -478,7 +462,6 @@ public class ScopeVisitor extends Visitor {
 		System.out.println("Escopo desempilhado após o bloco de comandos: Nível " + level);
 	}
 
-	// @Override
 	// public void visit(ReadLValue readLValue) {
 	// String variableName = readLValue.getLValue().toString();
 
@@ -490,6 +473,35 @@ public class ScopeVisitor extends Visitor {
 	// System.out.println("Variável '" + variableName + "' está declarada.");
 	// }
 	// }
+
+	public void visit(ReadLValue readCmd) {
+		String varName = readCmd.getLValue().toString();
+
+		// Procurar a variável no escopo atual (Γ) usando a tabela de símbolos (Θ, Γ)
+		Pair<Symbol, Integer> symbol = scopes.search(varName);
+
+		// Verificar se a variável foi declarada
+		if (symbol == null) {
+			throw new TypeMismatchException("Erro semântico: Variável '" + varName + "' não foi declarada.");
+		}
+
+		// Obter o tipo da variável
+		VarSymbol varSymbol = (VarSymbol) symbol.first();
+		TypeSymbol varType = varSymbol.getType();
+
+		// Verificar se o tipo da variável está entre os tipos permitidos: {Int, Float,
+		// Char, Bool}
+		if (!varType.equals(new TypeSymbol("Int")) &&
+				!varType.equals(new TypeSymbol("Float")) &&
+				!varType.equals(new TypeSymbol("Char")) &&
+				!varType.equals(new TypeSymbol("Bool"))) {
+			throw new TypeMismatchException(
+					"Erro semântico: Variável '" + varName + "' deve ser de tipo Int, Float, Char ou Bool.");
+		}
+
+		// Se tudo estiver correto, a leitura está verificada com sucesso
+		System.out.println("Comando 'read' verificado com sucesso para a variável: " + varName);
+	}
 
 	/* Operações */
 	public TypeSymbol visit(BinOP binaryExpr) {
@@ -636,7 +648,8 @@ public class ScopeVisitor extends Visitor {
 		} else if (cmd instanceof Assign) {
 			visit((Assign) cmd);
 		} else {
-			throw new RuntimeException("Erro semântico: Tipo de comando desconhecido: " + cmd.getClass().getSimpleName());
+			throw new TypeMismatchException(
+					"Erro semântico: Tipo de comando desconhecido: " + cmd.getClass().getSimpleName());
 		}
 	}
 
@@ -652,7 +665,8 @@ public class ScopeVisitor extends Visitor {
 		} else if (node instanceof Assign) {
 			visit((Assign) node);
 		} else {
-			throw new RuntimeException("Erro semântico: Tipo de comando desconhecido: " + node.getClass().getSimpleName());
+			throw new TypeMismatchException(
+					"Erro semântico: Tipo de comando desconhecido: " + node.getClass().getSimpleName());
 		}
 	}
 
