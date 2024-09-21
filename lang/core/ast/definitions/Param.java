@@ -39,6 +39,10 @@ public class Param extends Node {
 		return t;
 	}
 
+	public String toString() {
+		return id.toString() + " :: " + t.toString();
+	}
+
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		String paramName = id.getName();

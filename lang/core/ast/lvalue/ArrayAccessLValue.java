@@ -35,6 +35,11 @@ public class ArrayAccessLValue extends LValue {
 	}
 
 	@Override
+	public String toString() {
+		return array.toString() + "[" + index.toString() + "]";
+	}
+
+	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		Object arrayValue = array.interpret(context);
 
