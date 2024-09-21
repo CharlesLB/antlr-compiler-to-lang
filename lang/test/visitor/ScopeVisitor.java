@@ -200,53 +200,54 @@ public class ScopeVisitor extends Visitor {
 				scopes.put(variableName, newSymbol);
 
 				return inferredType;
-			} else if (lvalue instanceof ArrayAccessLValue) {
-				// Caso 2: lvalue é um acesso a array (lvalue[exp])
-				Expr array = ((ArrayAccessLValue) lvalue).getArray();
-				Expr index = ((ArrayAccessLValue) lvalue).getIndex();
-
-				// Verifica o tipo do array
-				TypeSymbol arrayType = visit(array);
-				if (!arrayType.isArray()) {
-					throw new TypeMismatchException("Erro semântico: o tipo " + arrayType + " não é um array.");
-				}
-
-				// Verifica se o índice é um inteiro
-				TypeSymbol indexType = visit(index);
-				if (!indexType.equals(new TypeSymbol("Int"))) {
-					throw new TypeMismatchException("Erro semântico: índice do array deve ser do tipo	Int.");
-				}
-
-				// O tipo do lvalue será o tipo dos elementos do array
-				return arrayType.getElementType();
-
-				// } else if (lvalue instanceof FieldAccess) {
-				// // Caso 3: lvalue é um acesso a campo (lvalue.ID)
-				// FieldAccess fieldAccess = (FieldAccess) lvalue;
-				// LValue object = fieldAccess.getObject(); // Pega o objeto ou estrutura
-				// ID field = fieldAccess.getField(); // Pega o campo sendo acessado
-
-				// // Verifica o tipo do objeto
-				// TypeSymbol objectType = visitLValue(object);
-				// if (!objectType.isStruct() && !objectType.isObject()) {
-				// throw new TypeMismatchException("Erro semântico: o tipo " + objectType + "
-				// não é
-				// um objeto ou estrutura.");
-				// }
-
-				// // Verificar se o campo existe no objeto ou estrutura
-				// TypeSymbol fieldType = objectType.getFieldType(field.getName());
-				// if (fieldType == null) {
-				// throw new TypeMismatchException("Erro semântico: o campo '" + field.getName()
-				// + "'
-				// não existe em " + objectType);
-				// }
-
-				// return fieldType;
-
 			} else {
-				throw new TypeMismatchException("Erro semântico: tipo de lvalue desconhecido.");
+				VarSymbol var = (VarSymbol) symbol.first();
+				return var.getType();
 			}
+		} else if (lvalue instanceof ArrayAccessLValue) {
+			// Caso 2: lvalue é um acesso a array (lvalue[exp])
+			Expr array = ((ArrayAccessLValue) lvalue).getArray();
+			Expr index = ((ArrayAccessLValue) lvalue).getIndex();
+
+			// Verifica o tipo do array
+			TypeSymbol arrayType = visit(array);
+			if (!arrayType.isArray()) {
+				throw new TypeMismatchException("Erro semântico: o tipo " + arrayType + " não é um array.");
+			}
+
+			// Verifica se o índice é um inteiro
+			TypeSymbol indexType = visit(index);
+			if (!indexType.equals(new TypeSymbol("Int"))) {
+				throw new TypeMismatchException("Erro semântico: índice do array deve ser do tipo	Int.");
+			}
+
+			// O tipo do lvalue será o tipo dos elementos do array
+			return arrayType.getElementType();
+
+			// } else if (lvalue instanceof FieldAccess) {
+			// // Caso 3: lvalue é um acesso a campo (lvalue.ID)
+			// FieldAccess fieldAccess = (FieldAccess) lvalue;
+			// LValue object = fieldAccess.getObject(); // Pega o objeto ou estrutura
+			// ID field = fieldAccess.getField(); // Pega o campo sendo acessado
+
+			// // Verifica o tipo do objeto
+			// TypeSymbol objectType = visitLValue(object);
+			// if (!objectType.isStruct() && !objectType.isObject()) {
+			// throw new TypeMismatchException("Erro semântico: o tipo " + objectType + "
+			// não é
+			// um objeto ou estrutura.");
+			// }
+
+			// // Verificar se o campo existe no objeto ou estrutura
+			// TypeSymbol fieldType = objectType.getFieldType(field.getName());
+			// if (fieldType == null) {
+			// throw new TypeMismatchException("Erro semântico: o campo '" + field.getName()
+			// + "'
+			// não existe em " + objectType);
+			// }
+
+			// return fieldType;
+
 		} else {
 			throw new TypeMismatchException("Erro semântico: tipo de lvalue desconhecido.");
 		}
@@ -797,6 +798,8 @@ public class ScopeVisitor extends Visitor {
 			visit((Assign) cmd);
 		} else if (cmd instanceof FunLValue) {
 			visit((FunLValue) cmd);
+		} else if (cmd instanceof Iterate) {
+			visit((Iterate) cmd);
 		} else {
 			throw new TypeMismatchException(
 					"Erro semântico: Tipo de comando desconhecido: " + cmd.getClass().getSimpleName());
