@@ -45,6 +45,7 @@ import lang.core.ast.statements.commands.Return;
 import lang.core.ast.statements.data.Decl;
 import lang.core.ast.types.Btype;
 import lang.core.ast.types.IDType;
+import lang.core.ast.types.MatrixType;
 import lang.test.visitor.scope.Pair;
 import lang.test.visitor.scope.ScopeTable;
 import lang.test.visitor.symbols.DataSymbol;
@@ -159,10 +160,18 @@ public class ScopeVisitor extends Visitor {
 		if (type instanceof Btype) {
 			String typeName = ((Btype) type).getType();
 			return new TypeSymbol(typeName);
-		} else {
-			// Lidar com casos em que o tipo não é um IDType
-			throw new TypeMismatchException("Erro semântico: tipo inválido.");
+		} else if (type instanceof IDType) {
+			// Caso seja um tipo definido pelo usuário, como Ponto ou outra estrutura
+			String typeName = ((IDType) type).getName();
+			return new TypeSymbol(typeName);
+		} else if (type instanceof MatrixType) {
+			// Caso seja um array/matriz, lidar com o tipo base e dimensões
+			MatrixType matrixType = (MatrixType) type;
+			TypeSymbol baseType = visit(matrixType.getBaseType());
+			return new TypeSymbol(baseType.getName() + "[]", baseType);
 		}
+
+		throw new TypeMismatchException("Erro semântico: tipo inválido.");
 	}
 
 	public void visit(Print printCmd) {
@@ -214,7 +223,7 @@ public class ScopeVisitor extends Visitor {
 			}
 		} else if (lvalue instanceof ArrayAccessLValue) {
 			// Caso 2: lvalue é um acesso a array (lvalue[exp])
-			System.out.println("ArrayAcess");
+			System.out.println("ArrayAcess " + lvalue.toString());
 			Expr array = ((ArrayAccessLValue) lvalue).getArray();
 			Expr index = ((ArrayAccessLValue) lvalue).getIndex();
 
@@ -352,10 +361,23 @@ public class ScopeVisitor extends Visitor {
 		// Verificar o tipo de cada argumento
 		for (int i = 0; i < arguments.size(); i++) {
 			TypeSymbol argType = visit(arguments.get(i)); // Verificar o tipo do argumento
-			if (!argType.equals(expectedParameters.get(i).getType())) {
+			TypeSymbol expectedType = expectedParameters.get(i).getType(); // Tipo esperado do parâmetro
+
+			// Exibir informações para depuração
+			System.out.println("Arg: " + argType + " Expect: " + expectedType);
+
+			// Se ambos são arrays, verificar se as dimensões e os tipos base são iguais
+			if (argType.isArray() && expectedType.isArray()) {
+				// Comparar o tipo base dos arrays
+				if (!argType.getElementType().equals(expectedType.getElementType())) {
+					throw new TypeMismatchException("Erro semântico: tipo base do array do argumento " + (i + 1)
+							+ " da função '" + functionName + "' não corresponde. Esperado: " + expectedType.getElementType()
+							+ ", Encontrado: " + argType.getElementType());
+				}
+			} else if (!argType.equals(expectedType)) {
+				// Se não são arrays, comparar os tipos diretamente
 				throw new TypeMismatchException("Erro semântico: tipo do argumento " + (i + 1) + " da função '"
-						+ functionName + "' não corresponde. Esperado: " + expectedParameters.get(i).getType()
-						+ ", Encontrado: " + argType);
+						+ functionName + "' não corresponde. Esperado: " + expectedType + ", Encontrado: " + argType);
 			}
 		}
 
@@ -405,10 +427,23 @@ public class ScopeVisitor extends Visitor {
 		// Verificar o tipo de cada argumento
 		for (int i = 0; i < arguments.size(); i++) {
 			TypeSymbol argType = visit(arguments.get(i)); // Verificar o tipo do argumento
-			if (!argType.equals(expectedParameters.get(i).getType())) {
+			TypeSymbol expectedType = expectedParameters.get(i).getType(); // Tipo esperado do parâmetro
+
+			// Exibir informações para depuração
+			System.out.println("Arg: " + argType + " Expect: " + expectedType);
+
+			// Se ambos são arrays, verificar se as dimensões e os tipos base são iguais
+			if (argType.isArray() && expectedType.isArray()) {
+				// Comparar o tipo base dos arrays
+				if (!argType.getElementType().equals(expectedType.getElementType())) {
+					throw new TypeMismatchException("Erro semântico: tipo base do array do argumento " + (i + 1)
+							+ " da função '" + functionName + "' não corresponde. Esperado: " + expectedType.getElementType()
+							+ ", Encontrado: " + argType.getElementType());
+				}
+			} else if (!argType.equals(expectedType)) {
+				// Se não são arrays, comparar os tipos diretamente
 				throw new TypeMismatchException("Erro semântico: tipo do argumento " + (i + 1) + " da função '"
-						+ functionName + "' não corresponde. Esperado: " + expectedParameters.get(i).getType()
-						+ ", Encontrado: " + argType);
+						+ functionName + "' não corresponde. Esperado: " + expectedType + ", Encontrado: " + argType);
 			}
 		}
 
@@ -899,6 +934,11 @@ public class ScopeVisitor extends Visitor {
 		// ou atributo
 		LValue lvalue = assignLValue.getID();
 		TypeSymbol lvalueType = visit(lvalue, expr); // Avalia o LValue com base na expressão
+
+		System.out.println("Tipo da expressão (lado direito): " + exprType + " Base: "
+				+ (exprType.isArray() ? exprType.getElementType() : "Não é array"));
+		System.out.println("Tipo do lvalue (lado esquerdo): " + lvalueType + " Base: "
+				+ (lvalueType.isArray() ? lvalueType.getElementType() : "Não é array"));
 
 		// Passo 3: Verificar se os tipos são compatíveis
 		if (!lvalueType.equals(exprType)) {
