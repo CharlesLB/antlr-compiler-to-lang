@@ -284,6 +284,8 @@ public class ScopeVisitor extends Visitor {
 				exprType = new TypeSymbol("Float");
 			} else if (exp instanceof CharLiteral) {
 				exprType = new TypeSymbol("Char");
+			} else if (exp instanceof BoolLiteral) {
+				exprType = new TypeSymbol("Bool");
 			} else if (exp instanceof IDLValue) {
 				exprType = visit((IDLValue) exp);
 			} else if (exp instanceof FunCallWithIndex) {
