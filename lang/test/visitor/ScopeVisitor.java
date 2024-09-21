@@ -94,10 +94,6 @@ public class ScopeVisitor extends Visitor {
 					parameterSymbols.add(varSymbol); // Adicionar o VarSymbol à lista
 				}
 			}
-
-			FunctionSymbol functionSymbol = new FunctionSymbol(functionName, returnTypeSymbol, parameterSymbols);
-			scopes.put(functionName, functionSymbol); // Registrar a função no escopo global
-			System.out.println("Função '" + functionName + "' registrada no escopo global.");
 		}
 
 		level = scopes.push();
@@ -342,12 +338,24 @@ public class ScopeVisitor extends Visitor {
 	public TypeSymbol visit(FunCallWithIndex funCallWithIndex) {
 		System.out.println("Chamando Função: " + funCallWithIndex.getFunctionName().getName());
 
-		String functionName = funCallWithIndex.getFunctionName().getName();
-		Pair<Symbol, Integer> symbol = scopes.search(functionName);
-		System.out.println(symbol);
+		StringBuilder signature = new StringBuilder(funCallWithIndex.getFunctionName().getName() + "(");
+
+		// Construir a assinatura com os tipos dos argumentos
+		for (Expr argument : funCallWithIndex.getArguments()) {
+			TypeSymbol argType = visit(argument); // Verificar o tipo do argumento
+			signature.append(argType.getName()).append(", ");
+		}
+
+		if (!funCallWithIndex.getArguments().isEmpty()) {
+			signature.setLength(signature.length() - 2); // Remover a última vírgula e espaço
+		}
+		signature.append(")");
+
+		// Buscar a função usando a assinatura completa
+		Pair<Symbol, Integer> symbol = scopes.search(signature.toString());
 
 		if (symbol == null) {
-			throw new TypeMismatchException("Erro semântico: função '" + functionName + "' não foi declarada.");
+			throw new TypeMismatchException("Erro semântico: função '" + signature + "' não foi declarada.");
 		}
 		FunctionSymbol functionSymbol = (FunctionSymbol) symbol.first();
 
@@ -357,7 +365,7 @@ public class ScopeVisitor extends Visitor {
 
 		if (arguments.size() != expectedParameters.size()) {
 			throw new TypeMismatchException(
-					"Erro semântico: número de argumentos incorreto para a função '" + functionName + "'.");
+					"Erro semântico: número de argumentos incorreto para a função '" + functionSymbol.getName() + "'.");
 		}
 
 		// Verificar o tipo de cada argumento
@@ -373,13 +381,14 @@ public class ScopeVisitor extends Visitor {
 				// Comparar o tipo base dos arrays
 				if (!argType.getElementType().equals(expectedType.getElementType())) {
 					throw new TypeMismatchException("Erro semântico: tipo base do array do argumento " + (i + 1)
-							+ " da função '" + functionName + "' não corresponde. Esperado: " + expectedType.getElementType()
+							+ " da função '" + functionSymbol.getName() + "' não corresponde. Esperado: "
+							+ expectedType.getElementType()
 							+ ", Encontrado: " + argType.getElementType());
 				}
 			} else if (!argType.equals(expectedType)) {
 				// Se não são arrays, comparar os tipos diretamente
 				throw new TypeMismatchException("Erro semântico: tipo do argumento " + (i + 1) + " da função '"
-						+ functionName + "' não corresponde. Esperado: " + expectedType + ", Encontrado: " + argType);
+						+ functionSymbol.getName() + "' não corresponde. Esperado: " + expectedType + ", Encontrado: " + argType);
 			}
 		}
 
@@ -407,13 +416,29 @@ public class ScopeVisitor extends Visitor {
 		System.out.println("Chamando Função: " + funLValue.getFunctionName().getName());
 
 		// Obter o nome da função
-		String functionName = funLValue.getFunctionName().getName();
-		Pair<Symbol, Integer> symbol = scopes.search(functionName);
-		System.out.println(symbol);
+		StringBuilder signature = new StringBuilder(funLValue.getFunctionName().getName() + "(");
+
+		// Construir a assinatura com os tipos dos argumentos
+		for (Expr argument : funLValue.getArguments()) {
+			TypeSymbol argType = visit(argument); // Verificar o tipo do argumento
+			signature.append(argType.getName()).append(", ");
+		}
+
+		if (!funLValue.getArguments().isEmpty()) {
+			signature.setLength(signature.length() - 2); // Remover a última vírgula e espaço
+		}
+		signature.append(")");
+
+		// Buscar a função usando a assinatura completa
+		Pair<Symbol, Integer> symbol = scopes.search(signature.toString());
+
+		if (symbol == null) {
+			throw new TypeMismatchException("Erro semântico: função '" + signature + "' não foi declarada.");
+		}
 
 		// Verificar se a função foi declarada
 		if (symbol == null) {
-			throw new TypeMismatchException("Erro semântico: função '" + functionName + "' não foi declarada.");
+			throw new TypeMismatchException("Erro semântico: função '" + signature + "' não foi declarada.");
 		}
 		FunctionSymbol functionSymbol = (FunctionSymbol) symbol.first();
 
@@ -423,7 +448,7 @@ public class ScopeVisitor extends Visitor {
 
 		if (arguments.size() != expectedParameters.size()) {
 			throw new TypeMismatchException(
-					"Erro semântico: número de argumentos incorreto para a função '" + functionName + "'.");
+					"Erro semântico: número de argumentos incorreto para a função '" + functionSymbol.getName() + "'.");
 		}
 
 		// Verificar o tipo de cada argumento
@@ -439,13 +464,14 @@ public class ScopeVisitor extends Visitor {
 				// Comparar o tipo base dos arrays
 				if (!argType.getElementType().equals(expectedType.getElementType())) {
 					throw new TypeMismatchException("Erro semântico: tipo base do array do argumento " + (i + 1)
-							+ " da função '" + functionName + "' não corresponde. Esperado: " + expectedType.getElementType()
+							+ " da função '" + functionSymbol.getName() + "' não corresponde. Esperado: "
+							+ expectedType.getElementType()
 							+ ", Encontrado: " + argType.getElementType());
 				}
 			} else if (!argType.equals(expectedType)) {
 				// Se não são arrays, comparar os tipos diretamente
 				throw new TypeMismatchException("Erro semântico: tipo do argumento " + (i + 1) + " da função '"
-						+ functionName + "' não corresponde. Esperado: " + expectedType + ", Encontrado: " + argType);
+						+ functionSymbol.getName() + "' não corresponde. Esperado: " + expectedType + ", Encontrado: " + argType);
 			}
 		}
 
@@ -456,7 +482,7 @@ public class ScopeVisitor extends Visitor {
 		if (lvalues.size() != returnTypes.size()) {
 			throw new TypeMismatchException(
 					"Erro semântico: O número de variáveis à esquerda (lvalues) não corresponde ao número de retornos da função '"
-							+ functionName + "'.");
+							+ functionSymbol.getName() + "'.");
 		}
 
 		// Verificar e inferir tipos das variáveis lvalues
@@ -491,7 +517,8 @@ public class ScopeVisitor extends Visitor {
 			}
 		}
 
-		System.out.println("Função '" + functionName + "' verificada com sucesso com múltiplas variáveis de retorno.");
+		System.out.println(
+				"Função '" + functionSymbol.getName() + "' verificada com sucesso com múltiplas variáveis de retorno.");
 	}
 
 	public void visit(Data data) {
@@ -981,27 +1008,6 @@ public class ScopeVisitor extends Visitor {
 	}
 
 	/* Bases */
-	public void visit(StmtList stmtList) {
-		System.out.println("Visiting StmtList at line: " + stmtList.getLine() + ", column: " + stmtList.getColumn());
-
-		Node cmd1 = stmtList.getCmd1();
-		if (cmd1 != null) {
-			System.out.println(cmd1);
-			cmd1.accept(this); // Visitando cada comando na lista
-		} else {
-			System.out.println("StmtList is empty.");
-		}
-
-		Node cmd2 = stmtList.getCmd2();
-		if (cmd2 != null) {
-			System.out.println("Visiting cmd2: " + cmd2);
-			cmd2.accept(this); // Visitando a main
-		} else {
-			System.out.println("cmd2 is empty.");
-		}
-
-	}
-
 	public void visit(Cmd cmd) {
 		System.out.println("Visitando Cmd: " + cmd.getClass().getSimpleName());
 
@@ -1048,5 +1054,121 @@ public class ScopeVisitor extends Visitor {
 
 	public void visit(Visitable p) {
 
+	}
+
+	public void visit(StmtList stmtList) {
+		// Pré-processa todas as definições de funções e tipos de dados
+		preProcessDefinitions(stmtList);
+
+		System.out.println("Visiting StmtList at line: " + stmtList.getLine() + ", column: " + stmtList.getColumn());
+
+		Node cmd1 = stmtList.getCmd1();
+		if (cmd1 != null) {
+			System.out.println(cmd1);
+			cmd1.accept(this); // Visitando cada comando na lista
+		} else {
+			System.out.println("StmtList is empty.");
+		}
+
+		Node cmd2 = stmtList.getCmd2();
+		if (cmd2 != null) {
+			System.out.println("Visiting cmd2: " + cmd2);
+			cmd2.accept(this); // Visitando a main
+		} else {
+			System.out.println("cmd2 is empty.");
+		}
+	}
+
+	// Função para pré-processar todas as definições
+	private void preProcessDefinitions(StmtList stmtList) {
+		Node cmd1 = stmtList.getCmd1();
+		Node cmd2 = stmtList.getCmd2();
+
+		// Pré-processar a primeira definição (se existir)
+		if (cmd1 != null) {
+			preProcessDefinition(cmd1);
+		}
+
+		// Pré-processar a segunda definição (se existir)
+		if (cmd2 != null) {
+			preProcessDefinition(cmd2);
+		}
+	}
+
+	// Verifica se o nó é uma definição de Função ou Data e registra no escopo
+	private void preProcessDefinition(Node node) {
+		if (node instanceof Fun) {
+			preVisitFunction((Fun) node);
+		} else if (node instanceof Data) {
+			preVisitData((Data) node);
+		}
+	}
+
+	public void preVisitFunction(Fun p) {
+		String functionName = p.getName().getName();
+
+		// Criar a assinatura da função com os tipos de parâmetros
+		StringBuilder signature = new StringBuilder(functionName + "(");
+
+		List<TypeSymbol> returnTypeSymbol = new ArrayList<>();
+		for (Type returnType : p.getReturnTypes()) {
+			TypeSymbol typeSymbol = visit(returnType); // Converter o Type em TypeSymbol
+			returnTypeSymbol.add(typeSymbol);
+		}
+
+		List<VarSymbol> parameterSymbols = new ArrayList<>();
+		if (p.getParams() != null) {
+			for (Param param : p.getParams()) {
+				String paramName = param.getID().getName(); // Obter o nome do parâmetro
+				TypeSymbol paramType = visit(param.getType()); // Converter o Type em TypeSymbol
+				VarSymbol varSymbol = new VarSymbol(paramName, paramType, null); // Criar o VarSymbol
+				parameterSymbols.add(varSymbol); // Adicionar o VarSymbol à lista
+
+				// Adicionar o tipo do parâmetro à assinatura
+				signature.append(paramType.getName()).append(", ");
+			}
+		}
+
+		// Remover a última vírgula e espaço
+		if (!parameterSymbols.isEmpty()) {
+			signature.setLength(signature.length() - 2);
+		}
+		signature.append(")");
+
+		// Registra a função no escopo global usando a assinatura completa
+		FunctionSymbol functionSymbol = new FunctionSymbol(signature.toString(), returnTypeSymbol, parameterSymbols);
+		scopes.put(signature.toString(), functionSymbol);
+		System.out.println("Função '" + signature + "' registrada no escopo global.");
+	}
+
+	public void preVisitData(Data data) {
+		String dataTypeName = data.getID().getName();
+
+		// Verificar se o tipo já foi declarado no escopo global
+		if (scopes.search(dataTypeName) != null) {
+			throw new TypeMismatchException("Erro semântico: O tipo '" + dataTypeName + "' já foi declarado.");
+		}
+
+		// Inicializar a lista de campos (VarSymbol) para o Data
+		List<VarSymbol> fields = new ArrayList<>();
+
+		// Visitar cada declaração de campo (Decl) e adicionar à lista de campos
+		for (Decl decl : data.getDeclarations()) {
+			String fieldName = decl.getID().getName();
+			TypeSymbol fieldType = visit(decl.getType()); // Converter o Type em TypeSymbol
+
+			// Verificar se o campo já foi declarado na própria estrutura
+			if (fields.stream().anyMatch(f -> f.getName().equals(fieldName))) {
+				throw new TypeMismatchException("Erro semântico: O campo '" + fieldName + "' já foi declarado na estrutura.");
+			}
+
+			VarSymbol varSymbol = new VarSymbol(fieldName, fieldType, null);
+			fields.add(varSymbol);
+		}
+
+		// Criar um símbolo para o Data e adicionar ao escopo global
+		DataSymbol dataSymbol = new DataSymbol(dataTypeName, fields);
+		scopes.put(dataTypeName, dataSymbol);
+		System.out.println("Estrutura de dados '" + dataTypeName + "' registrada no escopo global.");
 	}
 }
