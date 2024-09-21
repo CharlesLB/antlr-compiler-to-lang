@@ -14,6 +14,15 @@ public class DataSymbol extends Symbol {
 		return fields;
 	}
 
+	public VarSymbol getField(String fieldName) {
+		for (VarSymbol field : fields) {
+			if (field.getName().equals(fieldName)) {
+				return field;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder fieldStr = new StringBuilder();

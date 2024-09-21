@@ -11,6 +11,8 @@ import lang.core.ast.definitions.Param;
 import lang.core.ast.expressions.BinOP;
 import lang.core.ast.expressions.FunCallWithIndex;
 import lang.core.ast.expressions.ID;
+import lang.core.ast.expressions.NewArray;
+import lang.core.ast.expressions.NewObject;
 import lang.core.ast.expressions.literals.BoolLiteral;
 import lang.core.ast.expressions.literals.CharLiteral;
 import lang.core.ast.expressions.literals.FloatLiteral;
@@ -28,6 +30,8 @@ import lang.core.ast.expressions.operators.Mod;
 import lang.core.ast.expressions.operators.Mul;
 import lang.core.ast.expressions.operators.Neg;
 import lang.core.ast.lvalue.ArrayAccessLValue;
+import lang.core.ast.lvalue.AssignLValue;
+import lang.core.ast.lvalue.AttrAccessLValue;
 import lang.core.ast.lvalue.FunLValue;
 import lang.core.ast.lvalue.IDLValue;
 import lang.core.ast.lvalue.LValue;
@@ -45,6 +49,7 @@ import lang.test.visitor.scope.Pair;
 import lang.test.visitor.scope.ScopeTable;
 import lang.test.visitor.symbols.DataSymbol;
 import lang.test.visitor.symbols.FunctionSymbol;
+import lang.test.visitor.symbols.ObjectSymbol;
 import lang.test.visitor.symbols.Symbol;
 import lang.test.visitor.symbols.TypeSymbol;
 import lang.test.visitor.symbols.VarSymbol;
@@ -120,9 +125,9 @@ public class ScopeVisitor extends Visitor {
 
 		List<Cmd> body = p.getBody();
 		if (body != null && !body.isEmpty()) {
-			System.out.println("Function body:");
+			System.out.println("Visitando o corpo da função/bloco de comandos.");
 			for (Cmd cmd : body) {
-				System.out.println("Cmd: " + cmd + " " + cmd.getClass());
+				System.out.println("Cmd: " + cmd + " (" + cmd.getClass().getSimpleName() + ")");
 				cmd.accept(this);
 			}
 		} else {
@@ -183,6 +188,7 @@ public class ScopeVisitor extends Visitor {
 	}
 
 	public TypeSymbol visit(LValue lvalue, Expr expr) {
+		System.out.println("L+V: " + lvalue.getClass());
 		if (lvalue instanceof IDLValue) {
 			// Caso 1: lvalue é um ID simples
 			String variableName = ((IDLValue) lvalue).getName();
@@ -191,8 +197,10 @@ public class ScopeVisitor extends Visitor {
 
 			// Se a variável não foi encontrada no escopo, infere o tipo e a insere
 			if (symbol == null) {
-				System.out.println("Expr: " + expr);
+				System.out.println("Exprr: " + expr);
+
 				TypeSymbol inferredType = visit(expr);
+				System.out.println("BB");
 
 				System.out.println("Inferindo tipo da variável '" + variableName + "' como " + inferredType);
 
@@ -206,6 +214,7 @@ public class ScopeVisitor extends Visitor {
 			}
 		} else if (lvalue instanceof ArrayAccessLValue) {
 			// Caso 2: lvalue é um acesso a array (lvalue[exp])
+			System.out.println("ArrayAcess");
 			Expr array = ((ArrayAccessLValue) lvalue).getArray();
 			Expr index = ((ArrayAccessLValue) lvalue).getIndex();
 
@@ -224,29 +233,34 @@ public class ScopeVisitor extends Visitor {
 			// O tipo do lvalue será o tipo dos elementos do array
 			return arrayType.getElementType();
 
-			// } else if (lvalue instanceof FieldAccess) {
-			// // Caso 3: lvalue é um acesso a campo (lvalue.ID)
-			// FieldAccess fieldAccess = (FieldAccess) lvalue;
-			// LValue object = fieldAccess.getObject(); // Pega o objeto ou estrutura
-			// ID field = fieldAccess.getField(); // Pega o campo sendo acessado
+		} else if (lvalue instanceof AttrAccessLValue) {
+			// Caso 3: lvalue é um acesso a campo (lvalue.ID)
+			AttrAccessLValue attrAccess = (AttrAccessLValue) lvalue;
 
-			// // Verifica o tipo do objeto
-			// TypeSymbol objectType = visitLValue(object);
-			// if (!objectType.isStruct() && !objectType.isObject()) {
-			// throw new TypeMismatchException("Erro semântico: o tipo " + objectType + "
-			// não é
-			// um objeto ou estrutura.");
-			// }
+			// Visita o objeto para obter o tipo
+			Symbol objectType = visit(attrAccess.getObject());
+			Pair<Symbol, Integer> symbol = scopes.search(objectType.getName());
 
-			// // Verificar se o campo existe no objeto ou estrutura
-			// TypeSymbol fieldType = objectType.getFieldType(field.getName());
-			// if (fieldType == null) {
-			// throw new TypeMismatchException("Erro semântico: o campo '" + field.getName()
-			// + "'
-			// não existe em " + objectType);
-			// }
+			// Verificar se o símbolo existe e é um DataSymbol
+			if (symbol == null || !(symbol.first() instanceof DataSymbol)) {
+				throw new TypeMismatchException(
+						"Erro semântico: o tipo '" + objectType.getName() + "' não foi definido como um tipo de dados.");
+			}
 
-			// return fieldType;
+			DataSymbol dataSymbol = (DataSymbol) symbol.first();
+
+			System.out.println("~~ " + symbol.first());
+
+			// Verifica se o atributo existe no registro (estrutura)
+			String attrName = attrAccess.getAttr().getName();
+			VarSymbol attribute = dataSymbol.getField(attrName);
+
+			if (attribute == null) {
+				throw new TypeMismatchException(
+						"Erro semântico: o campo '" + attrName + "' não existe no tipo '" + dataSymbol.getName() + "'.");
+			}
+			// // Retorna o tipo do atributo
+			return attribute.getType();
 
 		} else {
 			throw new TypeMismatchException("Erro semântico: tipo de lvalue desconhecido.");
@@ -270,29 +284,41 @@ public class ScopeVisitor extends Visitor {
 	}
 
 	public TypeSymbol visit(Expr exp) {
+		System.out.println("Visit Expr: " + exp.getClass());
 		TypeSymbol exprType;
 
-		if (exp instanceof BinOP) {
-			exprType = visit((BinOP) exp);
-		} else if (exp instanceof Not) {
-			exprType = visit((Not) exp);
-		} else if (exp instanceof Neg) {
-			exprType = visit((Neg) exp);
-		} else if (exp instanceof IntLiteral) {
-			exprType = new TypeSymbol("Int");
-		} else if (exp instanceof FloatLiteral) {
-			exprType = new TypeSymbol("Float");
-		} else if (exp instanceof CharLiteral) {
-			exprType = new TypeSymbol("Char");
-		} else if (exp instanceof IDLValue) {
-			exprType = visit((IDLValue) exp);
-		} else if (exp instanceof FunCallWithIndex) {
-			exprType = visit((FunCallWithIndex) exp);
-		} else {
-			throw new TypeMismatchException("Erro semântico: tipo de expressão desconhecido.");
+		try {
+			if (exp instanceof BinOP) {
+				exprType = visit((BinOP) exp);
+			} else if (exp instanceof Not) {
+				exprType = visit((Not) exp);
+			} else if (exp instanceof Neg) {
+				exprType = visit((Neg) exp);
+			} else if (exp instanceof IntLiteral) {
+				exprType = new TypeSymbol("Int");
+			} else if (exp instanceof FloatLiteral) {
+				exprType = new TypeSymbol("Float");
+			} else if (exp instanceof CharLiteral) {
+				exprType = new TypeSymbol("Char");
+			} else if (exp instanceof IDLValue) {
+				exprType = visit((IDLValue) exp);
+			} else if (exp instanceof FunCallWithIndex) {
+				exprType = visit((FunCallWithIndex) exp);
+			} else if (exp instanceof NewObject) {
+				exprType = visit((NewObject) exp);
+			} else if (exp instanceof NewArray) {
+				exprType = visit((NewArray) exp);
+			} else if (exp instanceof ArrayAccessLValue) {
+				exprType = visit((ArrayAccessLValue) exp);
+			} else {
+				throw new TypeMismatchException("Erro semântico: tipo de expressão desconhecida.");
+			}
+		} catch (Exception e) {
+			System.err.println("Erro ao visitar expressão: " + e.getMessage());
+			throw e;
 		}
 
-		System.out.println("Tipo da expressão é: " + exprType);
+		System.out.println("Tipo da expressão é: " + exprType + " type: " + exprType.getClass());
 		return exprType;
 	}
 
@@ -301,11 +327,12 @@ public class ScopeVisitor extends Visitor {
 
 		IDLValue variable = assignment.getID();
 		Expr expr = assignment.getExp();
+		System.out.println("Teste");
 
 		// Visita o lado esquerdo (lv)
 		TypeSymbol varType = visit(variable, expr);
 
-		System.out.println(varType);
+		System.out.println("B: " + varType);
 
 		// Visita o lado direito (e)
 		TypeSymbol exprType = visit(expr);
@@ -461,48 +488,41 @@ public class ScopeVisitor extends Visitor {
 			throw new TypeMismatchException("Erro semântico: O tipo '" + dataTypeName + "' já foi declarado.");
 		}
 
-		// Passo 2: Criar um escopo local para os campos da estrutura 'Data'
-		level = scopes.push(); // Empilhar um novo escopo para os campos de 'Data'
-
-		// Passo 3: Inicializar a lista de campos (VarSymbol) para o Data
+		// Passo 2: Inicializar a lista de campos (VarSymbol) para o Data
 		List<VarSymbol> fields = new ArrayList<>();
 
-		// Passo 4: Visitar cada declaração de campo (Decl) e adicionar à lista de
+		// Passo 3: Visitar cada declaração de campo (Decl) e adicionar à lista de
 		// campos
 		for (Decl decl : data.getDeclarations()) {
-			visit(decl); // Visitar cada Decl e verificar a declaração
-			TypeSymbol type = new TypeSymbol(decl.getType().toString());
-			VarSymbol varSymbol = new VarSymbol(decl.getID().getName(), type, null);
-			fields.add(varSymbol); // Adicionar à lista de campos (não no escopo global)
+			// Verificar se o campo já foi declarado na própria estrutura
+			String fieldName = decl.getID().getName();
+			if (fields.stream().anyMatch(f -> f.getName().equals(fieldName))) {
+				throw new TypeMismatchException(
+						"Erro semântico: O campo '" + fieldName + "' já foi declarado na estrutura '" + dataTypeName + "'.");
+			}
+
+			// Visitar a declaração de campo
+			visit(decl);
+
+			// Adicionar o campo à lista de campos da estrutura
+			TypeSymbol fieldType = new TypeSymbol(decl.getType().toString());
+			VarSymbol varSymbol = new VarSymbol(fieldName, fieldType, null);
+			fields.add(varSymbol);
 		}
 
-		// Passo 5: Criar um símbolo para o Data e adicionar à tabela de símbolos global
+		// Passo 4: Criar um símbolo para o Data e adicionar à tabela de símbolos global
 		// (nível 0)
 		DataSymbol dataSymbol = new DataSymbol(dataTypeName, fields);
-		this.level = 0; // Definir o escopo para o nível global
-		scopes.put(dataTypeName, dataSymbol); // Adicionar ao SymbolTable global
-
-		// Desempilhar o escopo após adicionar os campos no escopo local
-		level = scopes.pop();
+		scopes.put(dataTypeName, dataSymbol); // Adicionar ao escopo global o símbolo da estrutura
 
 		System.out.println("Tipo 'Data' definido com sucesso: " + dataSymbol);
 	}
 
 	public void visit(Decl decl) {
-		String fieldName = decl.getID().getName(); // Nome do campo
-		Type fieldType = decl.getType(); // Tipo do campo
+		String fieldName = decl.getID().getName();
+		Type fieldType = decl.getType();
 
-		// Verificar se o campo já foi declarado anteriormente
-		if (scopes.search(fieldName) != null) {
-			throw new TypeMismatchException("Erro semântico: O campo '" + fieldName + "' já foi declarado.");
-		}
-
-		// Adicionar o campo à tabela de símbolos local
-		TypeSymbol type = new TypeSymbol(decl.getType().toString());
-		VarSymbol varSymbol = new VarSymbol(fieldName, type, null);
-		scopes.put(fieldName, varSymbol);
-
-		System.out.println("Campo '" + fieldName + "' declarado com sucesso: " + fieldType);
+		System.out.println("Campo '" + fieldName + "' verificado com sucesso: " + fieldType);
 	}
 
 	public void visit(Return returnCmd) {
@@ -734,7 +754,175 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		throw new TypeMismatchException("Erro semântico: operador unário desconhecido '" + operator + "'");
+	}
 
+	/* NEW */
+
+	public TypeSymbol visit(NewObject newObject) {
+		String typeName = newObject.getType().toString();
+		// Passo 1: Verificar se o tipo faz parte do domínio de tipos definidos pelo
+		// usuário (∆)
+		Pair<Symbol, Integer> dataDefinition = scopes.search(typeName);
+		System.out.println(dataDefinition);
+		if (dataDefinition == null) {
+			throw new TypeMismatchException("Erro semântico: o tipo '" + typeName + "'não foi definido.");
+		}
+
+		// // Passo 2: Criar um novo objeto (instância do Data) e inicializar os campos
+		// List<VarSymbol> newObjectFields = new ArrayList<>();
+
+		// // Inicializar os campos do novo objeto com valores padrão
+		// DataSymbol dataSymbol = (DataSymbol) dataDefinition.first();
+		// List<VarSymbol> vars = dataSymbol.getFields();
+		// for (VarSymbol var : vars) {
+		// String fieldName = var.getName(); // Nome do campo
+		// TypeSymbol fieldType = new TypeSymbol(var.getType().toString()); // Tipo do
+		// campo
+
+		// System.out.println("--> " + fieldName + " " + fieldType);
+
+		// // Inicializar com o valor padrão de acordo com o tipo
+		// VarSymbol varSymbol = new VarSymbol(fieldName, fieldType, null);
+		// newObjectFields.add(varSymbol);
+		// }
+
+		// // Passo 3: Criar o símbolo para o objeto e adicionar ao escopo
+		// ObjectSymbol objectSymbol = new ObjectSymbol(typeName, newObjectFields);
+
+		// System.out.println("Novo objeto do tipo '" + typeName + "' criado e
+		// adicionado ao escopo.");
+
+		// scopes.printScopes();
+
+		// // Passo 4: Retornar o tipo do objeto (TypeSymbol) para verificação de tipo
+		return new TypeSymbol(typeName);
+	}
+
+	public TypeSymbol visit(AttrAccessLValue attrAccess) {
+		System.out.println("Visitando acesso ao atributo: " + attrAccess.getAttr().getName());
+
+		// Passo 1: Avaliar o objeto para verificar se é um tipo de dado definido pelo
+		// usuário (ex: registro)
+		Symbol objectType = visit(attrAccess.getObject());
+
+		if (!(objectType instanceof DataSymbol)) {
+			throw new TypeMismatchException(
+					"Erro semântico: O objeto '" + attrAccess.getObject() + "' não é um tipo de dado definido pelo usuário.");
+		}
+
+		DataSymbol dataSymbol = (DataSymbol) objectType;
+
+		// Passo 2: Verificar se o atributo existe no registro (estrutura)
+		String attrName = attrAccess.getAttr().getName();
+		VarSymbol attribute = dataSymbol.getField(attrName);
+
+		if (attribute == null) {
+			throw new TypeMismatchException(
+					"Erro semântico: O campo '" + attrName + "' não existe no tipo '" + dataSymbol.getName() + "'.");
+		}
+
+		// Passo 3: Retornar o tipo do atributo
+		return attribute.getType();
+	}
+
+	public TypeSymbol visit(NewArray newArray) {
+		// Passo 1: Avaliar a expressão que define o tamanho do array
+		TypeSymbol sizeType = visit(newArray.getSize());
+
+		// Verificar se a expressão que define o tamanho é do tipo Int
+		if (!sizeType.equals(new TypeSymbol("Int"))) {
+			throw new TypeMismatchException("Erro semântico: O tamanho do array deve ser do tipo Int.");
+		}
+
+		// Avaliar o valor da expressão que define o tamanho do array
+		IDLValue sizeVar = (IDLValue) newArray.getSize(); // Interpreta o valor do tamanho do array
+
+		Pair<Symbol, Integer> symbol = scopes.search(sizeVar.getName());
+		VarSymbol var = (VarSymbol) symbol.first();
+
+		if (!var.getType().equals(new TypeSymbol("Int"))) {
+			throw new RuntimeException("Erro semântico: O tamanho do array deve ser um inteiro.");
+		}
+
+		int size = (int) var.getValue().interpret(null);
+
+		// Caso o tamanho seja zero, utilizamos um valor padrão
+		if (size == 0) {
+			size = 100;
+		}
+
+		// Passo 2: Inicializar o array com o valor padrão para o tipo do array
+		String typeName = newArray.getType().toString();
+		Object[] newArrayValues = new Object[size];
+
+		for (int i = 0; i < size; i++) {
+			newArrayValues[i] = getDefaultValueForType(typeName);
+		}
+
+		// Passo 3: Adicionar o array ao escopo ou contexto (opcional, dependendo do
+		// uso)
+
+		// Passo 4: Retornar o tipo do array (por exemplo, Int[])
+		return new TypeSymbol(typeName, new TypeSymbol(typeName));
+	}
+
+	public TypeSymbol visit(ArrayAccessLValue arrayAccess) {
+		// Passo 1: Verificar se o array que está sendo acessado é de fato um array
+		TypeSymbol arrayType = visit(arrayAccess.getArray());
+
+		if (!arrayType.isArray()) {
+			throw new TypeMismatchException("Erro semântico: O objeto acessado não é um array.");
+		}
+
+		// Passo 2: Verificar o tipo do índice (deve ser um inteiro)
+		TypeSymbol indexType = visit(arrayAccess.getIndex());
+
+		if (!indexType.equals(new TypeSymbol("Int"))) {
+			throw new TypeMismatchException("Erro semântico: O índice do array deve ser do tipo Int.");
+		}
+
+		// Passo 3: Retornar o tipo dos elementos do array
+		// O tipo resultante do acesso a um array é o tipo dos seus elementos
+		return arrayType.getElementType();
+	}
+
+	private Object getDefaultValueForType(String typeName) {
+		switch (typeName) {
+			case "Int":
+				return 0;
+			case "Float":
+				return 0.0f;
+			case "Char":
+				return '\u0000'; // Valor padrão para char
+			case "Bool":
+				return false;
+			default:
+				return null; // Para tipos não primitivos, retorna null
+		}
+	}
+
+	public TypeSymbol visit(AssignLValue assignLValue) {
+		System.out.println("Atribuição: " + assignLValue.getID() + " = " + assignLValue.getExp());
+
+		// Passo 1: Avaliar o lado direito da atribuição (expressão)
+		Expr expr = assignLValue.getExp();
+		TypeSymbol exprType = visit(expr); // Avalia a expressão e obtém o tipo
+
+		// Passo 2: Avaliar o lado esquerdo (LValue), que pode ser uma variável, array
+		// ou atributo
+		LValue lvalue = assignLValue.getID();
+		TypeSymbol lvalueType = visit(lvalue, expr); // Avalia o LValue com base na expressão
+
+		// Passo 3: Verificar se os tipos são compatíveis
+		if (!lvalueType.equals(exprType)) {
+			throw new TypeMismatchException(
+					"Erro semântico: Tipo incompatível na atribuição. Esperado: " + lvalueType + ", Encontrado: " + exprType);
+		}
+
+		System.out.println("Atribuição válida: " + lvalue + " = " + expr);
+
+		// Passo 4: Retornar o tipo da expressão como o resultado da atribuição
+		return exprType; // O tipo da atribuição é o tipo da expressão do lado direito
 	}
 
 	/* TIPOS */
@@ -786,8 +974,13 @@ public class ScopeVisitor extends Visitor {
 	}
 
 	public void visit(Cmd cmd) {
+		System.out.println("Visitando Cmd: " + cmd.getClass().getSimpleName());
+
 		if (cmd instanceof BlockCmd) {
 			visit((BlockCmd) cmd);
+		} else if (cmd instanceof AssignLValue) {
+			System.out.println("Estou visitando AssignLValue");
+			visit((AssignLValue) cmd);
 		} else if (cmd instanceof If) {
 			visit((If) cmd);
 		} else if (cmd instanceof Return) {
@@ -795,6 +988,7 @@ public class ScopeVisitor extends Visitor {
 		} else if (cmd instanceof Print) {
 			visit((Print) cmd);
 		} else if (cmd instanceof Assign) {
+			System.out.println("Visitando Assign");
 			visit((Assign) cmd);
 		} else if (cmd instanceof FunLValue) {
 			visit((FunLValue) cmd);

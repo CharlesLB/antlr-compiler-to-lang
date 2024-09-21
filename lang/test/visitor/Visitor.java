@@ -8,6 +8,7 @@ import lang.core.ast.definitions.Type;
 import lang.core.ast.expressions.BinOP;
 import lang.core.ast.expressions.FunCallWithIndex;
 import lang.core.ast.expressions.ID;
+import lang.core.ast.expressions.NewObject;
 import lang.core.ast.expressions.literals.BoolLiteral;
 import lang.core.ast.expressions.literals.CharLiteral;
 import lang.core.ast.expressions.literals.FloatLiteral;
@@ -25,6 +26,8 @@ import lang.core.ast.expressions.operators.Not;
 import lang.core.ast.expressions.operators.NotEq;
 import lang.core.ast.expressions.operators.Plus;
 import lang.core.ast.lvalue.ArrayAccessLValue;
+import lang.core.ast.lvalue.AssignLValue;
+import lang.core.ast.lvalue.AttrAccessLValue;
 import lang.core.ast.lvalue.FunLValue;
 import lang.core.ast.lvalue.IDLValue;
 import lang.core.ast.lvalue.LValue;
@@ -72,6 +75,12 @@ public abstract class Visitor {
     public abstract TypeSymbol visit(FunCallWithIndex funCallWithIndex);
 
     public abstract void visit(FunLValue funLValue);
+
+    public abstract TypeSymbol visit(NewObject newObject);
+
+    public abstract TypeSymbol visit(AttrAccessLValue attrAccess);
+
+    public abstract TypeSymbol visit(AssignLValue assignLValue);
 
     // public abstract void visit(ID id);
 

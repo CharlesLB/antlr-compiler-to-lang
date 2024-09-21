@@ -20,6 +20,10 @@ public class VarSymbol extends Symbol {
 		return value;
 	}
 
+	public void setValue(Expr value) {
+		this.value = value;
+	}
+
 	@Override
 	public String toString() {
 		return "VarSymbol{name='" + getName() + "', type=" + type.getName() + ", value=" + value + "}";

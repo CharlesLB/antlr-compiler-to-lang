@@ -33,6 +33,10 @@ public class AttrAccessLValue extends LValue {
 		return attr;
 	}
 
+	// public String toString() {
+	// return object.toString() + "." + attr.toString();
+	// }
+
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		Object objectObject = object.interpret(context);
