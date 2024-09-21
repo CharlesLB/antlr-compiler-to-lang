@@ -235,32 +235,7 @@ public class ScopeVisitor extends Visitor {
 
 		} else if (lvalue instanceof AttrAccessLValue) {
 			// Caso 3: lvalue é um acesso a campo (lvalue.ID)
-			AttrAccessLValue attrAccess = (AttrAccessLValue) lvalue;
-
-			// Visita o objeto para obter o tipo
-			Symbol objectType = visit(attrAccess.getObject());
-			Pair<Symbol, Integer> symbol = scopes.search(objectType.getName());
-
-			// Verificar se o símbolo existe e é um DataSymbol
-			if (symbol == null || !(symbol.first() instanceof DataSymbol)) {
-				throw new TypeMismatchException(
-						"Erro semântico: o tipo '" + objectType.getName() + "' não foi definido como um tipo de dados.");
-			}
-
-			DataSymbol dataSymbol = (DataSymbol) symbol.first();
-
-			System.out.println("~~ " + symbol.first());
-
-			// Verifica se o atributo existe no registro (estrutura)
-			String attrName = attrAccess.getAttr().getName();
-			VarSymbol attribute = dataSymbol.getField(attrName);
-
-			if (attribute == null) {
-				throw new TypeMismatchException(
-						"Erro semântico: o campo '" + attrName + "' não existe no tipo '" + dataSymbol.getName() + "'.");
-			}
-			// // Retorna o tipo do atributo
-			return attribute.getType();
+			return visit((AttrAccessLValue) lvalue);
 
 		} else {
 			throw new TypeMismatchException("Erro semântico: tipo de lvalue desconhecido.");
@@ -310,6 +285,8 @@ public class ScopeVisitor extends Visitor {
 				exprType = visit((NewArray) exp);
 			} else if (exp instanceof ArrayAccessLValue) {
 				exprType = visit((ArrayAccessLValue) exp);
+			} else if (exp instanceof AttrAccessLValue) {
+				exprType = visit((AttrAccessLValue) exp);
 			} else {
 				throw new TypeMismatchException("Erro semântico: tipo de expressão desconhecida.");
 			}
@@ -798,30 +775,40 @@ public class ScopeVisitor extends Visitor {
 		return new TypeSymbol(typeName);
 	}
 
-	public TypeSymbol visit(AttrAccessLValue attrAccess) {
-		System.out.println("Visitando acesso ao atributo: " + attrAccess.getAttr().getName());
+	public TypeSymbol visit(AttrAccessLValue attrAccessLValue) {
+		System.out.println("Visitando acesso ao atributo: " + attrAccessLValue.getAttr().getName());
 
 		// Passo 1: Avaliar o objeto para verificar se é um tipo de dado definido pelo
 		// usuário (ex: registro)
-		Symbol objectType = visit(attrAccess.getObject());
+		AttrAccessLValue attrAccess = (AttrAccessLValue) attrAccessLValue;
 
-		if (!(objectType instanceof DataSymbol)) {
+		// Obter o tipo do objeto sendo acessado
+		TypeSymbol objectType = visit(attrAccess.getObject());
+
+		// Buscar o símbolo no escopo baseado no nome do tipo
+		Pair<Symbol, Integer> symbol = scopes.search(objectType.getName());
+
+		// Verificar se o símbolo existe e é um DataSymbol
+		if (symbol == null || !(symbol.first() instanceof DataSymbol)) {
 			throw new TypeMismatchException(
-					"Erro semântico: O objeto '" + attrAccess.getObject() + "' não é um tipo de dado definido pelo usuário.");
+					"Erro semântico: o tipo '" + objectType.getName() + "' não foi definido como um tipo de dados.");
 		}
 
-		DataSymbol dataSymbol = (DataSymbol) objectType;
+		// Cast para DataSymbol, que representa tipos de dados definidos pelo usuário
+		DataSymbol dataSymbol = (DataSymbol) symbol.first();
 
-		// Passo 2: Verificar se o atributo existe no registro (estrutura)
+		System.out.println("~~ " + dataSymbol);
+
+		// Verifica se o atributo (campo) existe no registro (estrutura)
 		String attrName = attrAccess.getAttr().getName();
-		VarSymbol attribute = dataSymbol.getField(attrName);
+		VarSymbol attribute = dataSymbol.getField(attrName); // Obter o campo com base no nome
 
 		if (attribute == null) {
 			throw new TypeMismatchException(
-					"Erro semântico: O campo '" + attrName + "' não existe no tipo '" + dataSymbol.getName() + "'.");
+					"Erro semântico: o campo '" + attrName + "' não existe no tipo '" + dataSymbol.getName() + "'.");
 		}
 
-		// Passo 3: Retornar o tipo do atributo
+		// Retorna o tipo do atributo
 		return attribute.getType();
 	}
 
