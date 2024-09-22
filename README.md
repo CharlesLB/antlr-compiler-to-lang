@@ -28,5 +28,7 @@ Rode o comando:
 ```bash
 make compile
 
+// java -cp ./bin:./lib/antlr-4.8-complete.jar lang.App <MODE> <PATH> <VERBOSE>
+
 java -cp ./bin:./lib/antlr-4.8-complete.jar lang.App interpreter ./samples/semantic/true/teste0.lan 
 ```

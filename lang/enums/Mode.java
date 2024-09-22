@@ -4,8 +4,7 @@ public enum Mode {
     LEXICAL("lexer"),
     SINTATIC("parser"),
     SEMANTIC("semantic"),
-    INTERPRETER("interpreter"),
-    GVZ("gvz");
+    INTERPRETER("interpreter");
 
     private final String value;
 

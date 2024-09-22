@@ -74,9 +74,6 @@ public class App {
                 .println(ANSI_YELLOW + Mode.INTERPRETER + ANSI_RESET
                         + ": Executa uma bateria de testes no interpretador");
 
-        System.out.println(ANSI_YELLOW + Mode.GVZ + ANSI_RESET
-                + ": Create a dot file. (Feed it to graphviz dot tool to generate graphical representation of the AST)");
-
         System.out.println(ANSI_GREEN + "\nLOGS (opcional):" + ANSI_RESET);
 
         System.out.println(ANSI_GREEN + "Se definido como true, exibirá logs de execução" + ANSI_RESET);
