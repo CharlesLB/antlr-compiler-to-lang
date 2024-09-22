@@ -14,7 +14,7 @@ import lang.core.ast.symbols.FunctionTable;
 import lang.core.parser.LexerProcessor;
 import lang.core.parser.ParserProcessor;
 import lang.core.parser.SemanticProcessor;
-import lang.test.visitor.ScopeVisitor;
+import lang.test.visitor.ContextVisitor;
 import lang.utils.Logger;
 
 public class SemanticTest extends Test {
@@ -42,9 +42,7 @@ public class SemanticTest extends Test {
         }
 
         try {
-            System.out.println("Estou no semantico");
             SemanticProcessor.semanticTest(ast);
-            System.out.println("Saiu do semantico");
         } catch (Exception e) {
             Logger.error("\n Parser test failed: " + e.getMessage());
             throw e;

@@ -1,4 +1,4 @@
-package lang.test.visitor.scope;
+package lang.test.visitor.context;
 
 public class Pair<A, B> {
 

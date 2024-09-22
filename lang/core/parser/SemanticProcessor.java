@@ -3,7 +3,7 @@ package lang.core.parser;
 import org.antlr.v4.runtime.*;
 import lang.core.ast.*;
 import lang.core.ast.definitions.Fun;
-import lang.test.visitor.ScopeVisitor;
+import lang.test.visitor.ContextVisitor;
 
 public class SemanticProcessor {
 
@@ -12,6 +12,6 @@ public class SemanticProcessor {
             throw new Exception("AST is null");
         }
 
-        ast.accept(new ScopeVisitor());
+        ast.accept(new ContextVisitor());
     }
 }
