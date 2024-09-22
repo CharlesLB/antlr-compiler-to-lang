@@ -23,10 +23,8 @@ import lang.core.ast.types.*;
 
 prog
 	returns[StmtList ast]:
-	s1 = stmt {$ast = new StmtList($s1.ast.getLine(), $s1.ast.getColumn(), $s1.ast);} (
-		s2 = stmt {$ast = new StmtList($s2.ast.getLine(), $s2.ast.getColumn(), $ast, $s2.ast);}
-	)* EOF;
-
+	s1 = stmt {$ast = new StmtList($s1.ast.getLine(), $s1.ast.getColumn(), new ArrayList<>(List.of($s1.ast)));
+		} (s2 = stmt {$ast.getCommands().add($s2.ast);})* EOF;
 stmt
 	returns[Node ast]: d = def {$ast = $d.ast;};
 

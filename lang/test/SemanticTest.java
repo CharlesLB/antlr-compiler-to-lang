@@ -73,23 +73,15 @@ public class SemanticTest extends Test {
     public void declareDatas(Node ast, DataTable dataTable) {
         if (ast instanceof StmtList) {
             StmtList stmtList = (StmtList) ast;
-
-            if (stmtList.getCmd1() instanceof Data) {
-                Data data = (Data) stmtList.getCmd1();
-                dataTable.addData(data);
-            }
-
-            if (stmtList.getCmd2() != null && stmtList.getCmd2() instanceof Data) {
-                Data data = (Data) stmtList.getCmd2();
-                dataTable.addData(data);
-            }
-
-            if (stmtList.getCmd1() instanceof StmtList) {
-                declareDatas(stmtList.getCmd1(), dataTable);
-            }
-
-            if (stmtList.getCmd2() instanceof StmtList) {
-                declareDatas(stmtList.getCmd2(), dataTable);
+            // Itera sobre todos os comandos na lista
+            for (Node cmd : stmtList.getCommands()) {
+                if (cmd instanceof Data) {
+                    Data data = (Data) cmd;
+                    dataTable.addData(data);
+                } else if (cmd instanceof StmtList) {
+                    // Recursivamente declara os dados dentro de uma StmtList
+                    declareDatas(cmd, dataTable);
+                }
             }
         }
     }
@@ -107,23 +99,15 @@ public class SemanticTest extends Test {
     public void declareFunctions(Node ast, FunctionTable functionTable) {
         if (ast instanceof StmtList) {
             StmtList stmtList = (StmtList) ast;
-
-            if (stmtList.getCmd1() instanceof Fun) {
-                Fun function = (Fun) stmtList.getCmd1();
-                functionTable.addFunction(function);
-            }
-
-            if (stmtList.getCmd2() != null && stmtList.getCmd2() instanceof Fun) {
-                Fun function = (Fun) stmtList.getCmd2();
-                functionTable.addFunction(function);
-            }
-
-            if (stmtList.getCmd1() instanceof StmtList) {
-                declareFunctions(stmtList.getCmd1(), functionTable);
-            }
-
-            if (stmtList.getCmd2() instanceof StmtList) {
-                declareFunctions(stmtList.getCmd2(), functionTable);
+            // Itera sobre todos os comandos na lista
+            for (Node cmd : stmtList.getCommands()) {
+                if (cmd instanceof Fun) {
+                    Fun function = (Fun) cmd;
+                    functionTable.addFunction(function);
+                } else if (cmd instanceof StmtList) {
+                    // Recursivamente declara as funções dentro de uma StmtList
+                    declareFunctions(cmd, functionTable);
+                }
             }
         }
     }

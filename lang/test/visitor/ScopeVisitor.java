@@ -1073,38 +1073,19 @@ public class ScopeVisitor extends Visitor {
 			throw new TypeMismatchException("Erro semântico: A função 'main' não foi definida no programa.");
 		}
 
+		// Visitando cada comando na lista
 		System.out.println("Visiting StmtList at line: " + stmtList.getLine() + ", column: " + stmtList.getColumn());
 
-		Node cmd1 = stmtList.getCmd1();
-		if (cmd1 != null) {
-			System.out.println(cmd1);
-			cmd1.accept(this); // Visitando cada comando na lista
-		} else {
-			System.out.println("StmtList is empty.");
-		}
-
-		Node cmd2 = stmtList.getCmd2();
-		if (cmd2 != null) {
-			System.out.println("Visiting cmd2: " + cmd2);
-			cmd2.accept(this); // Visitando a main
-		} else {
-			System.out.println("cmd2 is empty.");
+		for (Node cmd : stmtList.getCommands()) {
+			System.out.println(cmd);
+			cmd.accept(this); // Visitando cada comando
 		}
 	}
 
 	// Função para pré-processar todas as definições
 	private void preProcessDefinitions(StmtList stmtList) {
-		Node cmd1 = stmtList.getCmd1();
-		Node cmd2 = stmtList.getCmd2();
-
-		// Pré-processar a primeira definição (se existir)
-		if (cmd1 != null) {
-			preProcessDefinition(cmd1);
-		}
-
-		// Pré-processar a segunda definição (se existir)
-		if (cmd2 != null) {
-			preProcessDefinition(cmd2);
+		for (Node cmd : stmtList.getCommands()) {
+			preProcessDefinition(cmd);
 		}
 	}
 
