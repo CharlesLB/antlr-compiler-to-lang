@@ -42,9 +42,7 @@ public class SemanticTest extends Test {
         }
 
         try {
-            System.out.println("Estou no semantico");
             SemanticProcessor.semanticTest(ast);
-            System.out.println("Saiu do semantico");
         } catch (Exception e) {
             Logger.error("\n Parser test failed: " + e.getMessage());
             throw e;

@@ -101,7 +101,6 @@ public class Fun extends Node {
 
 	@Override
 	public void accept(Visitor v) {
-		System.out.println("Calling accept in Fun...");
 		try {
 			v.visit(this);
 		} catch (TypeMismatchException e) {
