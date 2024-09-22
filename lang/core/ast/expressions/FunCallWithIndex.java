@@ -5,8 +5,13 @@ package lang.core.ast.expressions;
 import java.util.*;
 import java.util.stream.*;
 
+import lang.core.ast.definitions.Data;
 import lang.core.ast.definitions.Expr;
+import lang.core.ast.definitions.Fun;
+import lang.core.ast.definitions.Param;
 import lang.core.ast.lvalue.IDLValue;
+import lang.core.ast.symbols.DataTable;
+import lang.core.ast.symbols.FunctionTable;
 import lang.test.visitor.Visitor;
 
 /**
@@ -56,23 +61,18 @@ public class FunCallWithIndex extends Expr {
 	}
 
 	public Object interpret(HashMap<String, Object> context) {
-		// Obtenha o contexto da função (localContext)
 		HashMap<String, Object> localContext = new HashMap<>(context);
 
-		// Interpretar os argumentos da função
 		List<Object> argumentValues = new ArrayList<>();
 		for (Expr arg : arguments) {
 			argumentValues.add(arg.interpret(context));
 		}
 
-		// Chamar a função e obter o resultado
 		Object functionResult = callFunction(functionName, argumentValues, localContext);
 
-		// Tratar o acesso ao índice no valor retornado
 		if (functionResult instanceof List<?>) {
 			List<?> resultList = (List<?>) functionResult;
 
-			// Interpretar o índice
 			Object indexValue = indexExpr.interpret(context);
 			if (!(indexValue instanceof Integer)) {
 				throw new RuntimeException("O índice deve ser um número inteiro.");
@@ -80,12 +80,10 @@ public class FunCallWithIndex extends Expr {
 
 			int index = (Integer) indexValue;
 
-			// Verificar se o índice está dentro dos limites da lista
 			if (index < 0 || index >= resultList.size()) {
 				throw new RuntimeException("Índice fora dos limites.");
 			}
 
-			// Retorna o valor correspondente ao índice
 			return resultList.get(index);
 		}
 
@@ -93,14 +91,70 @@ public class FunCallWithIndex extends Expr {
 	}
 
 	private Object callFunction(IDLValue functionName, List<Object> argumentValues,
-			HashMap<String, Object> localContext) {
-		// Aqui você faria a lógica de chamada da função com base no nome e nos
-		// argumentos
-		// Exemplo:
-		System.out.println("Chamando a função: " + functionName.getName() + " com argumentos " + argumentValues);
+			HashMap<String, Object> context) {
+		List<String> argumentTypes = arguments.stream()
+				.<String>map(arg -> {
+					Object value = arg.interpret(context);
+					if (value instanceof Integer) {
+						return "Int";
+					} else if (value instanceof Float) {
+						return "Float";
+					} else if (value instanceof Boolean) {
+						return "Bool";
+					} else if (value instanceof Character) {
+						return "Char";
+					} else if (value instanceof Object[]) {
+						Object[] array = (Object[]) value;
+						if (array.length > 0 && array[0] instanceof HashMap) {
+							HashMap<String, Object> firstElement = (HashMap<String, Object>) array[0];
 
-		// Simulação de um retorno da função (substitua pela lógica real)
-		return Arrays.asList(10, 20, 30); // Exemplo: a função retorna uma lista de valores
+							String identifiedType = identifyDataType(firstElement, DataTable.getInstance());
+							return identifiedType + "[]";
+						}
+						return "Object[]";
+					} else if (value instanceof HashMap) {
+						HashMap<String, Object> mapValue = (HashMap<String, Object>) value;
+						return identifyDataType(mapValue, DataTable.getInstance());
+					} else {
+						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
+					}
+				})
+				.collect(Collectors.toList());
+
+		Fun function = FunctionTable.getInstance().getFunction(functionName.getName(), argumentTypes);
+		if (function == null) {
+			throw new RuntimeException("Função não definida: " + functionName.getName() +
+					" com tipos de argumentos: " + argumentTypes);
+		}
+
+		List<Param> params = function.getParams();
+		if (params.size() != argumentValues.size()) {
+			throw new RuntimeException(
+					"Número de argumentos não corresponde ao número de parâmetros para a função: "
+							+ functionName.getName());
+		}
+
+		for (int i = 0; i < params.size(); i++) {
+			String paramName = params.get(i).getID().getName();
+			Object argValue = argumentValues.get(i);
+			context.put(paramName, argValue);
+		}
+
+		return function.interpret(context);
+	}
+
+	private String identifyDataType(HashMap<String, Object> element, DataTable dataTable) {
+		for (Map.Entry<String, Data> entry : dataTable.getDataMap().entrySet()) {
+			Data dataType = entry.getValue();
+			Set<String> expectedKeys = dataType.getAttributes();
+
+			if (element.keySet().equals(expectedKeys)) {
+				return entry.getKey();
+			}
+		}
+
+		// Se o tipo não for identificado, retorne "HashMap" como padrão --> Indica Erro
+		return "HashMap";
 	}
 
 	public void accept(Visitor v) {
