@@ -4,8 +4,8 @@
 
 <p align="center">
     <img alt="Language" src="https://img.shields.io/badge/language-antlr-ff0">
-  <img alt="Language" src="https://img.shields.io/badge/language-Java-brightgreen">
-  <img alt="Concept" src="https://img.shields.io/badge/concept-Compilers-brightgreen">
+    <img alt="Language" src="https://img.shields.io/badge/language-Java-brightgreen">
+    <img alt="Concept" src="https://img.shields.io/badge/concept-Compilers-brightgreen">
 </p>
 
 # Descrição
@@ -29,7 +29,4 @@ Rode o comando:
 make compile
 
 java -cp ./bin:./lib/antlr-4.8-complete.jar lang.App interpreter ./samples/semantic/true/teste0.lan 
-#  ou
-
-make run # java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler -bs
 ```

@@ -7,9 +7,6 @@ genparser: lang/core/parser/LangParser.g4
 genlexer: lang/core/parser/LangLexer.g4
 	java -jar ./lib/antlr-4.8-complete.jar lang/core/parser/LangLexer.g4
 
-run: compile
-	java -cp ./bin:./lib/antlr-4.8-complete.jar lang.LangCompiler $(MODE) $(FILE) $(LOGS)
-
 clean:
 	rm -R lang/core/parser/*Listener.java lang/core/parser/LangLexer.java lang/core/parser/LangParser.java lang/core/parser/*.interp lang/core/parser/*.tokens lang/core/parser/.antlr lang/core/parser/Lang.java || true
 	find . -type f -name "*.class" -delete || true
