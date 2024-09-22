@@ -1,25 +1,31 @@
 package lang.test.visitor.symbols;
 
+import java.util.Objects;
+
 public class TypeSymbol extends Symbol {
-	private TypeSymbol elementType; // Usado para armazenar o tipo dos elementos, se for um array
+	private TypeSymbol elementType; // Tipo base (Ponto)
+	private int dimensions; // Número de dimensões (Ponto[])
 
+	// Construtor para tipos básicos
 	public TypeSymbol(String name) {
-		super(name); // Nome do tipo, como "Int", "Float", etc.
-		this.elementType = null;
-	}
-
-	// Construtor para arrays (onde 'elementType' indica o tipo dos elementos do
-	// array)
-	public TypeSymbol(String name, TypeSymbol elementType) {
 		super(name);
-		this.elementType = elementType;
+		this.elementType = null;
+		this.dimensions = 0; // Tipo básico, sem dimensões de array
 	}
 
+	// Construtor para tipos de arrays
+	public TypeSymbol(TypeSymbol baseType, int dimensions) {
+		super(baseType.getName()); // Nome do tipo base
+		this.elementType = baseType;
+		this.dimensions = dimensions; // Quantidade de dimensões (ex.: Ponto[])
+	}
+
+	// Verifica se o tipo é um array
 	public boolean isArray() {
-		return elementType != null;
+		return this.dimensions > 0;
 	}
 
-	// Método para obter o tipo dos elementos do array
+	// Retorna o tipo base do array
 	public TypeSymbol getElementType() {
 		if (!isArray()) {
 			throw new RuntimeException("Este tipo não é um array.");
@@ -27,25 +33,46 @@ public class TypeSymbol extends Symbol {
 		return elementType;
 	}
 
+	// Retorna o número de dimensões do array
+	public int getDimensions() {
+		return dimensions;
+	}
+
+	@Override
+	public String getName() {
+		if (elementType != null) {
+			// Se for um array, retorna o nome do tipo base com colchetes para cada dimensão
+			StringBuilder nameBuilder = new StringBuilder(elementType.getName());
+			for (int i = 0; i < dimensions; i++) {
+				nameBuilder.append("[]");
+			}
+			return nameBuilder.toString();
+		} else {
+			// Se não for array, retorna o nome básico
+			return name;
+		}
+	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null || this.getClass() != obj.getClass()) {
+		if (obj == null || getClass() != obj.getClass())
 			return false;
-		}
+
 		TypeSymbol other = (TypeSymbol) obj;
-		return name.equals(other.name);
+
+		// Comparação do nome do tipo e das dimensões (caso seja um array)
+		return name.equals(other.name) && dimensions == other.dimensions;
 	}
 
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return Objects.hash(name, dimensions);
 	}
 
 	@Override
 	public String toString() {
-		return name + (isArray() ? "[]" : "");
+		return getName();
 	}
 }

@@ -65,6 +65,8 @@ public class ScopeVisitor extends Visitor {
 	private int level;
 	private Fun currentFunction;
 
+	private boolean hasMainFunction = false;
+
 	public ScopeVisitor() {
 		scopes = new ScopeTable();
 		level = scopes.getLevel();
@@ -153,18 +155,43 @@ public class ScopeVisitor extends Visitor {
 	}
 
 	public TypeSymbol visit(Type type) {
+		System.out.println("Visitando Type: " + type.getClass());
+
 		if (type instanceof Btype) {
 			String typeName = ((Btype) type).getType();
+			System.out.println("Tipo básico: " + typeName);
 			return new TypeSymbol(typeName);
 		} else if (type instanceof IDType) {
-			// Caso seja um tipo definido pelo usuário, como Ponto ou outra estrutura
+			// Tipos definidos pelo usuário, como Ponto
 			String typeName = ((IDType) type).getName();
+			System.out.println("Nome IDTYPE: " + typeName);
 			return new TypeSymbol(typeName);
 		} else if (type instanceof MatrixType) {
-			// Caso seja um array/matriz, lidar com o tipo base e dimensões
 			MatrixType matrixType = (MatrixType) type;
-			TypeSymbol baseType = visit(matrixType.getBaseType());
-			return new TypeSymbol(baseType.getName() + "[]", baseType);
+			System.out.println("Antes de visitar a base do array");
+
+			try {
+				// Visita o tipo base da matriz
+				TypeSymbol baseType = visit(matrixType.getBaseType());
+				System.out.println("Base do array: " + baseType.getName());
+
+				// Verificar o número de dimensões
+				int dimensions = matrixType.getDimensions();
+				System.out.println("Dimensões do array: " + dimensions);
+				if (dimensions <= 0) {
+					throw new TypeMismatchException("Erro semântico: número inválido de dimensões para o array.");
+				}
+
+				// Criação do TypeSymbol para arrays (Ponto[])
+				TypeSymbol arrayType = new TypeSymbol(baseType, dimensions);
+				System.out.println("Tipo criado: " + arrayType.getName());
+
+				return arrayType;
+			} catch (Exception e) {
+				System.err.println("Erro ao visitar o tipo base da matriz: " + e.getMessage());
+				e.printStackTrace(); // Mostra a pilha de erros completa
+				throw e; // Rethrow para garantir que o erro não passe despercebido
+			}
 		}
 
 		throw new TypeMismatchException("Erro semântico: tipo inválido.");
@@ -175,7 +202,9 @@ public class ScopeVisitor extends Visitor {
 		Expr expr = printCmd.getExpr();
 
 		// Passo 2: Verificar o tipo da expressão
+		System.out.println("== ");
 		TypeSymbol exprType = visit(expr);
+		System.out.println("== " + exprType);
 
 		// Passo 3: Verificar se o tipo da expressão está entre os permitidos: {Int,
 		// Float, Char, Bool}
@@ -254,9 +283,8 @@ public class ScopeVisitor extends Visitor {
 
 		// Se a variável não foi encontrada no escopo, infere o tipo e a insere
 		if (symbol == null) {
-			System.out.println("Expr: ");
-			TypeSymbol inferredType = visit(idlValue);
-			return inferredType;
+			System.err.println("Erro: Variável '" + variableName + "' não declarada.");
+			throw new TypeMismatchException("Variável '" + variableName + "' não foi declarada no escopo atual.");
 		}
 		VarSymbol var = (VarSymbol) symbol.first();
 
@@ -421,6 +449,7 @@ public class ScopeVisitor extends Visitor {
 		// Construir a assinatura com os tipos dos argumentos
 		for (Expr argument : funLValue.getArguments()) {
 			TypeSymbol argType = visit(argument); // Verificar o tipo do argumento
+			System.out.println("* " + argType);
 			signature.append(argType.getName()).append(", ");
 		}
 
@@ -428,6 +457,7 @@ public class ScopeVisitor extends Visitor {
 			signature.setLength(signature.length() - 2); // Remover a última vírgula e espaço
 		}
 		signature.append(")");
+		System.out.println("Sig: " + signature);
 
 		// Buscar a função usando a assinatura completa
 		Pair<Symbol, Integer> symbol = scopes.search(signature.toString());
@@ -525,9 +555,10 @@ public class ScopeVisitor extends Visitor {
 		String dataTypeName = data.getID().getName();
 
 		// Passo 1: Verificar se o tipo já foi declarado no escopo global (nível 0)
-		if (scopes.search(dataTypeName) != null) {
-			throw new TypeMismatchException("Erro semântico: O tipo '" + dataTypeName + "' já foi declarado.");
-		}
+		// if (scopes.search(dataTypeName) != null) {
+		// throw new TypeMismatchException("Erro semântico: O tipo '" + dataTypeName +
+		// "' já foi declarado.");
+		// }
 
 		// Passo 2: Inicializar a lista de campos (VarSymbol) para o Data
 		List<VarSymbol> fields = new ArrayList<>();
@@ -545,18 +576,11 @@ public class ScopeVisitor extends Visitor {
 			// Visitar a declaração de campo
 			visit(decl);
 
-			// Adicionar o campo à lista de campos da estrutura
-			TypeSymbol fieldType = new TypeSymbol(decl.getType().toString());
-			VarSymbol varSymbol = new VarSymbol(fieldName, fieldType, null);
-			fields.add(varSymbol);
+			// // Adicionar o campo à lista de campos da estrutura
+			// TypeSymbol fieldType = new TypeSymbol(decl.getType().toString());
+			// VarSymbol varSymbol = new VarSymbol(fieldName, fieldType, null);
+			// fields.add(varSymbol);
 		}
-
-		// Passo 4: Criar um símbolo para o Data e adicionar à tabela de símbolos global
-		// (nível 0)
-		DataSymbol dataSymbol = new DataSymbol(dataTypeName, fields);
-		scopes.put(dataTypeName, dataSymbol); // Adicionar ao escopo global o símbolo da estrutura
-
-		System.out.println("Tipo 'Data' definido com sucesso: " + dataSymbol);
 	}
 
 	public void visit(Decl decl) {
@@ -885,36 +909,20 @@ public class ScopeVisitor extends Visitor {
 			throw new TypeMismatchException("Erro semântico: O tamanho do array deve ser do tipo Int.");
 		}
 
-		// Avaliar o valor da expressão que define o tamanho do array
-		IDLValue sizeVar = (IDLValue) newArray.getSize(); // Interpreta o valor do tamanho do array
+		// Passo 2: Avaliar o tipo base do array
+		TypeSymbol baseType = visit(newArray.getType());
 
-		Pair<Symbol, Integer> symbol = scopes.search(sizeVar.getName());
-		VarSymbol var = (VarSymbol) symbol.first();
-
-		if (!var.getType().equals(new TypeSymbol("Int"))) {
-			throw new RuntimeException("Erro semântico: O tamanho do array deve ser um inteiro.");
+		// Verificar se o tipo base não é nulo ou inválido
+		if (baseType == null) {
+			throw new TypeMismatchException("Erro semântico: tipo base inválido para o array.");
 		}
 
-		int size = (int) var.getValue().interpret(null);
+		// Passo 3: Inicializar o array com o número correto de dimensões
+		// Aqui, adicionamos 1 à dimensão do array, pois estamos criando um novo array
+		TypeSymbol arrayType = new TypeSymbol(baseType, 1);
 
-		// Caso o tamanho seja zero, utilizamos um valor padrão
-		if (size == 0) {
-			size = 100;
-		}
-
-		// Passo 2: Inicializar o array com o valor padrão para o tipo do array
-		String typeName = newArray.getType().toString();
-		Object[] newArrayValues = new Object[size];
-
-		for (int i = 0; i < size; i++) {
-			newArrayValues[i] = getDefaultValueForType(typeName);
-		}
-
-		// Passo 3: Adicionar o array ao escopo ou contexto (opcional, dependendo do
-		// uso)
-
-		// Passo 4: Retornar o tipo do array (por exemplo, Int[])
-		return new TypeSymbol(typeName, new TypeSymbol(typeName));
+		// Passo 4: Retornar o tipo do array (por exemplo, Int[] ou Ponto[])
+		return arrayType;
 	}
 
 	public TypeSymbol visit(ArrayAccessLValue arrayAccess) {
@@ -1060,6 +1068,11 @@ public class ScopeVisitor extends Visitor {
 		// Pré-processa todas as definições de funções e tipos de dados
 		preProcessDefinitions(stmtList);
 
+		// Verificar se a função 'main' foi encontrada
+		if (!hasMainFunction) {
+			throw new TypeMismatchException("Erro semântico: A função 'main' não foi definida no programa.");
+		}
+
 		System.out.println("Visiting StmtList at line: " + stmtList.getLine() + ", column: " + stmtList.getColumn());
 
 		Node cmd1 = stmtList.getCmd1();
@@ -1111,16 +1124,25 @@ public class ScopeVisitor extends Visitor {
 		StringBuilder signature = new StringBuilder(functionName + "(");
 
 		List<TypeSymbol> returnTypeSymbol = new ArrayList<>();
+		System.out.println("Iniciando o registro da função: " + functionName);
+
+		// Converter e registrar os tipos de retorno
 		for (Type returnType : p.getReturnTypes()) {
-			TypeSymbol typeSymbol = visit(returnType); // Converter o Type em TypeSymbol
+			TypeSymbol typeSymbol = visit(returnType);
 			returnTypeSymbol.add(typeSymbol);
+			System.out.println("Tipo de retorno: " + typeSymbol.getName());
 		}
 
 		List<VarSymbol> parameterSymbols = new ArrayList<>();
 		if (p.getParams() != null) {
 			for (Param param : p.getParams()) {
 				String paramName = param.getID().getName(); // Obter o nome do parâmetro
+				System.out.println("A");
 				TypeSymbol paramType = visit(param.getType()); // Converter o Type em TypeSymbol
+
+				// Debug: Exibir o nome e o tipo do parâmetro
+				System.out.println("Parâmetro: " + paramName + ", Tipo: " + paramType.getName());
+
 				VarSymbol varSymbol = new VarSymbol(paramName, paramType, null); // Criar o VarSymbol
 				parameterSymbols.add(varSymbol); // Adicionar o VarSymbol à lista
 
@@ -1129,15 +1151,22 @@ public class ScopeVisitor extends Visitor {
 			}
 		}
 
-		// Remover a última vírgula e espaço
+		// Remover a última vírgula e espaço da assinatura
 		if (!parameterSymbols.isEmpty()) {
 			signature.setLength(signature.length() - 2);
 		}
 		signature.append(")");
 
-		// Registra a função no escopo global usando a assinatura completa
+		// Registrar a função no escopo global usando a assinatura completa
 		FunctionSymbol functionSymbol = new FunctionSymbol(signature.toString(), returnTypeSymbol, parameterSymbols);
 		scopes.put(signature.toString(), functionSymbol);
+
+		// Marcar se a função main foi encontrada
+		if (functionName.equals("main") && parameterSymbols.isEmpty()) {
+			hasMainFunction = true;
+		}
+
+		// Debug: Exibir a assinatura final da função e confirmar o registro
 		System.out.println("Função '" + signature + "' registrada no escopo global.");
 	}
 
