@@ -46,7 +46,7 @@ public class SemanticTest extends Test {
         try {
             SemanticProcessor.semanticTest(ast);
         } catch (Exception e) {
-            Logger.error("\n Parser test failed: " + e.getMessage());
+            Logger.error("\n Semantic test failed: " + e.getMessage());
             throw e;
         }
 

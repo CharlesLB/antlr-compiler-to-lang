@@ -15,6 +15,7 @@ import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
 import lang.core.parser.LexerProcessor;
 import lang.core.parser.ParserProcessor;
+import lang.core.parser.SemanticProcessor;
 import lang.utils.Logger;
 
 public class InterpreterTest extends Test {
@@ -38,6 +39,13 @@ public class InterpreterTest extends Test {
             ast = ParserProcessor.parserByTokens(tokens);
         } catch (Exception e) {
             Logger.error("\n Parser test failed: " + e.getMessage());
+            throw e;
+        }
+
+        try {
+            SemanticProcessor.semanticTest(ast);
+        } catch (Exception e) {
+            Logger.error("\n Semantic test failed: " + e.getMessage());
             throw e;
         }
 
