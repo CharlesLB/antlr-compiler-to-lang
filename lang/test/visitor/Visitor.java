@@ -1,3 +1,5 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.test.visitor;
 
 import lang.core.ast.definitions.Data;
@@ -7,30 +9,18 @@ import lang.core.ast.definitions.StmtList;
 import lang.core.ast.definitions.Type;
 import lang.core.ast.expressions.BinOP;
 import lang.core.ast.expressions.FunCallWithIndex;
-import lang.core.ast.expressions.ID;
 import lang.core.ast.expressions.NewObject;
 import lang.core.ast.expressions.literals.BoolLiteral;
 import lang.core.ast.expressions.literals.CharLiteral;
 import lang.core.ast.expressions.literals.FloatLiteral;
 import lang.core.ast.expressions.literals.IntLiteral;
 import lang.core.ast.expressions.literals.NullLiteral;
-import lang.core.ast.expressions.operators.And;
-import lang.core.ast.expressions.operators.Div;
-import lang.core.ast.expressions.operators.EQ;
-import lang.core.ast.expressions.operators.LessThan;
-import lang.core.ast.expressions.operators.Minus;
-import lang.core.ast.expressions.operators.Mod;
-import lang.core.ast.expressions.operators.Mul;
 import lang.core.ast.expressions.operators.Neg;
 import lang.core.ast.expressions.operators.Not;
-import lang.core.ast.expressions.operators.NotEq;
-import lang.core.ast.expressions.operators.Plus;
-import lang.core.ast.lvalue.ArrayAccessLValue;
 import lang.core.ast.lvalue.AssignLValue;
 import lang.core.ast.lvalue.AttrAccessLValue;
 import lang.core.ast.lvalue.FunLValue;
 import lang.core.ast.lvalue.IDLValue;
-import lang.core.ast.lvalue.LValue;
 import lang.core.ast.statements.commands.Assign;
 import lang.core.ast.statements.commands.BlockCmd;
 import lang.core.ast.statements.commands.If;
