@@ -76,26 +76,6 @@ public class ScopeVisitor extends Visitor {
 	public void visit(Fun p) {
 		currentFunction = p;
 
-		String functionName = p.getName().getName();
-
-		if (level == 0) {
-			List<TypeSymbol> returnTypeSymbol = new ArrayList<>();
-			for (Type returnTytpe : p.getReturnTypes()) {
-				TypeSymbol typeSymbol = visit(returnTytpe);
-				returnTypeSymbol.add(typeSymbol);
-			}
-
-			List<VarSymbol> parameterSymbols = new ArrayList<>();
-			if (p.getParams() != null) {
-				for (Param param : p.getParams()) {
-					String paramName = param.getID().getName();
-					TypeSymbol paramType = visit(param.getType());
-					VarSymbol varSymbol = new VarSymbol(paramName, paramType, null);
-					parameterSymbols.add(varSymbol);
-				}
-			}
-		}
-
 		level = scopes.push();
 		// System.out.println("<<<<<<<<<< Função: " + functionName + " / " + level + "
 		// >>>>>>>>");
