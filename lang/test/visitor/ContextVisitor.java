@@ -46,8 +46,8 @@ import lang.core.ast.statements.data.Decl;
 import lang.core.ast.types.Btype;
 import lang.core.ast.types.IDType;
 import lang.core.ast.types.MatrixType;
-import lang.test.visitor.scope.Pair;
-import lang.test.visitor.scope.ScopeTable;
+import lang.test.visitor.context.Pair;
+import lang.test.visitor.context.ContextTable;
 import lang.test.visitor.symbols.DataSymbol;
 import lang.test.visitor.symbols.FunctionSymbol;
 import lang.test.visitor.symbols.ObjectSymbol;
@@ -59,24 +59,24 @@ import lang.utils.TypeMismatchException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScopeVisitor extends Visitor {
+public class ContextVisitor extends Visitor {
 
-	private ScopeTable scopes;
+	private ContextTable contexts;
 	private int level;
 	private Fun currentFunction;
 
 	private boolean hasMainFunction = false;
 
-	public ScopeVisitor() {
-		scopes = new ScopeTable();
-		level = scopes.getLevel();
+	public ContextVisitor() {
+		contexts = new ContextTable();
+		level = contexts.getLevel();
 		currentFunction = null;
 	}
 
 	public void visit(Fun p) {
 		currentFunction = p;
 
-		level = scopes.push();
+		level = contexts.push();
 		// System.out.println("<<<<<<<<<< Função: " + functionName + " / " + level + "
 		// >>>>>>>>");
 
@@ -101,7 +101,7 @@ public class ScopeVisitor extends Visitor {
 			}
 		}
 
-		level = scopes.pop();
+		level = contexts.pop();
 		currentFunction = null;
 	}
 
@@ -109,13 +109,13 @@ public class ScopeVisitor extends Visitor {
 		String paramName = param.getID().getName();
 		TypeSymbol paramType = visit(param.getType());
 
-		if (scopes.search(paramName) != null) {
+		if (contexts.search(paramName) != null) {
 			throw new TypeMismatchException("Erro semântico: parâmetro '" + paramName +
 					"' já foi declarado.");
 		}
 
 		VarSymbol paramSymbol = new VarSymbol(paramName, paramType, null);
-		scopes.put(paramName, paramSymbol);
+		contexts.put(paramName, paramSymbol);
 	}
 
 	public TypeSymbol visit(Type type) {
@@ -172,14 +172,14 @@ public class ScopeVisitor extends Visitor {
 		if (lvalue instanceof IDLValue) {
 			String variableName = ((IDLValue) lvalue).getName();
 
-			Pair<Symbol, Integer> symbol = scopes.search(variableName);
+			Pair<Symbol, Integer> symbol = contexts.search(variableName);
 
 			// Se a variável não foi encontrada no escopo, infere o tipo e a insere
 			if (symbol == null) {
 				TypeSymbol inferredType = visit(expr);
 
 				VarSymbol newSymbol = new VarSymbol(variableName, inferredType, expr);
-				scopes.put(variableName, newSymbol);
+				contexts.put(variableName, newSymbol);
 
 				return inferredType;
 			} else {
@@ -216,7 +216,7 @@ public class ScopeVisitor extends Visitor {
 	public TypeSymbol visit(IDLValue idlValue) {
 		String variableName = ((IDLValue) idlValue).getName();
 
-		Pair<Symbol, Integer> symbol = scopes.search(variableName);
+		Pair<Symbol, Integer> symbol = contexts.search(variableName);
 
 		if (symbol == null) {
 			throw new TypeMismatchException("Variável '" + variableName + "' não foi declarada no escopo atual.");
@@ -284,9 +284,9 @@ public class ScopeVisitor extends Visitor {
 		// Se tudo correto, atualiza a tabela de símbolos
 		// VarSymbol symbol = new VarSymbol(variable.getName(), varType, expr);
 		VarSymbol symbol = new VarSymbol(variable.getName(), varType, null);
-		scopes.put(variable.getName(), symbol);
+		contexts.put(variable.getName(), symbol);
 
-		// scopes.printScopes();
+		// contexts.printContexts();
 	}
 
 	public TypeSymbol visit(FunCallWithIndex funCallWithIndex) {
@@ -302,7 +302,7 @@ public class ScopeVisitor extends Visitor {
 		}
 		signature.append(")");
 
-		Pair<Symbol, Integer> symbol = scopes.search(signature.toString());
+		Pair<Symbol, Integer> symbol = contexts.search(signature.toString());
 
 		if (symbol == null) {
 			throw new TypeMismatchException("Erro semântico: função '" + signature + "' não foi declarada.");
@@ -365,7 +365,7 @@ public class ScopeVisitor extends Visitor {
 		}
 		signature.append(")");
 
-		Pair<Symbol, Integer> symbol = scopes.search(signature.toString());
+		Pair<Symbol, Integer> symbol = contexts.search(signature.toString());
 
 		if (symbol == null) {
 			throw new TypeMismatchException("Erro semântico: função '" + signature + "' não foi declarada.");
@@ -412,14 +412,14 @@ public class ScopeVisitor extends Visitor {
 
 		for (int i = 0; i < lvalues.size(); i++) {
 			LValue lvalue = lvalues.get(i);
-			Pair<Symbol, Integer> lvalueSymbol = scopes.search(lvalue.toString());
+			Pair<Symbol, Integer> lvalueSymbol = contexts.search(lvalue.toString());
 
 			TypeSymbol returnType = returnTypes.get(i);
 
 			if (lvalueSymbol == null) {
 
 				VarSymbol inferredVar = new VarSymbol(lvalue.toString(), returnType, null);
-				scopes.put(lvalue.toString(), inferredVar);
+				contexts.put(lvalue.toString(), inferredVar);
 			} else {
 				VarSymbol lvalueVarSymbol = (VarSymbol) lvalueSymbol.first();
 				TypeSymbol lvalueType = lvalueVarSymbol.getType();
@@ -483,7 +483,7 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		// 2. Empilhar um novo escopo para o bloco 'then' (thn)
-		level = scopes.push();
+		level = contexts.push();
 
 		// 3. Visitar o bloco 'then'
 		if (ifStmt.getThenCmd() instanceof BlockCmd) {
@@ -493,11 +493,11 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		// 4. Desempilhar o escopo do bloco 'then' após a visita
-		level = scopes.pop();
+		level = contexts.pop();
 
 		// 5. Se houver um bloco 'else', visitá-lo
 		if (ifStmt.getThenEls() != null) {
-			level = scopes.push();
+			level = contexts.push();
 
 			if (ifStmt.getThenEls() instanceof BlockCmd) {
 				visit((BlockCmd) ifStmt.getThenEls());
@@ -505,12 +505,12 @@ public class ScopeVisitor extends Visitor {
 				visit(ifStmt.getThenEls());
 			}
 
-			level = scopes.pop();
+			level = contexts.pop();
 		}
 	}
 
 	public void visit(BlockCmd blockCmd) {
-		level = scopes.push();
+		level = contexts.push();
 
 		List<Cmd> commands = blockCmd.getCommands();
 
@@ -522,13 +522,13 @@ public class ScopeVisitor extends Visitor {
 			visit(cmd);
 		}
 
-		level = scopes.pop();
+		level = contexts.pop();
 	}
 
 	public void visit(ReadLValue readCmd) {
 		String varName = readCmd.getLValue().toString();
 
-		Pair<Symbol, Integer> symbol = scopes.search(varName);
+		Pair<Symbol, Integer> symbol = contexts.search(varName);
 		if (symbol == null) {
 			throw new TypeMismatchException("Erro semântico: Variável '" + varName + "' não foi declarada.");
 		}
@@ -551,10 +551,10 @@ public class ScopeVisitor extends Visitor {
 			throw new RuntimeException("Erro semântico: A expressão do comando 'iterate' deve ser do tipo Int.");
 		}
 
-		level = scopes.push();
+		level = contexts.push();
 		visit(iterateCmd.getBody());
 
-		level = scopes.pop();
+		level = contexts.pop();
 	}
 
 	/* Operações */
@@ -642,7 +642,7 @@ public class ScopeVisitor extends Visitor {
 	public TypeSymbol visit(NewObject newObject) {
 		String typeName = newObject.getType().toString();
 
-		Pair<Symbol, Integer> dataDefinition = scopes.search(typeName);
+		Pair<Symbol, Integer> dataDefinition = contexts.search(typeName);
 
 		if (dataDefinition == null) {
 			throw new TypeMismatchException("Erro semântico: o tipo '" + typeName + "'não foi definido.");
@@ -672,7 +672,7 @@ public class ScopeVisitor extends Visitor {
 
 		TypeSymbol objectType = visit(attrAccess.getObject());
 
-		Pair<Symbol, Integer> symbol = scopes.search(objectType.getName());
+		Pair<Symbol, Integer> symbol = contexts.search(objectType.getName());
 		if (symbol == null || !(symbol.first() instanceof DataSymbol)) {
 			throw new TypeMismatchException(
 					"Erro semântico: o tipo '" + objectType.getName() + "' não foi definido como um tipo de dados.");
@@ -851,7 +851,7 @@ public class ScopeVisitor extends Visitor {
 		// Registrar a função no escopo global usando a assinatura completa
 		FunctionSymbol functionSymbol = new FunctionSymbol(signature.toString(),
 				returnTypeSymbol, parameterSymbols);
-		scopes.put(signature.toString(), functionSymbol);
+		contexts.put(signature.toString(), functionSymbol);
 
 		if (functionName.equals("main") && parameterSymbols.isEmpty()) {
 			hasMainFunction = true;
@@ -860,7 +860,7 @@ public class ScopeVisitor extends Visitor {
 
 	public void preVisitData(Data data) {
 		String dataTypeName = data.getID().getName();
-		if (scopes.search(dataTypeName) != null) {
+		if (contexts.search(dataTypeName) != null) {
 			throw new TypeMismatchException("Erro semântico: O tipo '" + dataTypeName +
 					"' já foi declarado.");
 		}
@@ -879,7 +879,7 @@ public class ScopeVisitor extends Visitor {
 		}
 
 		DataSymbol dataSymbol = new DataSymbol(dataTypeName, fields);
-		scopes.put(dataTypeName, dataSymbol);
+		contexts.put(dataTypeName, dataSymbol);
 		// System.out.println("Estrutura de dados '" + dataTypeName + "' registrada no
 		// escopo global.");
 	}

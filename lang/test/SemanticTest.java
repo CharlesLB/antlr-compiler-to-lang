@@ -14,7 +14,7 @@ import lang.core.ast.symbols.FunctionTable;
 import lang.core.parser.LexerProcessor;
 import lang.core.parser.ParserProcessor;
 import lang.core.parser.SemanticProcessor;
-import lang.test.visitor.ScopeVisitor;
+import lang.test.visitor.ContextVisitor;
 import lang.utils.Logger;
 
 public class SemanticTest extends Test {
