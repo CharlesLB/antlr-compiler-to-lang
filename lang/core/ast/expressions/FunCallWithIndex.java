@@ -9,30 +9,34 @@ import lang.core.ast.definitions.Data;
 import lang.core.ast.definitions.Expr;
 import lang.core.ast.definitions.Fun;
 import lang.core.ast.definitions.Param;
+import lang.core.ast.lvalue.IDLValue;
 import lang.core.ast.symbols.DataTable;
 import lang.core.ast.symbols.FunctionTable;
+import lang.test.visitor.Visitor;
 
 /**
  * Representa a chamada de uma função.
  * 
- * @Parser ID ‘(’ [expr (‘,’ expr)*] ‘)’
+ * @Parser IDLValue ‘(’ [expr (‘,’ expr)*] ‘)’ [‘<’ lvalue {‘,’ lvalue} ‘>’] ‘;’
  * 
  * @Example sum(1, 2)
  * @Example sum(1+1)
  * @Example sum()
  * @Example sum(a, b)
  */
-public class FunCall extends Expr {
-	private ID functionName;
-	private List<Expr> arguments;
+public class FunCallWithIndex extends Expr {
+	private IDLValue functionName; // O nome da função
+	private List<Expr> arguments; // Os argumentos da função
+	private Expr indexExpr; // O índice para acessar o valor retornado
 
-	public FunCall(int line, int column, ID functionName, List<Expr> arguments) {
+	public FunCallWithIndex(int line, int column, IDLValue functionName, List<Expr> arguments, Expr indexExpr) {
 		super(line, column);
 		this.functionName = functionName;
 		this.arguments = arguments;
+		this.indexExpr = indexExpr;
 	}
 
-	public ID getFunctionName() {
+	public IDLValue getFunctionName() {
 		return functionName;
 	}
 
@@ -40,7 +44,10 @@ public class FunCall extends Expr {
 		return arguments;
 	}
 
-	@Override
+	public Expr getIndexExpr() {
+		return indexExpr;
+	}
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(functionName.toString()).append("(");
@@ -49,18 +56,44 @@ public class FunCall extends Expr {
 			sb.append(arguments.stream().map(Expr::toString).collect(Collectors.joining(", ")));
 		}
 
-		sb.append(")");
+		sb.append(")").append("[").append(indexExpr.toString()).append("]");
 		return sb.toString();
 	}
 
-	@Override
 	public Object interpret(HashMap<String, Object> context) {
-
 		HashMap<String, Object> localContext = new HashMap<>(context);
 
-		/* Cria uma lista de tipos de parâmetros para a função chamada */
+		List<Object> argumentValues = new ArrayList<>();
+		for (Expr arg : arguments) {
+			argumentValues.add(arg.interpret(context));
+		}
+
+		Object functionResult = callFunction(functionName, argumentValues, localContext);
+
+		if (functionResult instanceof List<?>) {
+			List<?> resultList = (List<?>) functionResult;
+
+			Object indexValue = indexExpr.interpret(context);
+			if (!(indexValue instanceof Integer)) {
+				throw new RuntimeException("O índice deve ser um número inteiro.");
+			}
+
+			int index = (Integer) indexValue;
+
+			if (index < 0 || index >= resultList.size()) {
+				throw new RuntimeException("Índice fora dos limites.");
+			}
+
+			return resultList.get(index);
+		}
+
+		throw new RuntimeException("A função não retornou uma lista ou array.");
+	}
+
+	private Object callFunction(IDLValue functionName, List<Object> argumentValues,
+			HashMap<String, Object> context) {
 		List<String> argumentTypes = arguments.stream()
-				.map(arg -> {
+				.<String>map(arg -> {
 					Object value = arg.interpret(context);
 					if (value instanceof Integer) {
 						return "Int";
@@ -78,46 +111,36 @@ public class FunCall extends Expr {
 							String identifiedType = identifyDataType(firstElement, DataTable.getInstance());
 							return identifiedType + "[]";
 						}
-						return "Object[]"; // Caso contrário, trate como Object[] genérico
+						return "Object[]";
 					} else if (value instanceof HashMap) {
 						HashMap<String, Object> mapValue = (HashMap<String, Object>) value;
-
-						/* Identifica o tipo baseado nas chaves do HashMap */
 						return identifyDataType(mapValue, DataTable.getInstance());
 					} else {
-						throw new RuntimeException(
-								"Tipo de argumento não suportado: " + value.getClass().getSimpleName());
+						throw new RuntimeException("Tipo de argumento não suportado: " + value.getClass().getSimpleName());
 					}
 				})
 				.collect(Collectors.toList());
 
-		Fun function = FunctionTable.getInstance().getFunction(this.functionName.getName(), argumentTypes);
+		Fun function = FunctionTable.getInstance().getFunction(functionName.getName(), argumentTypes);
 		if (function == null) {
-			throw new RuntimeException("Função não definida: " + this.functionName.getName() +
+			throw new RuntimeException("Função não definida: " + functionName.getName() +
 					" com tipos de argumentos: " + argumentTypes);
 		}
-		List<Param> params = function.getParams();
 
-		if (params.size() != arguments.size()) {
+		List<Param> params = function.getParams();
+		if (params.size() != argumentValues.size()) {
 			throw new RuntimeException(
 					"Número de argumentos não corresponde ao número de parâmetros para a função: "
-							+ this.functionName.getName());
+							+ functionName.getName());
 		}
 
 		for (int i = 0; i < params.size(); i++) {
 			String paramName = params.get(i).getID().getName();
-			Object argValue = arguments.get(i).interpret(context);
-			localContext.put(paramName, argValue);
+			Object argValue = argumentValues.get(i);
+			context.put(paramName, argValue);
 		}
 
-		Object returnValue = function.interpret(localContext);
-
-		if (returnValue instanceof List<?>) {
-			List<?> returnList = (List<?>) returnValue;
-			return returnList;
-		} else {
-			return returnValue;
-		}
+		return function.interpret(context);
 	}
 
 	private String identifyDataType(HashMap<String, Object> element, DataTable dataTable) {
@@ -132,5 +155,9 @@ public class FunCall extends Expr {
 
 		// Se o tipo não for identificado, retorne "HashMap" como padrão --> Indica Erro
 		return "HashMap";
+	}
+
+	public void accept(Visitor v) {
+		v.visit(this);
 	}
 }

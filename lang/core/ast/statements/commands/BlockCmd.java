@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import lang.core.ast.definitions.Cmd;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Escapsulamento dos comandos que estão dentro do IF.
@@ -47,5 +49,14 @@ public class BlockCmd extends Cmd {
 			lastResult = command.interpret(context);
 		}
 		return lastResult;
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

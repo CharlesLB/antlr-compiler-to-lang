@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um comando de iteração.
@@ -22,6 +24,14 @@ public class Iterate extends Cmd {
 		super(lin, col);
 		this.count = count;
 		this.body = body;
+	}
+
+	public Expr getExpr() {
+		return count;
+	}
+
+	public Cmd getBody() {
+		return body;
 	}
 
 	@Override
@@ -45,5 +55,14 @@ public class Iterate extends Cmd {
 		}
 
 		return lastResult;
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

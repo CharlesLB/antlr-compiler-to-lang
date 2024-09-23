@@ -7,8 +7,8 @@ import java.util.*;
 import lang.core.ast.Node;
 import lang.core.ast.expressions.ID;
 import lang.core.ast.statements.data.Decl;
-
-import java.util.HashMap;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Utilizada para representar estruturas de objeto.
@@ -72,6 +72,15 @@ public class Data extends Node {
 		context.put(id.getName(), localContext);
 
 		return context;
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 
 }

@@ -5,6 +5,8 @@ package lang.core.ast.lvalue;
 import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um acesso a um array.
@@ -33,6 +35,11 @@ public class ArrayAccessLValue extends LValue {
 	}
 
 	@Override
+	public String toString() {
+		return array.toString() + "[" + index.toString() + "]";
+	}
+
+	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		Object arrayValue = array.interpret(context);
 
@@ -55,5 +62,14 @@ public class ArrayAccessLValue extends LValue {
 		}
 
 		return array[idx];
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

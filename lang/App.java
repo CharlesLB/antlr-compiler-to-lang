@@ -1,10 +1,12 @@
+/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang;
 
 import lang.enums.Mode;
 import lang.test.InterpreterTest;
 import lang.test.LexerTest;
 import lang.test.ParserTest;
-
+import lang.test.SemanticTest;
 import lang.utils.Logger;
 
 public class App {
@@ -34,7 +36,7 @@ public class App {
                     new ParserTest(path).run();
                     break;
                 case "semantic":
-                    // new SemanticTest(file).run();
+                    new SemanticTest(path).run();
                     break;
                 case "interpreter":
                     new InterpreterTest(path).run();
@@ -73,9 +75,6 @@ public class App {
         System.out
                 .println(ANSI_YELLOW + Mode.INTERPRETER + ANSI_RESET
                         + ": Executa uma bateria de testes no interpretador");
-
-        System.out.println(ANSI_YELLOW + Mode.GVZ + ANSI_RESET
-                + ": Create a dot file. (Feed it to graphviz dot tool to generate graphical representation of the AST)");
 
         System.out.println(ANSI_GREEN + "\nLOGS (opcional):" + ANSI_RESET);
 

@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um comando de impressão.
@@ -22,6 +24,10 @@ public class Print extends Cmd {
 		this.expr = expr;
 	}
 
+	public Expr getExpr() {
+		return expr;
+	}
+
 	@Override
 	public String toString() {
 		return "print " + expr.toString() + ";";
@@ -32,5 +38,14 @@ public class Print extends Cmd {
 		Object value = expr.interpret(m);
 		System.out.print(value); // Imprime o valor da expressão
 		return value;
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

@@ -1,65 +1,66 @@
-/*  Nome: Charles Lelis Braga - Matrícula: 202035015 */
-/*  Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
+/* Nome: Charles Lelis Braga - Matrícula: 202035015 */
+/* Nome: Gabriella Carvalho -- Matrícula: 202165047AC */
 package lang.core.ast.definitions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import lang.core.ast.Node;
+import lang.test.visitor.Visitable;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
- * Representa uma lista de nós reponsável por contruir a AST.
+ * Representa uma lista de nós responsável por construir a AST.
  */
-public class StmtList extends Node {
+public class StmtList extends Node implements Visitable {
 
-	private Node cmd1;
-	private Node cmd2;
+	private List<Node> commands;
 
-	public StmtList(int l, int c, Node c1, Node c2) {
+	public StmtList(int l, int c, List<Node> commands) {
 		super(l, c);
-		this.cmd1 = c1;
-		this.cmd2 = c2;
+		this.commands = commands;
 	}
 
-	public StmtList(int l, int c, Node cmd1) {
-		super(l, c);
-		this.cmd1 = cmd1;
-		this.cmd2 = null;
-	}
-
-	public Node getCmd1() {
-		return cmd1;
-	}
-
-	public Node getCmd2() {
-		return cmd2;
+	public List<Node> getCommands() {
+		return commands;
 	}
 
 	@Override
 	public String toString() {
-		String result = cmd1.toString();
-		if (cmd2 != null) {
-			result += "\n" + cmd2.toString();
+		StringBuilder result = new StringBuilder();
+		for (Node cmd : commands) {
+			result.append(cmd.toString()).append("\n");
+		}
+		return result.toString().trim(); // Remove the last new line
+	}
+
+	public Object interpret(HashMap<String, Object> m) {
+		Object result = null;
+		for (Node cmd : commands) {
+			result = cmd.interpret(m);
 		}
 		return result;
 	}
 
-	public Object interpret(HashMap<String, Object> m) {
-		Object result = cmd1.interpret(m);
-
-		if (cmd2 == null)
-			return result;
-		else
-			return cmd2.interpret(m);
-	}
-
-	// @Override
+	@Override
 	public int getLine() {
 		return super.getLine();
 	}
 
-	// @Override
+	@Override
 	public int getColumn() {
 		return super.getColumn();
 	}
 
+	@Override
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
+	}
 }

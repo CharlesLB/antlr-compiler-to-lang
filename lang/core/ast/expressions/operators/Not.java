@@ -5,6 +5,8 @@ package lang.core.ast.expressions.operators;
 import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Essa classe representa a operação de negação lógica de uma expressão.
@@ -24,6 +26,10 @@ public class Not extends Expr {
 		this.expr = expr;
 	}
 
+	public Expr getExpr() {
+		return expr;
+	}
+
 	@Override
 	public String toString() {
 		return "!" + expr.toString();
@@ -37,6 +43,15 @@ public class Not extends Expr {
 			return ((Boolean) value) ? false : true;
 		} else {
 			throw new RuntimeException("Unsupported type for logical negation: " + value.getClass().getName());
+		}
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
 		}
 	}
 }

@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Cmd;
 import lang.core.ast.lvalue.LValue;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um comando de leitura de um LValue.
@@ -49,5 +51,14 @@ public class ReadLValue extends Cmd {
 		context.put(this.getLValue().toString(), inputValue);
 
 		return context;
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

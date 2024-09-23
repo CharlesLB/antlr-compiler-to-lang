@@ -5,6 +5,8 @@ package lang.core.ast.lvalue;
 import java.util.*;
 
 import lang.core.ast.Node;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um acesso a um atributo de um objeto.
@@ -31,6 +33,10 @@ public class AttrAccessLValue extends LValue {
 		return attr;
 	}
 
+	// public String toString() {
+	// return object.toString() + "." + attr.toString();
+	// }
+
 	@Override
 	public Object interpret(HashMap<String, Object> context) {
 		Object objectObject = object.interpret(context);
@@ -55,6 +61,15 @@ public class AttrAccessLValue extends LValue {
 		} else {
 			/* Se não for um Node, retorne o valor diretamente */
 			return attrValue;
+		}
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
 		}
 	}
 }

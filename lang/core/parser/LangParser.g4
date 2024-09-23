@@ -23,10 +23,8 @@ import lang.core.ast.types.*;
 
 prog
 	returns[StmtList ast]:
-	s1 = stmt {$ast = new StmtList($s1.ast.getLine(), $s1.ast.getColumn(), $s1.ast);} (
-		s2 = stmt {$ast = new StmtList($s2.ast.getLine(), $s2.ast.getColumn(), $ast, $s2.ast);}
-	)* EOF;
-
+	s1 = stmt {$ast = new StmtList($s1.ast.getLine(), $s1.ast.getColumn(), new ArrayList<>(List.of($s1.ast)));
+		} (s2 = stmt {$ast.getCommands().add($s2.ast);})* EOF;
 stmt
 	returns[Node ast]: d = def {$ast = $d.ast;};
 
@@ -137,7 +135,7 @@ cmd
         $ast = new Return($start.getLine(), $start.getCharPositionInLine(), exprList);
     }
 	| ID '=' expr ';' {
-        $ast = new Assign($ID.line, $ID.pos, new ID($ID.line, $ID.pos, $ID.text), $expr.ast);
+        $ast = new Assign($ID.line, $ID.pos, new IDLValue($ID.line, $ID.pos, $ID.text), $expr.ast);
     }
 	| lv = lvalue '=' ex = expr ';' {
         $ast = new AssignLValue($lv.ast.getLine(), $lv.ast.getColumn(), $lv.ast, $ex.ast);
@@ -270,7 +268,7 @@ factor
         $ast = new NullLiteral($start.getLine(), $start.getCharPositionInLine());
     }
 	| ID {
-        $ast = new ID($ID.line, $ID.pos, $ID.text);
+        $ast = new IDLValue($ID.line, $ID.pos, $ID.text);
     }
 	| INT_LITERAL {
         $ast = new IntLiteral($INT_LITERAL.line, $INT_LITERAL.pos, Integer.parseInt($INT_LITERAL.text));
@@ -285,11 +283,11 @@ factor
         $ast = $expr.ast;
     }
 	| id = ID '(' args = exps? ')' '[' index = expr ']' {
-        List<Expr> exprList = new ArrayList<>();
-        if (_localctx.args != null) {
-            exprList.addAll($args.astList); 
-        }
-        $ast = new ArrayAccess(new FunCall($id.line, $id.pos, new ID($id.line, $id.pos, $id.text), exprList), $index.ast);
+    List<Expr> exprList = new ArrayList<>();
+    if (_localctx.args != null) {
+        exprList.addAll($args.astList); 
+    }
+    $ast = new FunCallWithIndex($id.line, $id.pos, new IDLValue($id.line, $id.pos, $id.text), exprList, $index.ast);
     }
 	| lval = lvalue {
         $ast = $lval.ast;

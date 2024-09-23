@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
 import lang.core.ast.expressions.BinOP;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Essa classe representa a operação de comparação de desigualdade entre duas
@@ -52,6 +54,15 @@ public class NotEq extends BinOP {
 			return false;
 		} else {
 			return true;
+		}
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
 		}
 	}
 }

@@ -5,6 +5,8 @@ package lang.core.ast.expressions;
 import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Representa um identificador.
@@ -33,5 +35,14 @@ public class ID extends Expr {
 
 	public Object interpret(HashMap<String, Object> m) {
 		return m.get(l);
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }

@@ -5,6 +5,8 @@ package lang.core.ast.expressions.literals;
 import java.util.HashMap;
 
 import lang.core.ast.definitions.Expr;
+import lang.test.visitor.Visitor;
+import lang.utils.TypeMismatchException;
 
 /**
  * Essa classe representa um literal caractere.
@@ -22,6 +24,10 @@ public class CharLiteral extends Expr {
 		this.value = value;
 	}
 
+	public String getValue() {
+		return value;
+	}
+
 	@Override
 	public String toString() {
 		return "'" + value + "'";
@@ -35,5 +41,14 @@ public class CharLiteral extends Expr {
 			return "\n";
 		}
 		return strippedValue;
+	}
+
+	public void accept(Visitor v) {
+		try {
+			v.visit(this);
+		} catch (TypeMismatchException e) {
+			System.err.println(e.getMessage());
+			throw e;
+		}
 	}
 }
