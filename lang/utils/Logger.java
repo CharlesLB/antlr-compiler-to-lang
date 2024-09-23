@@ -38,9 +38,6 @@ public final class Logger {
     }
 
     public static void error(String message) {
-        if (verbose) {
-            System.out.print(ANSI_RED + message + ANSI_RESET);
-        }
+        System.out.println(message);
     }
-
 }
